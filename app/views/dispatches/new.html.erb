@@ -1,0 +1,21 @@
+<h1>Dispatch#new</h1>
+<p>Find me in app/views/dispatch/new.html.erb</p>
+<%= form_for @machine, url:{action: 'create', method: 'post'} do |f|%>
+    <% if @machine.errors.any? %>
+        <h2><%="#{pluralize(@machine.errors.count, 'error')} prohibited this machine from being saved!"%></h2>
+        <ul>
+          <% @machine.errors.full_messages.each do |msg| %>
+            <li><%=msg%></li>
+          <% end %>
+        </ul>
+    <%end%>
+
+    <%= f.label :ip_address %>
+    <%= f.text_field :ip_address %>
+
+    <%= f.label :setting %>
+    <%= f.text_field :setting %>
+
+    <%= f.submit 'Save' %>
+
+<%end%>

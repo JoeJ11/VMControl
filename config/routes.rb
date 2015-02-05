@@ -1,4 +1,21 @@
 VMControl::Application.routes.draw do
+  resources :dispatches, only: [:new, :create, :update] do
+    collection do
+      get 'list'
+      get 'service'
+    end
+    member do
+      get 'progress'
+      get 'start'
+      get 'stop'
+    end
+  end
+  # get 'dispatches/list'
+  # get 'dispatches/new'
+  # get 'dispatches/stop'
+  # get 'dispatches/progress'
+  # get 'dispatches/service'
+  # post 'dispatches' => 'dispatches#create'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
