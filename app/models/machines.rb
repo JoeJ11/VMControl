@@ -1,18 +1,23 @@
 class Machines < ActiveRecord::Base
   include CloudToolkit
 
+  # Start / Create a machine
   def start
-    create_machine(setting)
+    config = create_machine(setting)
     self.status = STATUS_ONPROCESS
+    self.ip_address = config[:ip_address]
+    self.specifier = config[:specifier]
     self.save
   end
 
+  # Stop / Delete a machine
   def stop
     stop_machine
     self.status = STATUS_AVAILABLE
     self.save
   end
 
+  # Assign a machine to a student
   def assign (student_id)
     self.student_id = student_id
     self.status = STATUS_OCCUPIED
@@ -20,7 +25,10 @@ class Machines < ActiveRecord::Base
     return self.ip_address
   end
 
-  def update_machine
+  # Create a machine
+  # Not used now!
+  def new_machine
+    self.start
   end
 
 end
