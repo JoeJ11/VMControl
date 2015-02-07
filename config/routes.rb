@@ -3,6 +3,7 @@ VMControl::Application.routes.draw do
     collection do
       get 'list'
       get 'service'
+      get 'assign'
     end
     member do
       get 'progress'

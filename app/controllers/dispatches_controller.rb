@@ -9,6 +9,7 @@ class DispatchesController < ApplicationController
   end
 
   def stop
+    @machine.stop
   end
 
   def progress
@@ -23,11 +24,13 @@ class DispatchesController < ApplicationController
 
   def create
     @machine = Machines.new()
-    @machine.ip_address = params[:machines][:ip_address]
+    # @machine.ip_address = params[:machines][:ip_address]
     @machine.setting = params[:machines][:setting]
-    @machine.status = Machines::STATUS_OCCUPIED
     @machine.group = params[:machines][:group]
+    @machine.status = Machines::STATUS_OCCUPIED
     #@machine.set_tenant_name params[:machines][:tenant_name]
+
+    @machine.new_machine
 
     respond_to do |format|
       if @machine.save
