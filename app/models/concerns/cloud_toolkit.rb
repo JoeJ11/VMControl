@@ -13,7 +13,7 @@ module CloudToolkit
 
     # Authentication
     # Require token if no valid token
-    def require_token(tenant_name)
+    def self.require_token(tenant_name)
     end
 
     # List info for all machines
@@ -36,23 +36,23 @@ module CloudToolkit
   # Generate a new machine and return machine config info
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
-    CloudToolkit.require_token @tenant_name
+    ClassMethods.require_token @tenant_name
     return {:ip_address => '123.456.789.10', :specifier => 'machine ID'}
   end
 
   # Stop a machine
   def stop_machine
-    CloudToolkit.require_token @tenant_name
+    ClassMethods.require_token @tenant_name
   end
 
   # Delete a machine
   def delete_machine
-    CloudToolkit.require_token @tenant_name
+    ClassMethods.require_token @tenant_name
   end
 
   # Get machine status
   def machine_status (specifier)
-    CloudToolkit.require_token @tenant_name
+    ClassMethods.require_token @tenant_name
     return {:name => 'Test Machine'}
   end
 

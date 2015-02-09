@@ -1,6 +1,10 @@
 class DispatchesController < ApplicationController
   before_action :set_machines, only: [:stop, :start, :progress]
 
+  def index
+    @machines = Machines.all
+  end
+
   def list
   end
 
@@ -9,6 +13,7 @@ class DispatchesController < ApplicationController
   end
 
   def stop
+    debugger
     @machine.stop
   end
 

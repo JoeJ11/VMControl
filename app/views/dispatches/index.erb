@@ -1,0 +1,37 @@
+<h1>Machine List</h1>
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>IP Address</th>
+    <th>Setting</th>
+    <th>Status</th>
+    <th>Student ID</th>
+    <th>Group</th>
+    <th>Specifier</th>
+    <th>Start</th>
+    <th>Stop</th>
+  </tr>
+
+  <% @machines.each do |machine| %>
+    <tr>
+      <td><%=machine.id%></td>
+      <td><%=machine.ip_address%></td>
+      <td><%=machine.setting%></td>
+      <% if machine.status == CloudToolkit::STATUS_AVAILABLE %>
+          <td>Available</td>
+      <% elsif machine.status == CloudToolkit::STATUS_OCCUPIED %>
+          <td>Occupied</td>
+      <% elsif machine.status == CloudToolkit::STATUS_ONPROCESS %>
+          <td>On Progress</td>
+      <% else %>
+          <td>Undefined</td>
+      <% end %>
+      <td><%=machine.student_id%></td>
+      <td><%=machine.group%></td>
+      <td><%=machine.specifier%></td>
+      <th><%=link_to 'Start', start_dispatch_path(machine.id) %></th>
+      <th><%=link_to 'Stop', stop_dispatch_path(machine.id) %></th>
+    </tr>
+  <% end %>
+</table>

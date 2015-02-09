@@ -1,5 +1,5 @@
 VMControl::Application.routes.draw do
-  resources :dispatches, only: [:new, :create, :update] do
+  resources :dispatches, only: [:new, :create, :update, :index] do
     collection do
       get 'list'
       get 'service'
