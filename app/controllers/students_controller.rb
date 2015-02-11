@@ -61,6 +61,12 @@ class StudentsController < ApplicationController
     end
   end
 
+  # Get /students/1/assign
+  # Get /students/1/assign.json
+  def assign
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_student

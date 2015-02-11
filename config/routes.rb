@@ -1,11 +1,16 @@
 VMControl::Application.routes.draw do
-  resources :students
+  resources :images
+
+  resources :students do
+    member do
+      get 'assign'
+    end
+  end
 
   resources :dispatches, only: [:new, :create, :update, :index] do
     collection do
       get 'list'
       get 'service'
-      get 'assign'
     end
     member do
       get 'progress'

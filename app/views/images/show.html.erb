@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Tenant:</strong>
+  <%= @image.tenant_id %>
+</p>
+
+<p>
+  <strong>Instance:</strong>
+  <%= @image.instance_id %>
+</p>
+
+<p>
+  <strong>Image name:</strong>
+  <%= @image.image_name %>
+</p>
+
+<%= link_to 'Edit', edit_image_path(@image) %> |
+<%= link_to 'Back', images_path %>
