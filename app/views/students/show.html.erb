@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Xuetang:</strong>
+  <%= @student.xuetang_id %>
+</p>
+
+<p>
+  <strong>Mail address:</strong>
+  <%= @student.mail_address %>
+</p>
+
+<p>
+  <strong>Public key:</strong>
+  <%= @student.public_key %>
+</p>
+
+<%= link_to 'Edit', edit_student_path(@student) %> |
+<%= link_to 'Back', students_path %>
