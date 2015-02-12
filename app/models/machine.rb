@@ -1,4 +1,4 @@
-class Machines < ActiveRecord::Base
+class Machine < ActiveRecord::Base
   include CloudToolkit
 
   # Start / Create a machine

@@ -2,14 +2,14 @@ class DispatchesController < ApplicationController
   before_action :set_machines, only: [:stop, :start, :progress]
 
   def index
-    @machines = Machines.all
+    @machines = Machine.all
   end
 
   def list
   end
 
   def new
-    @machine = Machines.new
+    @machine = Machine.new
   end
 
   def stop
@@ -28,11 +28,11 @@ class DispatchesController < ApplicationController
   end
 
   def create
-    @machine = Machines.new()
+    @machine = Machine.new()
     # @machine.ip_address = params[:machines][:ip_address]
     @machine.setting = params[:machines][:setting]
     @machine.group = params[:machines][:group]
-    @machine.status = Machines::STATUS_OCCUPIED
+    @machine.status = Machine::STATUS_OCCUPIED
     #@machine.set_tenant_name params[:machines][:tenant_name]
 
     @machine.new_machine
@@ -50,7 +50,7 @@ class DispatchesController < ApplicationController
   end
 
   def set_machines
-    @machine = Machines.find(params[:id])
+    @machine = Machine.find(params[:id])
   end
 
 
