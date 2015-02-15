@@ -1,0 +1,45 @@
+<%= form_for(@configuration) do |f| %>
+  <% if @configuration.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@configuration.errors.count, "error") %> prohibited this configuration from being saved:</h2>
+
+      <ul>
+      <% @configuration.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br>
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :image_id %><br>
+    <%= f.text_field :image_id %>
+  </div>
+  <div class="field">
+    <%= f.label :flavor_id %><br>
+    <%= f.text_field :flavor_id %>
+  </div>
+  <div class="field">
+    <%= f.label :internal_ip %><br>
+    <%= f.text_field :internal_ip %>
+  </div>
+  <div class="field">
+    <%= f.label :external_ip %><br>
+    <%= f.text_field :external_ip %>
+  </div>
+  <div class="field">
+    <%= f.label :ext_enable %><br>
+    <%= f.check_box :ext_enable %>
+  </div>
+  <div class="field">
+    <%= f.label :config_id %><br>
+    <%= f.text_field :config_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

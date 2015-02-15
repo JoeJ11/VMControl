@@ -14,6 +14,7 @@ class Machine < ActiveRecord::Base
   def stop
     stop_machine
     self.status = STATUS_AVAILABLE
+    self.student_id = 0
     self.save
   end
 

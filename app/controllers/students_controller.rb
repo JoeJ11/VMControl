@@ -1,5 +1,5 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy]
+  before_action :set_student, only: [:show, :edit, :update, :destroy, :assign]
 
   # GET /students
   # GET /students.json
@@ -64,6 +64,16 @@ class StudentsController < ApplicationController
   # Get /students/1/assign
   # Get /students/1/assign.json
   def assign
+    if @student.machine and @student.machine.status == CloudToolkit::STATUS_OCCUPIED
+      render json: { :address => @student.machine.ip_address } and return
+    end
+    machine = Machine.find_by_status CloudToolkit::STATUS_AVAILABLE
+    if machine
+      ipaddress = machine.assign @student.id
+      render json: { :address => ipaddress }
+    else
+      render json: { :information => "No available machine!"}
+    end
 
   end
 

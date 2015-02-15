@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @configuration.name %>
+</p>
+
+<p>
+  <strong>Image:</strong>
+  <%= @configuration.image_id %>
+</p>
+
+<p>
+  <strong>Flavor:</strong>
+  <%= @configuration.flavor_id %>
+</p>
+
+<p>
+  <strong>Internal ip:</strong>
+  <%= @configuration.internal_ip %>
+</p>
+
+<p>
+  <strong>External ip:</strong>
+  <%= @configuration.external_ip %>
+</p>
+
+<p>
+  <strong>Ext enable:</strong>
+  <%= @configuration.ext_enable %>
+</p>
+
+<p>
+  <strong>Config:</strong>
+  <%= @configuration.config_id %>
+</p>
+
+<%= link_to 'Edit', edit_configuration_path(@configuration) %> |
+<%= link_to 'Back', configurations_path %>

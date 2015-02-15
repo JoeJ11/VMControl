@@ -1,4 +1,6 @@
 VMControl::Application.routes.draw do
+  resources :configurations
+
   resources :images
 
   resources :students do

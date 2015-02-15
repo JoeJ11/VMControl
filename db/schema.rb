@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150211232841) do
+ActiveRecord::Schema.define(version: 20150215034035) do
+
+  create_table "configurations", force: true do |t|
+    t.string   "name"
+    t.string   "image_id"
+    t.string   "flavor_id"
+    t.string   "internal_ip"
+    t.string   "external_ip"
+    t.boolean  "ext_enable"
+    t.string   "config_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "images", force: true do |t|
     t.string   "tenant_id"

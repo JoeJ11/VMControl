@@ -1,0 +1,39 @@
+<h1>Listing configurations</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Image</th>
+      <th>Flavor</th>
+      <th>Internal ip</th>
+      <th>External ip</th>
+      <th>Ext enable</th>
+      <th>Config</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @configurations.each do |configuration| %>
+      <tr>
+        <td><%= configuration.name %></td>
+        <td><%= configuration.image_id %></td>
+        <td><%= configuration.flavor_id %></td>
+        <td><%= configuration.internal_ip %></td>
+        <td><%= configuration.external_ip %></td>
+        <td><%= configuration.ext_enable %></td>
+        <td><%= configuration.config_id %></td>
+        <td><%= link_to 'Show', configuration %></td>
+        <td><%= link_to 'Edit', edit_configuration_path(configuration) %></td>
+        <td><%= link_to 'Destroy', configuration, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Configuration', new_configuration_path %>
