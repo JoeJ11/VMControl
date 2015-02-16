@@ -16,27 +16,36 @@ module CloudToolkit
 
     # Authentication
     # Require token if no valid token
-    def self.require_token(tenant_name)
+    def require_token(tenant_name)
       response = HTTParty.post(CloudToolkit::BASE_URL + 'tokens',
-                    :query => { :auth => {
-                        :tenantName => 'demo',
-                        :passwordCredentials => {
-                            :username => CloudToolkit::X_AUTH_USER,
-                            :password => CloudToolkit::X_AUTH_KEY
+                    :query => {
+                        :auth => {
+                          :tenantName => tenant_name,
+                          :passwordCredentials => {
+                              :username => CloudToolkit::X_AUTH_USER,
+                              :password => CloudToolkit::X_AUTH_KEY
+                          }
                         }
-                    }},
-                    :header => {
-                        :X_Auth_User => CloudToolkit::X_AUTH_USER,
-                        :X_Auth_Key => CloudToolkit::X_AUTH_KEY
-
+                    },
+                    :headers => {
+                        'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                        'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                     }
       )
+      #response = HTTParty.get('http://localhost:3000/dispatches')
       return response
     end
 
     # List info for all machines
     def list_machines
-      CloudToolkit.require_token @tenant_name
+      require_token @tenant_name
+      response = HTTParty.get(CloudToolkit::BASE_URL + 'cluster',
+                              :headers => {
+                                  'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                                  'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                              }
+      )
+      puts response
       return ['Test Machine']
     end
   end
