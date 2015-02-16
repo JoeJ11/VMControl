@@ -13,8 +13,8 @@ class DispatchesController < ApplicationController
   end
 
   def stop
-    debugger
     @machine.stop
+    redirect_to :back
   end
 
   def progress
@@ -25,6 +25,7 @@ class DispatchesController < ApplicationController
 
   def start
     @machine.start
+    redirect_to :back
   end
 
   def create

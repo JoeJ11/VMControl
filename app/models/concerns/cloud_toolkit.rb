@@ -3,6 +3,9 @@ module CloudToolkit
   STATUS_OCCUPIED = 0
   STATUS_AVAILABLE = 1
   STATUS_ONPROCESS = 2
+  X_AUTH_USER = 'andyjvan@gmail.com'
+  X_AUTH_KEY = 'pass4test'
+  BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -14,6 +17,21 @@ module CloudToolkit
     # Authentication
     # Require token if no valid token
     def self.require_token(tenant_name)
+      response = HTTParty.post(CloudToolkit::BASE_URL + 'tokens',
+                    :query => { :auth => {
+                        :tenantName => 'demo',
+                        :passwordCredentials => {
+                            :username => CloudToolkit::X_AUTH_USER,
+                            :password => CloudToolkit::X_AUTH_KEY
+                        }
+                    }},
+                    :header => {
+                        :X_Auth_User => CloudToolkit::X_AUTH_USER,
+                        :X_Auth_Key => CloudToolkit::X_AUTH_KEY
+
+                    }
+      )
+      return response
     end
 
     # List info for all machines
