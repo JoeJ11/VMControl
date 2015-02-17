@@ -1,10 +1,10 @@
-<%= form_for(@configuration) do |f| %>
-  <% if @configuration.errors.any? %>
+<%= form_for(@cluster_template) do |f| %>
+  <% if @cluster_template.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@configuration.errors.count, "error") %> prohibited this configuration from being saved:</h2>
+      <h2><%= pluralize(@cluster_template.errors.count, "error") %> prohibited this configuration from being saved:</h2>
 
       <ul>
-      <% @configuration.errors.full_messages.each do |msg| %>
+      <% @cluster_template.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>

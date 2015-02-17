@@ -17,7 +17,7 @@
   </thead>
 
   <tbody>
-    <% @configurations.each do |configuration| %>
+    <% @cluster_templates.each do |configuration| %>
       <tr>
         <td><%= configuration.name %></td>
         <td><%= configuration.image_id %></td>
@@ -36,4 +36,4 @@
 
 <br>
 
-<%= link_to 'New Configuration', new_configuration_path %>
+<%= link_to 'New ClusterTemplate', new_configuration_path %>

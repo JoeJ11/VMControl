@@ -1,5 +1,5 @@
 VMControl::Application.routes.draw do
-  resources :configurations
+  resources :cluster_templates
 
   resources :images
 

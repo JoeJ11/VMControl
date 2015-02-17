@@ -2,38 +2,38 @@
 
 <p>
   <strong>Name:</strong>
-  <%= @configuration.name %>
+  <%= @cluster_template.name %>
 </p>
 
 <p>
   <strong>Image:</strong>
-  <%= @configuration.image_id %>
+  <%= @cluster_template.image_id %>
 </p>
 
 <p>
   <strong>Flavor:</strong>
-  <%= @configuration.flavor_id %>
+  <%= @cluster_template.flavor_id %>
 </p>
 
 <p>
   <strong>Internal ip:</strong>
-  <%= @configuration.internal_ip %>
+  <%= @cluster_template.internal_ip %>
 </p>
 
 <p>
   <strong>External ip:</strong>
-  <%= @configuration.external_ip %>
+  <%= @cluster_template.external_ip %>
 </p>
 
 <p>
   <strong>Ext enable:</strong>
-  <%= @configuration.ext_enable %>
+  <%= @cluster_template.ext_enable %>
 </p>
 
 <p>
   <strong>Config:</strong>
-  <%= @configuration.config_id %>
+  <%= @cluster_template.config_id %>
 </p>
 
-<%= link_to 'Edit', edit_configuration_path(@configuration) %> |
+<%= link_to 'Edit', edit_configuration_path(@cluster_template) %> |
 <%= link_to 'Back', configurations_path %>

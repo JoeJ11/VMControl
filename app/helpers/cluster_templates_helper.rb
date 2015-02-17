@@ -1,0 +1,2 @@
+module ClusterTemplatesHelper
+end
