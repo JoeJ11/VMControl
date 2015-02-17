@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20150217001423) do
 
-  create_table "configurations", force: true do |t|
+  create_table "cluster_templates", force: true do |t|
     t.string   "name"
     t.string   "image_id"
     t.string   "flavor_id"

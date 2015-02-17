@@ -1,28 +1,28 @@
 class ClusterTemplatesController < ApplicationController
   before_action :set_configuration, only: [:show, :edit, :update, :destroy]
 
-  # GET /ClusterTemplates
-  # GET /ClusterTemplates.json
+  # GET /cluster_templates
+  # GET /cluster_templates.json
   def index
     @cluster_templates = ClusterTemplate.all
   end
 
-  # GET /ClusterTemplates/1
-  # GET /ClusterTemplates/1.json
+  # GET /cluster_templates/1
+  # GET /cluster_templates/1.json
   def show
   end
 
-  # GET /ClusterTemplates/new
+  # GET /cluster_templates/new
   def new
     @cluster_template = ClusterTemplate.new
   end
 
-  # GET /ClusterTemplates/1/edit
+  # GET /cluster_templates/1/edit
   def edit
   end
 
-  # POST /ClusterTemplates
-  # POST /ClusterTemplates.json
+  # POST /cluster_templates
+  # POST /cluster_templates.json
   def create
     @cluster_template = ClusterTemplate.new(configuration_params)
 
@@ -37,8 +37,8 @@ class ClusterTemplatesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /ClusterTemplates/1
-  # PATCH/PUT /ClusterTemplates/1.json
+  # PATCH/PUT /cluster_templates/1
+  # PATCH/PUT /cluster_templates/1.json
   def update
     respond_to do |format|
       if @cluster_template.update(configuration_params)
@@ -51,8 +51,8 @@ class ClusterTemplatesController < ApplicationController
     end
   end
 
-  # DELETE /ClusterTemplates/1
-  # DELETE /ClusterTemplates/1.json
+  # DELETE /cluster_templates/1
+  # DELETE /cluster_templates/1.json
   def destroy
     @cluster_template.destroy
     respond_to do |format|
@@ -69,6 +69,6 @@ class ClusterTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def configuration_params
-      params.require(:cluster_template).permit(:name, :image_id, :flavor_id, :internal_ip, :external_ip, :ext_enable, :config_id)
+      params.require(:cluster_templates).permit(:name, :image_id, :flavor_id, :internal_ip, :external_ip, :ext_enable, :config_id)
     end
 end

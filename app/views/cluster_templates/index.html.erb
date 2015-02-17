@@ -1,0 +1,39 @@
+<h1>Listing templates</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Image</th>
+      <th>Flavor</th>
+      <th>Internal ip</th>
+      <th>External ip</th>
+      <th>Ext enable</th>
+      <th>Config</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cluster_templates.each do |tem| %>
+      <tr>
+        <td><%= tem.name %></td>
+        <td><%= tem.image_id %></td>
+        <td><%= tem.flavor_id %></td>
+        <td><%= tem.internal_ip %></td>
+        <td><%= tem.external_ip %></td>
+        <td><%= tem.ext_enable %></td>
+        <td><%= tem.config_id %></td>
+        <td><%= link_to 'Show', tem %></td>
+        <td><%= link_to 'Edit', edit_cluster_template_path(tem) %></td>
+        <td><%= link_to 'Destroy', tem, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New ClusterTemplate', new_cluster_template_path %>
