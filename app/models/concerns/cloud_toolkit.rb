@@ -51,6 +51,7 @@ module CloudToolkit
 
     # List all templates(configurations)
     def list_templates
+      require_token @tenant_name
       response = HTTParty.get(
                              CloudToolkit::BASE_URL + 'cluster_config',
                              :headers => {
@@ -76,13 +77,25 @@ module CloudToolkit
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
     # TODO: The usage of YAML file is not clear yet
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
+    response = HTTParty.post(
+                           CloudToolkit::BASE_URL + 'cluster',
+                           :query => {
+                               'conf_id' => setting['config_id'],
+                               'cluster_number' => setting['cluster_number']
+                           },
+                           :headers => {
+                               'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                               'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                           }
+    )
+    puts response
     return {:ip_address => '123.456.789.10', :specifier => 'machine ID'}
   end
 
   # Stop a machine
   def stop_machine
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
     HTTParty.delete(
                 CloudToolkit::BASE_URL + 'cluster/' + self.specifier,
                 :headers => {
@@ -100,7 +113,7 @@ module CloudToolkit
 
   # Get machine status
   def machine_status (specifier)
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
     response = HTTParty.get(
                            CloudToolkit::BASE_URL + 'cluster/' + self.specifier,
                            :headers => {
@@ -112,14 +125,25 @@ module CloudToolkit
   end
 
   # Create a template
-  def create_template
+  def create_template(settings)
     # TODO: The usage of YAML file is not clear
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
+    response = HTTParty.post(
+                           CloudToolkit::BASE_URL + 'cluster_config',
+                           :query => {'vms' => settings},
+                           :headers => {
+                               'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                               'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                           }
+    )
+    # self.specifier = response['config_id']
+    # self.save
+    puts response
   end
 
   # Delete a configuration
   def delete_template
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
     HTTParty.delete(
                 CloudToolkit::BASE_URL + 'cluster_config/' + self.specifier,
                 :headers => {
@@ -131,8 +155,8 @@ module CloudToolkit
 
   # Show configuration details
   def show_template
-    ClassMethods.require_token @tenant_name
-    resposne = HTTParty.get(
+    self.class.require_token @tenant_name
+    response = HTTParty.get(
                 CloudToolkit::BASE_URL + 'cluster_config' + self.specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
@@ -143,14 +167,28 @@ module CloudToolkit
   end
 
   # Create image
-  def create_iamge
-    # TODO: The usage of YAML file is not clear
-    ClassMethods.require_token @tenant_name
+  def create_image
+    # TODO: Will raise a Python error! DO NOT WORK!
+    self.class.require_token @tenant_name
+    response = HTTParty.post(
+                           CloudToolkit::BASE_URL + 'images',
+                           :query => {
+                               'tenant-id' => 'WTF',
+                               'instance-id' => '220f77d2-49b0-452f-90f8-440b4f29163a',
+                               'image-name' => 'test-image',
+                               'members' => []
+                           },
+                           :headers => {
+                               'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                               'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                           }
+    )
+    puts response
   end
 
   # Delete an image
   def delete_image
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
     HTTParty.delete(
                 CloudToolkit::BASE_URL + 'images/' + self.specifier,
                 :headers => {
@@ -161,10 +199,10 @@ module CloudToolkit
   end
 
   # Show image information
-  def show_image
-    ClassMethods.require_token @tenant_name
+  def show_image(specifier)
+    self.class.require_token @tenant_name
     response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'images/' + self.specifier,
+                CloudToolkit::BASE_URL + 'images/' +specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
@@ -175,7 +213,7 @@ module CloudToolkit
 
   # Update an image
   def update_image
-    ClassMethods.require_token @tenant_name
+    self.class.require_token @tenant_name
     response = HTTParty.put(
                            CloudToolkit::BASE_URL + 'images/' + self.specifier,
                            :headers => {
