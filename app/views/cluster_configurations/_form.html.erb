@@ -1,0 +1,25 @@
+<%= form_for(@cluster_configuration) do |f| %>
+  <% if @cluster_configuration.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@cluster_configuration.errors.count, "error") %> prohibited this cluster_configuration from being saved:</h2>
+
+      <ul>
+      <% @cluster_configuration.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :specifier %><br>
+    <%= f.text_field :specifier %>
+  </div>
+  <div class="field">
+    <%= f.label :size %><br>
+    <%= f.number_field :size %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,29 @@
+<h1>Listing cluster_configurations</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Specifier</th>
+      <th>Size</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cluster_configurations.each do |cluster_configuration| %>
+      <tr>
+        <td><%= cluster_configuration.specifier %></td>
+        <td><%= cluster_configuration.size %></td>
+        <td><%= link_to 'Show', cluster_configuration %></td>
+        <td><%= link_to 'Edit', edit_cluster_configuration_path(cluster_configuration) %></td>
+        <td><%= link_to 'Destroy', cluster_configuration, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Cluster configuration', new_cluster_configuration_path %>

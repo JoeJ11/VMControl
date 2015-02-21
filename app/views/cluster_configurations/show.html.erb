@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Specifier:</strong>
+  <%= @cluster_configuration.specifier %>
+</p>
+
+<p>
+  <strong>Size:</strong>
+  <%= @cluster_configuration.size %>
+</p>
+
+<%= link_to 'Edit', edit_cluster_configuration_path(@cluster_configuration) %> |
+<%= link_to 'Back', cluster_configurations_path %>

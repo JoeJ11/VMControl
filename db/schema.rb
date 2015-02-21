@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150217001423) do
+ActiveRecord::Schema.define(version: 20150221015139) do
+
+  create_table "cluster_configurations", force: true do |t|
+    t.string   "specifier"
+    t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "cluster_templates", force: true do |t|
     t.string   "name"
@@ -23,7 +30,10 @@ ActiveRecord::Schema.define(version: 20150217001423) do
     t.string   "config_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "cluster_configuration_id"
   end
+
+  add_index "cluster_templates", ["cluster_configuration_id"], name: "index_cluster_templates_on_cluster_configuration_id"
 
   create_table "images", force: true do |t|
     t.string   "tenant_id"
