@@ -10,5 +10,11 @@
   <%= @cluster_configuration.size %>
 </p>
 
+<%- @templates.each do |template| %>
+    <p>
+        <%= link_to template.name, template %>
+    </p>
+<%- end %>
+
 <%= link_to 'Edit', edit_cluster_configuration_path(@cluster_configuration) %> |
 <%= link_to 'Back', cluster_configurations_path %>

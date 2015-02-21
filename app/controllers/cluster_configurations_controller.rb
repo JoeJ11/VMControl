@@ -1,5 +1,5 @@
 class ClusterConfigurationsController < ApplicationController
-  before_action :set_cluster_configuration, only: [:show, :edit, :update, :destroy]
+  before_action :set_cluster_configuration, only: [:show, :edit, :update, :destroy, :new_machine]
 
   # GET /cluster_configurations
   # GET /cluster_configurations.json
@@ -10,6 +10,7 @@ class ClusterConfigurationsController < ApplicationController
   # GET /cluster_configurations/1
   # GET /cluster_configurations/1.json
   def show
+    @templates = @cluster_configuration.cluster_templates
   end
 
   # GET /cluster_configurations/new
@@ -60,6 +61,13 @@ class ClusterConfigurationsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  # GET /cluster_configurations/1/new_machine
+  def new_machine
+    session[:cluster_id] = params[:id]
+    redirect_to '/cluster_templates/new'
+  end
+
 
   private
     # Use callbacks to share common setup or constraints between actions.

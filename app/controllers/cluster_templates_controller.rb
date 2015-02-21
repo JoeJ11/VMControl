@@ -25,6 +25,10 @@ class ClusterTemplatesController < ApplicationController
   # POST /cluster_templates.json
   def create
     @cluster_template = ClusterTemplate.new(configuration_params)
+    if session.has_key? :cluster_id and session[:cluster_id]
+      @cluster_template.cluster_configuration = ClusterConfiguration.find(session[:cluster_id])
+      @cluster_template.save
+    end
 
     respond_to do |format|
       if @cluster_template.save
@@ -56,7 +60,7 @@ class ClusterTemplatesController < ApplicationController
   def destroy
     @cluster_template.destroy
     respond_to do |format|
-      format.html { redirect_to configurations_url }
+      format.html { redirect_to '/cluster_templates' }
       format.json { head :no_content }
     end
   end
@@ -69,6 +73,6 @@ class ClusterTemplatesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def configuration_params
-      params.require(:cluster_templates).permit(:name, :image_id, :flavor_id, :internal_ip, :external_ip, :ext_enable, :config_id)
+      params.require(:cluster_template).permit(:name, :image_id, :flavor_id, :internal_ip, :external_ip, :ext_enable, :config_id)
     end
 end

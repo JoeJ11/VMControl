@@ -1,5 +1,9 @@
 VMControl::Application.routes.draw do
-  resources :cluster_configurations
+  resources :cluster_configurations do
+    member do
+      get 'new_machine'
+    end
+  end
 
   resources :cluster_templates
 
