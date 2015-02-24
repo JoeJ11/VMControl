@@ -35,6 +35,9 @@ end
 # Use HTTParty to use JSON APIs
 gem 'httparty', '~> 0.13.3'
 
+# Use delayed job to release resources
+gem 'delayed_job_active_record'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
