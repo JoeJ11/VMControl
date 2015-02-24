@@ -77,6 +77,15 @@ class StudentsController < ApplicationController
 
   end
 
+  # Get /students/1/release
+  # Get /students/1/release.json
+  def release
+    if @student.machine and @student.machine == CloudToolkit::STATUS_OCCUPIED
+      @student.machine.restart
+    end
+    redirect_to :back
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_student

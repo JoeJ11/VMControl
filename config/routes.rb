@@ -12,6 +12,7 @@ VMControl::Application.routes.draw do
   resources :students do
     member do
       get 'assign'
+      get 'release'
     end
   end
 

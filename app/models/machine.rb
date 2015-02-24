@@ -4,7 +4,7 @@ class Machine < ActiveRecord::Base
   # Start / Create a machine
   def start
     config = create_machine(setting)
-    self.status = STATUS_ONPROCESS
+    self.status = STATUS_AVAILABLE
     self.ip_address = config[:ip_address]
     self.specifier = config[:specifier]
     self.save
@@ -13,9 +13,15 @@ class Machine < ActiveRecord::Base
   # Stop / Delete a machine
   def stop
     stop_machine
-    self.status = STATUS_AVAILABLE
+    self.status = STATUS_ONPROCESS
     self.student_id = 0
     self.save
+  end
+
+  # Restart machine
+  def restart
+    self.stop
+    self.start
   end
 
   # Assign a machine to a student
