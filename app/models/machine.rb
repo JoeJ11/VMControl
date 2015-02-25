@@ -3,16 +3,16 @@ class Machine < ActiveRecord::Base
 
   # Start / Create a machine
   def start
-    config = create_machine(setting)
+    # config = create_machine(setting)
     self.status = STATUS_AVAILABLE
-    self.ip_address = config[:ip_address]
-    self.specifier = config[:specifier]
+    # self.ip_address = config[:ip_address]
+    # self.specifier = config[:specifier]
     self.save
   end
 
   # Stop / Delete a machine
   def stop
-    stop_machine
+    # stop_machine
     self.status = STATUS_ONPROCESS
     self.student_id = 0
     self.save
@@ -37,5 +37,13 @@ class Machine < ActiveRecord::Base
   def new_machine
     self.start
   end
+
+  # Auto-release a machine
+  # def auto_release(student_id)
+  #  if self.status == CloudToolkit::STATUS_OCCUPIED and self.student_id == student_id
+  #    self.restart
+  #  end
+  # end
+  # handle_asynchronously :auto_release, :run_at => Proc.new { 1.minute.from_now }
 
 end

@@ -69,8 +69,10 @@ class StudentsController < ApplicationController
     end
     machine = Machine.find_by_status CloudToolkit::STATUS_AVAILABLE
     if machine
-      ipaddress = machine.assign @student.id
-      render json: { :address => ipaddress }
+      ip_address = machine.assign @student.id
+      # MachineControlJob.new(machine.id).perform
+      Delayed::Job.enqueue(MachineControlJob.new(machine.id), 100, 1.minute.from_now)
+      render json: { :address => ip_address }
     else
       render json: { :information => "No available machine!"}
     end
