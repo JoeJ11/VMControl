@@ -17,7 +17,7 @@ class StudentsController < ApplicationController
     @student = Student.new
   end
 
-  # GET /students/1/edit
+  # GET /students/1/edismp9t
   def edit
   end
 
@@ -71,12 +71,11 @@ class StudentsController < ApplicationController
     if machine
       ip_address = machine.assign @student.id
       # MachineControlJob.new(machine.id).perform
-      Delayed::Job.enqueue(MachineControlJob.new(machine.id), 100, 1.minute.from_now)
+      Delayed::Job.enqueue(MachineControlJob.new(machine.id), 100, 5.minute.from_now)
       render json: { :address => ip_address }
     else
       render json: { :information => "No available machine!"}
     end
-
   end
 
   # Get /students/1/release

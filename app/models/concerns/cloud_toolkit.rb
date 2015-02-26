@@ -76,7 +76,7 @@ module CloudToolkit
   # Generate a new machine and return machine config info
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
-    # TODO: The usage of YAML file is not clear yet
+    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster',
@@ -126,7 +126,7 @@ module CloudToolkit
 
   # Create a template
   def create_template(settings)
-    # TODO: The usage of YAML file is not clear
+    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster_config',
@@ -168,7 +168,7 @@ module CloudToolkit
 
   # Create image
   def create_image
-    # TODO: Will raise a Python error! DO NOT WORK!
+    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'images',
