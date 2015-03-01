@@ -28,6 +28,7 @@ module CloudToolkit
                         }
                     },
                     :headers => {
+                        'Content-Type' => 'application/json',
                         'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                         'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                     }
@@ -85,6 +86,7 @@ module CloudToolkit
                                'cluster_number' => setting['cluster_number']
                            },
                            :headers => {
+                               'Content-Type' => 'application/json',
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
@@ -130,8 +132,9 @@ module CloudToolkit
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster_config',
-                           :query => {'vms' => settings},
+                           :body => {'vms' => settings}.to_json,
                            :headers => {
+                               'Content-Type' => 'application/json',
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
@@ -179,6 +182,7 @@ module CloudToolkit
                                'members' => []
                            },
                            :headers => {
+                               'Content-Type' => 'application/json',
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
