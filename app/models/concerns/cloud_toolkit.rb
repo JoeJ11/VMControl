@@ -16,25 +16,26 @@ module CloudToolkit
 
     # Authentication
     # Require token if no valid token
+    # Token is useless temporarily
     def require_token(tenant_name)
-      response = HTTParty.post(CloudToolkit::BASE_URL + 'tokens',
-                    :query => {
-                        :auth => {
-                          :tenantName => tenant_name,
-                          :passwordCredentials => {
-                              :username => CloudToolkit::X_AUTH_USER,
-                              :password => CloudToolkit::X_AUTH_KEY
-                          }
-                        }
-                    },
-                    :headers => {
-                        'Content-Type' => 'application/json',
-                        'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-                        'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
-                    }
-      )
-      #response = HTTParty.get('http://localhost:3000/dispatches')
-      return response
+      # response = HTTParty.post(CloudToolkit::BASE_URL + 'tokens',
+      #               :body => {
+      #                   :auth => {
+      #                     :tenantName => tenant_name,
+      #                     :passwordCredentials => {
+      #                         :username => CloudToolkit::X_AUTH_USER,
+      #                         :password => CloudToolkit::X_AUTH_KEY
+      #                     }
+      #                   }
+      #               }.to_json,
+      #               :headers => {
+      #                   'Content-Type' => 'application/json',
+      #                   'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+      #                   'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+      #               }
+      # )
+      # response = HTTParty.get('http://localhost:3000/dispatches')
+      # return response
     end
 
     # List info for all machines
@@ -47,7 +48,7 @@ module CloudToolkit
                               }
       )
       puts response
-      return ['Test Machine']
+      return response['clusters']
     end
 
     # List all templates(configurations)
@@ -61,6 +62,7 @@ module CloudToolkit
                              }
       )
       puts response
+      return response['configs']
     end
   end
 
@@ -81,18 +83,18 @@ module CloudToolkit
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster',
-                           :query => {
+                           :body => {
                                'conf_id' => setting['config_id'],
                                'cluster_number' => setting['cluster_number']
-                           },
+                           }.to_json,
                            :headers => {
-                               'Content-Type' => 'application/json',
+                               'Content-type' => 'application/json',
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
     puts response
-    return {:ip_address => '123.456.789.10', :specifier => 'machine ID'}
+    return {:ip_address => '0.0.0.0', :specifier => response['cluster_id'], :name => response['cluster_name']}
   end
 
   # Stop a machine
@@ -134,7 +136,7 @@ module CloudToolkit
                            CloudToolkit::BASE_URL + 'cluster_config',
                            :body => {'vms' => settings}.to_json,
                            :headers => {
-                               'Content-Type' => 'application/json',
+                               'Content-type' => 'application/json',
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
@@ -175,14 +177,14 @@ module CloudToolkit
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'images',
-                           :query => {
+                           :body => {
                                'tenant-id' => 'WTF',
                                'instance-id' => '220f77d2-49b0-452f-90f8-440b4f29163a',
                                'image-name' => 'test-image',
                                'members' => []
-                           },
+                           }.to_json,
                            :headers => {
-                               'Content-Type' => 'application/json',
+                               'Content-type' => 'application/json',
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }

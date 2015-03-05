@@ -1,5 +1,5 @@
 class ClusterConfigurationsController < ApplicationController
-  before_action :set_cluster_configuration, only: [:show, :edit, :update, :destroy, :new_machine]
+  before_action :set_cluster_configuration, only: [:show, :edit, :update, :destroy, :new_machine, :instantiate]
 
   # GET /cluster_configurations
   # GET /cluster_configurations.json
@@ -26,6 +26,11 @@ class ClusterConfigurationsController < ApplicationController
   # POST /cluster_configurations.json
   def create
     @cluster_configuration = ClusterConfiguration.new(cluster_configuration_params)
+    if cluster_configuration_params['size'].to_i > 0
+      cluster_configuration_params['size'].to_i.times do
+        @cluster_configuration.cluster_templates += [ClusterTemplate.create()]
+      end
+    end
 
     respond_to do |format|
       if @cluster_configuration.save
@@ -66,6 +71,23 @@ class ClusterConfigurationsController < ApplicationController
   def new_machine
     session[:cluster_id] = params[:id]
     redirect_to '/cluster_templates/new'
+  end
+
+  # GET /cluster_configurations/1/instantiate
+  def instantiate
+    settings = []
+    setting = {}
+    @cluster_configuration.cluster_templates.each do |template|
+      setting['name'] = template.name
+      setting['image_id'] = template.image_id
+      setting['flavor_id'] = template.flavor_id
+      setting['internal_ip'] = template.internal_ip
+      setting['external_ip'] = template.external_ip
+      setting['ext_enable'] = template.ext_enable
+      settings += [setting]
+    end
+    @cluster_configuration.create_template settings
+    redirect_to :back
   end
 
 

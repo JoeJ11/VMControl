@@ -2,6 +2,7 @@ VMControl::Application.routes.draw do
   resources :cluster_configurations do
     member do
       get 'new_machine'
+      get 'instantiate'
     end
   end
 
