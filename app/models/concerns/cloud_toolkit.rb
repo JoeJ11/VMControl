@@ -79,7 +79,6 @@ module CloudToolkit
   # Generate a new machine and return machine config info
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
-    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster',
@@ -94,7 +93,8 @@ module CloudToolkit
                            }
     )
     puts response
-    return {:ip_address => '0.0.0.0', :specifier => response['cluster_id'], :name => response['cluster_name']}
+    configs = show_machine response['cluster_id']
+    return {:ip_address => configs['ext_ip'], :specifier => response['cluster_id'], :name => response['cluster_name'], :status => configs['status']}
   end
 
   # Stop a machine
@@ -107,6 +107,19 @@ module CloudToolkit
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                 }
     )
+  end
+
+  # Show the detailed information about a cluster
+  def show_machine(specifier)
+    self.class.require_token @tenant_name
+    response = HTTParty.get(
+                CloudToolkit::BASE_URL + 'cluster/' + specifier,
+                :headers => {
+                    'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                    'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                }
+    )
+    return {'status' => response['status'], 'ext_ip' => response['ext_ip']}
   end
 
   # Delete a machine
@@ -144,6 +157,7 @@ module CloudToolkit
     # self.specifier = response['config_id']
     # self.save
     puts response
+    return {'specifier' => response['config_id']}
   end
 
   # Delete a configuration
@@ -159,10 +173,10 @@ module CloudToolkit
   end
 
   # Show configuration details
-  def show_template
+  def show_template(specifier)
     self.class.require_token @tenant_name
     response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'cluster_config' + self.specifier,
+                CloudToolkit::BASE_URL + 'cluster_config/' + specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY

@@ -7,6 +7,7 @@ class Machine < ActiveRecord::Base
     self.status = STATUS_AVAILABLE
     self.ip_address = config[:ip_address]
     self.specifier = config[:specifier]
+    self.name = config[:name]
     self.save
   end
 

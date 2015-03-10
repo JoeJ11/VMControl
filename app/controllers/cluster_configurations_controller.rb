@@ -80,17 +80,26 @@ class ClusterConfigurationsController < ApplicationController
       return
     end
     settings = []
-    setting = {}
     @cluster_configuration.cluster_templates.each do |template|
-      setting['name'] = template.name
-      setting['image_id'] = template.image_id
-      setting['flavor_id'] = template.flavor_id
-      setting['internal_ip'] = template.internal_ip
-      setting['external_ip'] = template.external_ip
-      setting['ext_enable'] = template.ext_enable
-      settings += [setting]
+      setting = {
+          'name' => template.name,
+          'image_id' => template.image_id,
+          'flavor_id' => template.flavor_id,
+          'internal_ip' => template.internal_ip,
+          'ext_enable' => template.ext_enable,
+      }
+      # setting = {}
+      # setting['name'] = template.name
+      # setting['image_id'] = template.image_id
+      # setting['flavor_id'] = template.flavor_id
+      # setting['internal_ip'] = template.internal_ip
+      # setting['external_ip'] = template.external_ip
+      # setting['ext_enable'] = template.ext_enable
+      settings.push setting
     end
-    #@cluster_configuration.create_template settings
+    response = @cluster_configuration.create_template settings
+    @cluster_configuration.specifier = response['specifier']
+    @cluster_configuration.save
     redirect_to :back , notice: 'Instantiated!'
   end
 
