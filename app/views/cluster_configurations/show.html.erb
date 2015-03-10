@@ -2,7 +2,11 @@
 
 <p>
   <strong>Specifier:</strong>
-  <%= @cluster_configuration.specifier %>
+  <%- if @cluster_configuration.specifier %>
+    <%= @cluster_configuration.specifier%>
+  <%- else %>
+    <%= "*not defined*"%>
+      <%- end %>
 </p>
 
 <p>

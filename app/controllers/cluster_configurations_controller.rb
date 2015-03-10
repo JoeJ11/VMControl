@@ -75,6 +75,10 @@ class ClusterConfigurationsController < ApplicationController
 
   # GET /cluster_configurations/1/instantiate
   def instantiate
+    if @cluster_configuration.bad_int_ips
+      redirect_to :back , notice: 'Invalid ip set (duplicate or illegal)!'
+      return
+    end
     settings = []
     setting = {}
     @cluster_configuration.cluster_templates.each do |template|
@@ -86,8 +90,8 @@ class ClusterConfigurationsController < ApplicationController
       setting['ext_enable'] = template.ext_enable
       settings += [setting]
     end
-    @cluster_configuration.create_template settings
-    redirect_to :back
+    #@cluster_configuration.create_template settings
+    redirect_to :back , notice: 'Instantiated!'
   end
 
 
