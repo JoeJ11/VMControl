@@ -5,6 +5,7 @@
     <tr>
       <th>Specifier</th>
       <th>Size</th>
+      <th>Instantiated</th>
       <th></th>
       <th></th>
       <th></th>
@@ -16,6 +17,7 @@
       <tr>
         <td><%= cluster_configuration.specifier %></td>
         <td><%= cluster_configuration.size %></td>
+        <td><%= cluster_configuration.instantiated %></td>
         <td><%= link_to 'Show', cluster_configuration %></td>
         <td><%= link_to 'Edit', edit_cluster_configuration_path(cluster_configuration) %></td>
         <td><%= link_to 'Destroy', cluster_configuration, method: :delete, data: { confirm: 'Are you sure?' } %></td>
