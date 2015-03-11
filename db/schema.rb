@@ -11,13 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224081134) do
+ActiveRecord::Schema.define(version: 20150311030256) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
     t.integer  "size"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "instantiated"
   end
 
   create_table "cluster_templates", force: true do |t|

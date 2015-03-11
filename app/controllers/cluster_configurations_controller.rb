@@ -26,6 +26,7 @@ class ClusterConfigurationsController < ApplicationController
   # POST /cluster_configurations.json
   def create
     @cluster_configuration = ClusterConfiguration.new(cluster_configuration_params)
+    @cluster_configuration.instantiated = 'false'
     if cluster_configuration_params['size'].to_i > 0
       cluster_configuration_params['size'].to_i.times do
         @cluster_configuration.cluster_templates += [ClusterTemplate.create()]
@@ -79,6 +80,10 @@ class ClusterConfigurationsController < ApplicationController
       redirect_to :back , notice: 'Invalid ip set (duplicate or illegal)!'
       return
     end
+    if @cluster_configuration.instantiated == 'true'
+      redirect_to :back, notice: 'This configuration has already been instantiated!'
+      return
+    end
     settings = []
     @cluster_configuration.cluster_templates.each do |template|
       setting = {
@@ -97,8 +102,9 @@ class ClusterConfigurationsController < ApplicationController
       # setting['ext_enable'] = template.ext_enable
       settings.push setting
     end
-    response = @cluster_configuration.create_template settings
-    @cluster_configuration.specifier = response['specifier']
+    #response = @cluster_configuration.create_template settings
+    #@cluster_configuration.specifier = response['specifier']
+    @cluster_configuration.instantiated = 'true'
     @cluster_configuration.save
     redirect_to :back , notice: 'Instantiated!'
   end
