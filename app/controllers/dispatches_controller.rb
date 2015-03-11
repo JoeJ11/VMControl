@@ -30,16 +30,12 @@ class DispatchesController < ApplicationController
 
   def create
     @machine = Machine.new()
-    # @machine.ip_address = params[:machines][:ip_address]
-    @machine.setting = params[:machines][:setting]
-    @machine.group = params[:machines][:group]
+    @machine.setting = params[:machine][:setting]
     @machine.status = Machine::STATUS_OCCUPIED
-    #@machine.set_tenant_name params[:machines][:tenant_name]
-
-    @machine.new_machine
 
     respond_to do |format|
       if @machine.save
+        @machine.start
         format.html {redirect_to :back, notice: "Machine Created!"}
       else
         format.html {redirect_to :back, notice: "Error! Machine Creation Failed!"}
