@@ -84,33 +84,7 @@ class ClusterConfigurationsController < ApplicationController
       redirect_to :back, notice: 'This configuration has already been instantiated!'
       return
     end
-    settings = []
-    @cluster_configuration.cluster_templates.each do |template|
-      setting = {
-          'name' => template.name,
-          'image_id' => template.image_id,
-          'flavor_id' => template.flavor_id,
-          'internal_ip' => template.internal_ip,
-          'ext_enable' => template.ext_enable,
-      }
-      # setting = {}
-      # setting['name'] = template.name
-      # setting['image_id'] = template.image_id
-      # setting['flavor_id'] = template.flavor_id
-      # setting['internal_ip'] = template.internal_ip
-      # setting['external_ip'] = template.external_ip
-      # setting['ext_enable'] = template.ext_enable
-      settings.push setting
-    end
-    response = @cluster_configuration.create_template settings
-    if response[:error]
-      redirect_to :back , notice: response[:error]
-      return
-    end
-    @cluster_configuration.specifier = response['specifier']
-    #@cluster_configuration.specifier = rand(36 ** 10).to_s(36)
-    @cluster_configuration.instantiated = 'true'
-    @cluster_configuration.save
+    @cluster_configuration.instantiate
     redirect_to :back , notice: 'Instantiated!'
   end
 

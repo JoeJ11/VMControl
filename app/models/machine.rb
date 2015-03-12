@@ -5,8 +5,12 @@ class Machine < ActiveRecord::Base
   def start
     setting = {'config_id' => self.setting, 'cluster_number' => 1}
     config = create_machine setting
-    self.status = STATUS_AVAILABLE
-    self.ip_address = config[:ip_address]
+    unless config['status'] == 'CREATE_COMPLETE'
+      self.status = STATUS_AVAILABLE
+      self.ip_address = config[:ip_address]
+    else
+      self.status = STATUS_ERROR
+    end
     self.save
   end
 

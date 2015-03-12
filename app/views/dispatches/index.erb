@@ -24,6 +24,8 @@
           <td>Occupied</td>
       <% elsif machine.status == CloudToolkit::STATUS_ONPROCESS %>
           <td>On Progress</td>
+      <% elsif machine.status == CloudToolkit::STATUS_ERROR %>
+          <td>Error!</td>
       <% else %>
           <td>Undefined</td>
       <% end %>
