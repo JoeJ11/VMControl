@@ -3,11 +3,10 @@ class Machine < ActiveRecord::Base
 
   # Start / Create a machine
   def start
-    config = create_machine(setting)
+    setting = {'config_id' => self.setting, 'cluster_number' => 1}
+    config = create_machine setting
     self.status = STATUS_AVAILABLE
     self.ip_address = config[:ip_address]
-    self.specifier = config[:specifier]
-    self.name = config[:name]
     self.save
   end
 
@@ -37,6 +36,9 @@ class Machine < ActiveRecord::Base
   # Not used now!
   def new_machine
     self.start
+  end
+
+  def check_setting_valid
   end
 
   # Auto-release a machine

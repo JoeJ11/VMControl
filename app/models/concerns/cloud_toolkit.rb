@@ -95,8 +95,9 @@ module CloudToolkit
                            }
     )
     puts response
-    configs = show_machine response['cluster_id']
-    return {:ip_address => configs['ext_ip'], :specifier => response['cluster_id'], :name => response['cluster_name'], :status => configs['status']}
+    self.specifier = response['clusters'][0]['cluster_id']
+    configs = self.show_machine
+    return {:ip_address => configs['ext_ip'], :status => configs['status']}
   end
 
   # Stop a machine
@@ -112,10 +113,10 @@ module CloudToolkit
   end
 
   # Show the detailed information about a cluster
-  def show_machine(specifier)
+  def show_machine
     self.class.require_token @tenant_name
     response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'cluster/' + specifier,
+                CloudToolkit::BASE_URL + 'cluster/' + self.specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
@@ -177,10 +178,10 @@ module CloudToolkit
   end
 
   # Show configuration details
-  def show_template(specifier)
+  def show_template
     self.class.require_token @tenant_name
     response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'cluster_config/' + specifier,
+                CloudToolkit::BASE_URL + 'cluster_config/' + self.specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
