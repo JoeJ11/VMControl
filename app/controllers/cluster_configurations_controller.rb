@@ -102,8 +102,12 @@ class ClusterConfigurationsController < ApplicationController
       # setting['ext_enable'] = template.ext_enable
       settings.push setting
     end
-    #response = @cluster_configuration.create_template settings
-    #@cluster_configuration.specifier = response['specifier']
+    response = @cluster_configuration.create_template settings
+    if response[:error]
+      redirect_to :back , notice: response[:error]
+      return
+    end
+    @cluster_configuration.specifier = response['specifier']
     @cluster_configuration.instantiated = 'true'
     @cluster_configuration.save
     redirect_to :back , notice: 'Instantiated!'

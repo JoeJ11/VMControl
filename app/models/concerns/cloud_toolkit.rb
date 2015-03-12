@@ -49,6 +49,8 @@ module CloudToolkit
       )
       puts response
       return response['clusters']
+    rescue => exception
+      redirect_to :back, notice: exception.message
     end
 
     # List all templates(configurations)
@@ -158,6 +160,8 @@ module CloudToolkit
     # self.save
     puts response
     return {'specifier' => response['config_id']}
+  rescue => exception
+    return {:error => exception.message}
   end
 
   # Delete a configuration

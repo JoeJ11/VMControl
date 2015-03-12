@@ -14,7 +14,7 @@
     <%= f.text_field :group %>
 
     <%= f.label :setting %>
-    <%= f.text_field :setting %>
+    <%= f.select :setting, ClusterConfiguration.all.collect { |c| c.specifier}%>
 
     <%= f.submit 'Save' %>
 
