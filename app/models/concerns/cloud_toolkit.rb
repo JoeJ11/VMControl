@@ -3,6 +3,7 @@ module CloudToolkit
   STATUS_OCCUPIED = 0
   STATUS_AVAILABLE = 1
   STATUS_ONPROCESS = 2
+  STATUS_ERROR = 3
   X_AUTH_USER = 'andyjvan@gmail.com'
   X_AUTH_KEY = 'pass4test'
   BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
@@ -92,10 +93,15 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
+    puts 'Returned Packet: '
     puts response
-    self.specifier = response['clusters'][0]['cluster_id']
-    configs = self.show_machine
-    return {:ip_address => configs['ext_ip'], :status => configs['status']}
+    if response['clusters']
+      self.specifier = response['clusters'][0]['cluster_id']
+      configs = self.show_machine
+      return {:ip_address => configs['ext_ip'], :status => configs['status']}
+    else
+      return {:ip_address => 'N/A', :status => 'CREATION FAILED'}
+    end
   end
 
   # Stop a machine
@@ -158,7 +164,7 @@ module CloudToolkit
     # self.specifier = response['config_id']
     # self.save
     puts response
-    return {'specifier' => response['config_id']}
+    return response['config_id']
   end
 
   # Delete a configuration

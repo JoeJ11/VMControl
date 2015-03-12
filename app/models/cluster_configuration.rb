@@ -15,4 +15,22 @@ class ClusterConfiguration < ActiveRecord::Base
     end
     return flag
   end
+
+  def instantiate
+    settings = []
+    cluster_templates.each do |template|
+      setting = {
+          'name' => template.name,
+          'image_id' => template.image_id,
+          'flavor_id' => template.flavor_id,
+          'internal_ip' => template.internal_ip,
+          'ext_enable' => template.ext_enable,
+      }
+      settings.push setting
+    end
+    self.specifier = create_template settings
+    self.instantiated = 'true'
+    self.save
+  end
+
 end
