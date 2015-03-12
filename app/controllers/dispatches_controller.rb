@@ -10,6 +10,12 @@ class DispatchesController < ApplicationController
 
   def new
     @machine = Machine.new
+    @available_cluster_configs = []
+    ClusterConfiguration.all.each do |p|
+      if p.instantiated == 'true'
+        @available_cluster_configs.push p.specifier
+      end
+    end
   end
 
   def stop

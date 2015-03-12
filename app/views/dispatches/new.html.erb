@@ -11,7 +11,7 @@
     <%end%>
 
     <%= f.label :setting %>
-    <%= f.select :setting, ClusterConfiguration.all.collect { |c| c.specifier}%>
+    <%= f.select :setting, @available_cluster_configs %>
 
     <%= f.submit 'Save' %>
 

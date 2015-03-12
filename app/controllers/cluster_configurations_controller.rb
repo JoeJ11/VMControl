@@ -108,6 +108,7 @@ class ClusterConfigurationsController < ApplicationController
       return
     end
     @cluster_configuration.specifier = response['specifier']
+    #@cluster_configuration.specifier = rand(36 ** 10).to_s(36)
     @cluster_configuration.instantiated = 'true'
     @cluster_configuration.save
     redirect_to :back , notice: 'Instantiated!'
