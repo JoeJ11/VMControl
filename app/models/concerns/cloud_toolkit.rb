@@ -67,6 +67,11 @@ module CloudToolkit
       puts response
       return response['configs']
     end
+
+    # Check if given username is registered
+    def check_username(user_name)
+      # TODO: Username checking part
+    end
   end
 
   # Do nothing but add class variable @tenant_name
