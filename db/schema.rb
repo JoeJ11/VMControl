@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150311030256) do
+ActiveRecord::Schema.define(version: 20150315160954) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20150311030256) do
     t.integer "student_id"
     t.string  "group"
     t.string  "specifier"
+    t.string  "user_name"
   end
 
   add_index "machines", ["student_id"], name: "index_machines_on_student_id"
