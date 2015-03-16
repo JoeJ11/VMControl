@@ -31,15 +31,15 @@ class Machine < ActiveRecord::Base
   # Assign a machine to a student
   def assign (user_name)
     unless /(.+)@(.+)\.(.+)/.match(user_name)
-      return "Not an email!"
+      return {error: "Not an email!"}
     end
     unless validate_user(user_name)
-      return "Email not valid!"
+      return {error: "Email not valid!"}
     end
     self.user_name = user_name
     self.status = STATUS_OCCUPIED
     self.save
-    self.ip_address
+    {external_ip: self.ip_address}
   end
 
   # Create a machine

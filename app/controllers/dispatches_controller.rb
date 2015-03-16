@@ -59,11 +59,7 @@ class DispatchesController < ApplicationController
   def assign
     user_name = params[:user_name]
     flag = @machine.assign user_name
-    if /[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/.match(flag)
-      render json: {external_ip: flag}
-    else
-      render json: {error: flag}
-    end
+    render json: flag
   end
 
 end
