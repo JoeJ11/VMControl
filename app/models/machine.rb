@@ -29,11 +29,17 @@ class Machine < ActiveRecord::Base
   end
 
   # Assign a machine to a student
-  def assign (student_id)
-    self.student_id = student_id
+  def assign (user_name)
+    unless /(.+)@(.+)\.(.+)/.match(user_name)
+      return "Not an email!"
+    end
+    unless validate_user(user_name)
+      return "Email not valid!"
+    end
+    self.user_name = user_name
     self.status = STATUS_OCCUPIED
     self.save
-    return self.ip_address
+    self.ip_address
   end
 
   # Create a machine

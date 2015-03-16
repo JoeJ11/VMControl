@@ -260,4 +260,8 @@ module CloudToolkit
     puts response
   end
 
+  # mocked method
+  def validate_user(user_name)
+    true
+  end
 end

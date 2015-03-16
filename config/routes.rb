@@ -26,6 +26,7 @@ VMControl::Application.routes.draw do
       get 'progress'
       get 'start'
       get 'stop'
+      post 'assign'
     end
   end
   # get 'dispatches/list'
