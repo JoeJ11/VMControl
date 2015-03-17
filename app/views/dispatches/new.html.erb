@@ -13,6 +13,9 @@
     <%= f.label :setting %>
     <%= f.select :setting, @available_cluster_configs %>
 
+    <%= f.label :group %>
+    <%= f.text_field :group %>
+
     <%= f.submit 'Save' %>
 
 <%end%>

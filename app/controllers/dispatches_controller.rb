@@ -37,6 +37,7 @@ class DispatchesController < ApplicationController
   def create
     @machine = Machine.new()
     @machine.setting = params[:machine][:setting]
+    @machine.group = params[:machine][:group]
     @machine.status = Machine::STATUS_OCCUPIED
 
     respond_to do |format|
