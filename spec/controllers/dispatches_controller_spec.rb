@@ -24,11 +24,13 @@ RSpec.describe DispatchesController, :type => :controller do
   # Dispatch. As you add validations to Dispatch, be sure to
   # adjust the attributes here as well.
   let(:valid_attributes) {
-    skip("Add a hash of attributes valid for your model")
+    {
+      :setting => 'fake_setting',
+      :group => 'fake_group'
+    }
   }
 
   let(:invalid_attributes) {
-    skip("Add a hash of attributes invalid for your model")
   }
 
   # This should return the minimal set of values that should be in the session
@@ -37,112 +39,117 @@ RSpec.describe DispatchesController, :type => :controller do
   let(:valid_session) { {} }
 
   describe "GET index" do
-    it "assigns all dispatches as @dispatches" do
-      dispatch = Dispatch.create! valid_attributes
+    it "assigns all machines as @machines" do
+      machine = Machine.create! valid_attributes
       get :index, {}, valid_session
-      expect(assigns(:dispatches)).to eq([dispatch])
+      expect(assigns(:machines)).to eq([machine])
     end
   end
 
-  describe "GET show" do
-    it "assigns the requested dispatch as @dispatch" do
-      dispatch = Dispatch.create! valid_attributes
-      get :show, {:id => dispatch.to_param}, valid_session
-      expect(assigns(:dispatch)).to eq(dispatch)
-    end
-  end
+  # describe "GET show" do
+  #   it "assigns the requested dispatch as @dispatch" do
+  #     dispatch = Dispatch.create! valid_attributes
+  #     get :show, {:id => dispatch.to_param}, valid_session
+  #     expect(assigns(:dispatch)).to eq(dispatch)
+  #   end
+  # end
 
   describe "GET new" do
-    it "assigns a new dispatch as @dispatch" do
+    it "assigns a new machine as @machine" do
       get :new, {}, valid_session
-      expect(assigns(:dispatch)).to be_a_new(Dispatch)
+      expect(assigns(:machine)).to be_a_new(Machine)
     end
   end
 
-  describe "GET edit" do
-    it "assigns the requested dispatch as @dispatch" do
-      dispatch = Dispatch.create! valid_attributes
-      get :edit, {:id => dispatch.to_param}, valid_session
-      expect(assigns(:dispatch)).to eq(dispatch)
-    end
-  end
+  # describe "GET edit" do
+  #   it "assigns the requested dispatch as @dispatch" do
+  #     dispatch = Dispatch.create! valid_attributes
+  #     get :edit, {:id => dispatch.to_param}, valid_session
+  #     expect(assigns(:dispatch)).to eq(dispatch)
+  #   end
+  # end
 
   describe "POST create" do
+    before :each do
+      request.env["HTTP_REFERER"] = 'where_i_came_from'
+      Machine.any_instance.stub(:start).and_return(true)
+    end
+
     describe "with valid params" do
-      it "creates a new Dispatch" do
+      it "creates a new Machine" do
         expect {
-          post :create, {:dispatch => valid_attributes}, valid_session
-        }.to change(Dispatch, :count).by(1)
+          post :create, {:machine => valid_attributes}, valid_session
+        }.to change(Machine, :count).by(1)
       end
 
-      it "assigns a newly created dispatch as @dispatch" do
-        post :create, {:dispatch => valid_attributes}, valid_session
-        expect(assigns(:dispatch)).to be_a(Dispatch)
-        expect(assigns(:dispatch)).to be_persisted
+      it "assigns a newly created machine as @machine" do
+        post :create, {:machine => valid_attributes}, valid_session
+        expect(assigns(:machine)).to be_a(Machine)
+        expect(assigns(:machine)).to be_persisted
       end
 
-      it "redirects to the created dispatch" do
-        post :create, {:dispatch => valid_attributes}, valid_session
-        expect(response).to redirect_to(Dispatch.last)
+      it "redirects back" do
+        post :create, {:machine => valid_attributes}, valid_session
+        expect(response).to redirect_to 'where_i_came_from'
       end
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved dispatch as @dispatch" do
-        post :create, {:dispatch => invalid_attributes}, valid_session
-        expect(assigns(:dispatch)).to be_a_new(Dispatch)
-      end
+    # describe "with invalid params" do
+    #  it "assigns a newly created but unsaved machine as @machine" do
+    #    post :create, {:machine => invalid_attributes}, valid_session
+    #    expect(assigns(:machine)).to be_a_new(Machine)
+    #  end
 
-      it "re-renders the 'new' template" do
-        post :create, {:dispatch => invalid_attributes}, valid_session
-        expect(response).to render_template("new")
-      end
-    end
+    #  it "re-renders the 'new' template" do
+    #    post :create, {:machine => invalid_attributes}, valid_session
+    #    expect(response).to render_template("new")
+    #  end
+    # end
   end
 
-  describe "PUT update" do
-    describe "with valid params" do
-      let(:new_attributes) {
-        skip("Add a hash of attributes valid for your model")
-      }
+  # describe "PUT update" do
+  #   describe "with valid params" do
+  #     let(:new_attributes) {
+  #       skip("Add a hash of attributes valid for your model")
+  #     }
 
-      it "updates the requested dispatch" do
-        dispatch = Dispatch.create! valid_attributes
-        put :update, {:id => dispatch.to_param, :dispatch => new_attributes}, valid_session
-        dispatch.reload
-        skip("Add assertions for updated state")
-      end
+  #     it "updates the requested dispatch" do
+  #       dispatch = Dispatch.create! valid_attributes
+  #       put :update, {:id => dispatch.to_param, :dispatch => new_attributes}, valid_session
+  #       dispatch.reload
+  #       skip("Add assertions for updated state")
+  #    end
 
-      it "assigns the requested dispatch as @dispatch" do
-        dispatch = Dispatch.create! valid_attributes
-        put :update, {:id => dispatch.to_param, :dispatch => valid_attributes}, valid_session
-        expect(assigns(:dispatch)).to eq(dispatch)
-      end
+  #     it "assigns the requested dispatch as @dispatch" do
+  #       dispatch = Dispatch.create! valid_attributes
+  #       put :update, {:id => dispatch.to_param, :dispatch => valid_attributes}, valid_session
+  #       expect(assigns(:dispatch)).to eq(dispatch)
+  #     end
 
-      it "redirects to the dispatch" do
-        dispatch = Dispatch.create! valid_attributes
-        put :update, {:id => dispatch.to_param, :dispatch => valid_attributes}, valid_session
-        expect(response).to redirect_to(dispatch)
-      end
-    end
+  #     it "redirects to the dispatch" do
+  #       dispatch = Dispatch.create! valid_attributes
+  #       put :update, {:id => dispatch.to_param, :dispatch => valid_attributes}, valid_session
+  #       expect(response).to redirect_to(dispatch)
+  #     end
+  #   end
 
-    describe "with invalid params" do
-      it "assigns the dispatch as @dispatch" do
-        dispatch = Dispatch.create! valid_attributes
-        put :update, {:id => dispatch.to_param, :dispatch => invalid_attributes}, valid_session
-        expect(assigns(:dispatch)).to eq(dispatch)
-      end
+  # describe "with invalid params" do
+  #     it "assigns the dispatch as @dispatch" do
+  #       dispatch = Dispatch.create! valid_attributes
+  #       put :update, {:id => dispatch.to_param, :dispatch => invalid_attributes}, valid_session
+  #       expect(assigns(:dispatch)).to eq(dispatch)
+  #     end
 
-      it "re-renders the 'edit' template" do
-        dispatch = Dispatch.create! valid_attributes
-        put :update, {:id => dispatch.to_param, :dispatch => invalid_attributes}, valid_session
-        expect(response).to render_template("edit")
-      end
-    end
-  end
+  #     it "re-renders the 'edit' template" do
+  #       dispatch = Dispatch.create! valid_attributes
+  #       put :update, {:id => dispatch.to_param, :dispatch => invalid_attributes}, valid_session
+  #       expect(response).to render_template("edit")
+  #     end
+  #   end
+  # end
 
   describe "DELETE destroy" do
-    it "destroys the requested dispatch" do
+    it "destroys the requested machine" do
       dispatch = Dispatch.create! valid_attributes
       expect {
         delete :destroy, {:id => dispatch.to_param}, valid_session
