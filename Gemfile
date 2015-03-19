@@ -42,6 +42,10 @@ gem 'daemons'
 # Use rspec tests for rails
 gem 'rspec-rails', :group => [:development, :test]
 
+# Use autotest
+gem 'ZenTest', '~> 4.4.2'
+gem 'autotest-rails', '~> 4.1.0'
+
 # Use Cucumber tests for rails
 group :test do
   gem 'cucumber-rails', :require => false
