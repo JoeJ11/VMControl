@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @experiment.name %>
+</p>
+
+<p>
+  <strong>Cluster configuration:</strong>
+  <%= @experiment.cluster_configuration %>
+</p>
+
+<p>
+  <strong>Course:</strong>
+  <%= @experiment.course %>
+</p>
+
+<%= link_to 'Edit', edit_experiment_path(@experiment) %> |
+<%= link_to 'Back', experiments_path %>

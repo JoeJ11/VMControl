@@ -1,0 +1,31 @@
+<h1>Listing experiments</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Cluster configuration</th>
+      <th>Course</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @experiments.each do |experiment| %>
+      <tr>
+        <td><%= experiment.name %></td>
+        <td><%= experiment.cluster_configuration %></td>
+        <td><%= experiment.course %></td>
+        <td><%= link_to 'Show', experiment %></td>
+        <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+        <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Experiment', new_experiment_path %>

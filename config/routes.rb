@@ -1,4 +1,6 @@
 VMControl::Application.routes.draw do
+  resources :experiments
+
   resources :courses
 
   resources :cluster_configurations do
