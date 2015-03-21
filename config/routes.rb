@@ -1,4 +1,6 @@
 VMControl::Application.routes.draw do
+  resources :courses
+
   resources :cluster_configurations do
     member do
       get 'new_machine'

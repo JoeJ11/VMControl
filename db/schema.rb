@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150315160954) do
+ActiveRecord::Schema.define(version: 20150321154248) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
@@ -35,6 +35,13 @@ ActiveRecord::Schema.define(version: 20150315160954) do
   end
 
   add_index "cluster_templates", ["cluster_configuration_id"], name: "index_cluster_templates_on_cluster_configuration_id"
+
+  create_table "courses", force: true do |t|
+    t.string   "name"
+    t.string   "teacher"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "delayed_jobs", force: true do |t|
     t.integer  "priority",   default: 0, null: false
