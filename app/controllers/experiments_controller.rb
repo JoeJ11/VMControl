@@ -1,5 +1,5 @@
 class ExperimentsController < ApplicationController
-  before_action :set_experiment, only: [:show, :edit, :update, :destroy]
+  before_action :set_experiment, only: [:show, :edit, :update, :destroy, :start, :stop]
 
   # GET /experiments
   # GET /experiments.json
@@ -58,6 +58,34 @@ class ExperimentsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to experiments_url }
       format.json { head :no_content }
+    end
+  end
+
+  # GET /experiments/1/start
+  # GET /experiments/1/start.json
+  def start
+     respond_to do |format|
+       if @experiment.start
+         format.html { redirect_to :back }
+         format.json { render json: {:status => 'Succeed'}.to_json }
+       else
+         format.html { redirect_to :back }
+         format.html { render json: {:status => 'Fail to update database.'}.to_json }
+       end
+     end
+  end
+
+  # GET /experiments/1/stop
+  # GET /experiments/1/stop.json
+  def stop
+    respond_to do |format|
+      if @experiment.stop
+        format.html { redirect_to :back }
+        format.json { render json: {:status => 'Succeed'}.to_json }
+      else
+        format.html { redirect_to :back }
+        format.html { render json: {:status => 'Fail to update database.'}.to_json }
+      end
     end
   end
 

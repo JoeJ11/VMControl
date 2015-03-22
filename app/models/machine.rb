@@ -1,6 +1,8 @@
 class Machine < ActiveRecord::Base
   include CloudToolkit
 
+  MAXIMUM_MACHINES = 20
+
   # Start / Create a machine
   def start
     setting = {'config_id' => self.setting, 'cluster_number' => 1}

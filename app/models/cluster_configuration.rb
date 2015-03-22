@@ -1,5 +1,7 @@
 class ClusterConfiguration < ActiveRecord::Base
   has_many :cluster_templates
+  has_many :machines
+  has_many :experiments
   include CloudToolkit
 
   def bad_int_ips
