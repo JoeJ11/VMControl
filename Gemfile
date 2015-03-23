@@ -39,6 +39,20 @@ gem 'httparty', '~> 0.13.3'
 gem 'delayed_job_active_record'
 gem 'daemons'
 
+# Use rspec tests for rails
+gem 'rspec-rails', :group => [:development, :test]
+
+# Use autotest
+gem 'ZenTest', '~> 4.4.2'
+gem 'autotest-rails', '~> 4.1.0'
+
+# Use Cucumber tests for rails
+group :test do
+  gem 'cucumber-rails', :require => false
+  # database_cleaner is not required, but highly recommended
+  gem 'database_cleaner'
+end
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
