@@ -15,10 +15,11 @@ class Experiment < ActiveRecord::Base
         :cluster_configuration_id => self.cluster_configuration.id,
         :status => Machine::STATUS_OCCUPIED
     }
-    MACHINE_QUOTA.times do
-      machine = Machine.new(params)
-      machine.start
-    end
+    Delayed::Job.enqueue(MachineCreateJob.new(MACHINE_QUOTA, params))
+    # MACHINE_QUOTA.times do
+    #   machine = Machine.new(params)
+    #   machine.start
+    # end
   end
 
   def stop
