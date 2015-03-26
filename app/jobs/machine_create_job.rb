@@ -1,11 +1,15 @@
-class MachineCreateJob < Struct.new(:num, :params)
+class MachineCreateJob < Struct.new(:params)
 
   def perform
-    config = ClusterConfiguration.find(params[:cluster_configuration_id])
+    config = ClusterConfiguration.find params[:cluster_configuration_id]
     if config and config.machines.size < Machine::MAXIMUM_MACHINES
-      machine = Machine.new(params)
+      new_params = {
+          :setting => config.specifier,
+          :cluster_configuration => config,
+          :status => Machine::STATUS_OCCUPIED
+      }
+      machine = Machine.new(new_params)
       machine.start
-      Delayed::Job.enqueue(MachineCreateJob.new(num-1, params))
     end
   end
 

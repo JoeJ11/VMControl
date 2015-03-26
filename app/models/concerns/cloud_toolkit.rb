@@ -4,8 +4,8 @@ module CloudToolkit
   STATUS_AVAILABLE = 1
   STATUS_ONPROCESS = 2
   STATUS_ERROR = 3
-  X_AUTH_USER = 'andyjvan@gmail.com'
-  X_AUTH_KEY = 'pass4test'
+  X_AUTH_USER = 'thu_mooc@hotmail.com'
+  X_AUTH_KEY = 'pwd4p0wercloud'
   BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
 
   def self.included(base)
@@ -157,7 +157,6 @@ module CloudToolkit
 
   # Create a template
   def create_template(settings)
-    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster_config',
@@ -203,7 +202,6 @@ module CloudToolkit
 
   # Create image
   def create_image
-    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'images',
@@ -238,7 +236,7 @@ module CloudToolkit
   def show_image(specifier)
     self.class.require_token @tenant_name
     response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'images/' +specifier,
+                CloudToolkit::BASE_URL + 'images/' + specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY

@@ -58,8 +58,11 @@ class DispatchesController < ApplicationController
   end
 
   def assign
-    user_name = params[:user_name]
-    flag = @machine.assign user_name
+    info = {
+        :script => params[:script],
+        :user_name => params[:user_name]
+    }
+    flag = @machine.assign info
     render json: flag
   end
 

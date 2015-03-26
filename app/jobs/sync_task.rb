@@ -32,6 +32,6 @@ class SyncTask
   end
 
   def sync_machine
-    
+
   end
 end

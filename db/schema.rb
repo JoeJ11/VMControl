@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150322082357) do
+ActiveRecord::Schema.define(version: 20150326083201) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
@@ -87,10 +87,10 @@ ActiveRecord::Schema.define(version: 20150322082357) do
     t.string  "group"
     t.string  "specifier"
     t.string  "user_name"
-    t.integer "cluster_configuration_id_id"
+    t.integer "cluster_configuration_id"
   end
 
-  add_index "machines", ["cluster_configuration_id_id"], name: "index_machines_on_cluster_configuration_id_id"
+  add_index "machines", ["cluster_configuration_id"], name: "index_machines_on_cluster_configuration_id"
   add_index "machines", ["student_id"], name: "index_machines_on_student_id"
 
   create_table "students", force: true do |t|

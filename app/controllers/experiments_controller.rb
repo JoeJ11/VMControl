@@ -97,6 +97,9 @@ class ExperimentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def experiment_params
-      params.require(:experiment).permit(:name, :cluster_configuration_id, :course_id)
+      tem = params.require(:experiment).permit(:name, :cluster_configuration, :course)
+      tem[:cluster_configuration] = ClusterConfiguration.find tem[:cluster_configuration].to_i
+      tem[:course] = Course.find tem[:course]
+      return tem
     end
 end

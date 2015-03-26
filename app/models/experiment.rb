@@ -5,17 +5,17 @@ class Experiment < ActiveRecord::Base
   STATUS_ONLINE = 1
   STATUS_OFFLINE = 0
 
-  MACHINE_QUOTA = 5
+  MACHINE_QUOTA = 3
 
   def start
     self.status = STATUS_ONLINE
     self.save
     params = {
-        :setting => self.cluster_configuration.specifier,
-        :cluster_configuration_id => self.cluster_configuration.id,
-        :status => Machine::STATUS_OCCUPIED
+        :cluster_configuration_id => self.cluster_configuration_id
     }
-    Delayed::Job.enqueue(MachineCreateJob.new(MACHINE_QUOTA, params))
+    MACHINE_QUOTA.times do
+      Delayed::Job.enqueue(MachineCreateJob.new(params))
+    end
     # MACHINE_QUOTA.times do
     #   machine = Machine.new(params)
     #   machine.start
