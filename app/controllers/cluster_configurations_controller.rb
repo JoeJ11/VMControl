@@ -29,7 +29,7 @@ class ClusterConfigurationsController < ApplicationController
     @cluster_configuration.instantiated = 'false'
     if cluster_configuration_params['size'].to_i > 0
       cluster_configuration_params['size'].to_i.times do
-        @cluster_configuration.cluster_templates += [ClusterTemplate.create()]
+        @cluster_configuration.cluster_templates += [ClusterTemplate.create]
       end
     end
 

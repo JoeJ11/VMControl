@@ -33,6 +33,14 @@ VMControl::Application.routes.draw do
       post 'assign'
     end
   end
+
+  namespace :api do
+    resources :cluster_configurations do
+      collection do
+        get 'testpost'
+      end
+    end
+  end
   # get 'dispatches/list'
   # get 'dispatches/new'
   # get 'dispatches/stop'
