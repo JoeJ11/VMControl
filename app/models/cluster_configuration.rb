@@ -1,13 +1,16 @@
 class ClusterConfiguration < ActiveRecord::Base
   has_many :cluster_templates
+  has_many :machines
+  has_many :experiments
   include CloudToolkit
 
   def bad_int_ips
+    return false
     int_ips = []
     flag = false
     self.cluster_templates.each do |template|
       int_ip = template.internal_ip
-      int_ips += [int_ip]
+      int_ips += [int_ip] if int_ip
       if int_ips.uniq != int_ips or template.has_bad_int_ip
         flag = true
         break

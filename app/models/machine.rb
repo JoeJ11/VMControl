@@ -1,5 +1,8 @@
 class Machine < ActiveRecord::Base
   include CloudToolkit
+  belongs_to :cluster_configuration
+
+  MAXIMUM_MACHINES = 20
 
   # Start / Create a machine
   def start
@@ -29,7 +32,8 @@ class Machine < ActiveRecord::Base
   end
 
   # Assign a machine to a student
-  def assign (user_name)
+  def assign (info)
+    user_name = info[:user_name]
     unless /(.+)@(.+)\.(.+)/.match(user_name)
       return {error: "Not an email!"}
     end
@@ -39,6 +43,14 @@ class Machine < ActiveRecord::Base
     self.user_name = user_name
     self.status = STATUS_OCCUPIED
     self.save
+
+    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
+    params = {
+        :setting => self.cluster_configuration.specifier,
+        :cluster_configuration_id => self.cluster_configuration.id,
+        :status => STATUS_OCCUPIED
+    }
+    Delayed::Job.enqueue(MachineCreateJob.new(1, params))
     {external_ip: self.ip_address}
   end
 
