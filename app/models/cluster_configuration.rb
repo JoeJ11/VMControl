@@ -36,4 +36,14 @@ class ClusterConfiguration < ActiveRecord::Base
     self.save
   end
 
+  def machine_number
+    number = 0
+    machines.each do |machine|
+      unless machine.status == Machine::STATUS_ERROR
+        number += 1
+      end
+    end
+    return number
+  end
+
 end

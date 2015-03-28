@@ -8,7 +8,7 @@ class Machine < ActiveRecord::Base
   def start
     setting = {'config_id' => self.setting, 'cluster_number' => 1}
     config = create_machine setting
-    unless config['status'] == 'CREATE_COMPLETE'
+    if config['status'] == 'CREATE_COMPLETE'
       self.status = STATUS_AVAILABLE
       self.ip_address = config[:ip_address]
     else

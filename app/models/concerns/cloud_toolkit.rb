@@ -100,7 +100,6 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
-    puts 'Returned Packet: '
     puts response
     if response['clusters']
       self.specifier = response['clusters'][0]['cluster_id']
