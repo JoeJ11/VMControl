@@ -58,12 +58,16 @@ class DispatchesController < ApplicationController
   end
 
   def assign
-    info = {
-        :script => params[:script],
-        :user_name => params[:user_name]
-    }
-    flag = @machine.assign info
-    render json: flag
+    machine_apply_params = params.require(:cluster_configuration).permit(:pub_key, :pri_key, :user_name, :exp_name, :params)
+    exp = Experiment.find_last_by_name(machine_apply_params[:exp_name])
+    machine = nil
+    exp.cluster_configuration.machines.each do |m|
+      if m.status == CloudToolkit::STATUS_AVAILABLE
+        machine = m
+      end
+    end
+    rtn = machine ? machine.assign(machine_apply_params) : 'No available machines now.'
+    render json: {notice: rtn}
   end
 
 end

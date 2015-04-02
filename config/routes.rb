@@ -30,12 +30,12 @@ VMControl::Application.routes.draw do
     collection do
       get 'list'
       get 'service'
+      post 'assign'
     end
     member do
       get 'progress'
       get 'start'
       get 'stop'
-      post 'assign'
     end
   end
 
