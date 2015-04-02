@@ -25,7 +25,18 @@ class Experiment < ActiveRecord::Base
   def stop
     self.status = STATUS_OFFLINE
     self.save
-    Delayed::Job.enqueue(MachineDeleteJob.new(self.cluster_configuration_id))
+
+    machines = self.cluster_configuration.machines
+    tem_number = self.cluster_configuration.machine_number
+    tem_limit = MACHINE_QUOTA * (self.cluster_configuration.experiments.size)
+    machines.each do |machine|
+      if machine.status == Machine::STATUS_ERROR
+        Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
+      elsif tem_number > tem_limit and machine.status == Machine::STATUS_AVAILABLE
+        Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
+        tem_number = tem_number - 1
+      end
+    end
   end
 
 end
