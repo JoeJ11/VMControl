@@ -41,32 +41,4 @@ class Api::ClusterConfigurationsController < ApplicationController
     @cc = ClusterConfiguration.find(params[:id])
   end
 
-  def testpost
-    response = HTTParty.post(
-        'http://localhost:3000/api/cluster_configurations',
-        :body => {
-            size: '2',
-            templates: [
-                {
-                    name: 'master',
-                    image_id: '12',
-                    flavor_id: 'dd',
-                    internal_ip: '10.2.2.32'
-                },
-                {
-                    name: 'slave',
-                    image_id: '23',
-                    flavor_id: '22',
-                    internal_ip: '10.2.2.33'
-                }
-            ]
-        }.to_json,
-        :headers => {
-            'Content-type' => 'application/json',
-            'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-            'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
-        }
-    )
-    render json: response
-  end
 end
