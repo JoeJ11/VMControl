@@ -39,6 +39,9 @@ gem 'httparty', '~> 0.13.3'
 gem 'delayed_job_active_record'
 gem 'daemons'
 
+# Use Open4
+gem 'open4'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

@@ -40,6 +40,8 @@ class Machine < ActiveRecord::Base
     unless validate_user(user_name)
       return {error: "Email not valid!"}
     end
+    setup_environment info
+
     self.user_name = user_name
     self.status = STATUS_OCCUPIED
     self.save
@@ -63,8 +65,35 @@ class Machine < ActiveRecord::Base
   def check_setting_valid
   end
 
-  def setup_environment user_script
+  def setup_environment info
+    set_uo_keys info
+    execute_playbook cluster_configuration.name, ip_address
+  end
 
+  def set_uo_keys info
+    public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
+    public_key.write(info[:pub_key])
+    public_key.close()
+    private_key = open(Rails.root.join('playbook', 'tmp', 'pri_key'), 'w')
+    private_key.write(info[:pri_key])
+    private_key.close()
+  end
+
+  def execute_playbook name, ip_address
+    base_address = Rails.root.join('playbook').to_s
+    cmd = 'ansible-playbook '
+    cmd += '-i ' + base_address + '/hosts '
+    cmd += base_address + '/playbooks/' + name + '.yml '
+    cmd += '-e ' + 'host=' + ip_address
+    puts cmd
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts('cd ' + Rails.root.join('playbook').to_s)
+      stdin.puts(cmd)
+      stdin.close
+
+      puts stdout.read.strip
+      puts stderr.read.strip
+    end
   end
   # Auto-release a machine
   # def auto_release(student_id)
