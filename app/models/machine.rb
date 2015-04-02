@@ -63,6 +63,9 @@ class Machine < ActiveRecord::Base
   def check_setting_valid
   end
 
+  def setup_environment user_script
+
+  end
   # Auto-release a machine
   # def auto_release(student_id)
   #  if self.status == CloudToolkit::STATUS_OCCUPIED and self.student_id == student_id
