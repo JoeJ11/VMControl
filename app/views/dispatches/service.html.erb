@@ -1,2 +1,10 @@
 <h1>Dispatch#service</h1>
 <p>Find me in app/views/dispatch/service.html.erb</p>
+<%= form_tag({controller: :dispatches, action: :assign}, multipart: true) do %>
+    <%= file_field_tag 'pub_key' %>
+    <%= file_field_tag 'pri_key' %>
+    <%= text_field_tag 'user_name' %>
+    <%= text_field_tag 'exp_name' %>
+    <%= text_area_tag 'params' %>
+    <%= submit_tag 'assign' %>
+<% end %>

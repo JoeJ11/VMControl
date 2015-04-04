@@ -5,7 +5,11 @@ class MachineControlJob < Struct.new(:machine_id)
     if machine and machine.status == CloudToolkit::STATUS_OCCUPIED
       machine.stop
       machine.destroy
-      Delayed::Job.enqueue(MachineDeleteJob.new(machine.cluster_configuration.id))
+      machine.cluster_configuration.machines.each do |m|
+        if m.status == CloudToolkit::STATUS_ERROR
+          Delayed::Job.enqueue(MachineDeleteJob.new(m.id))
+        end
+      end
     end
   end
 end

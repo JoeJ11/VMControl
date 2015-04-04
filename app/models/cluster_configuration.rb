@@ -46,4 +46,14 @@ class ClusterConfiguration < ActiveRecord::Base
     return number
   end
 
+  def experiment_number
+    number = 0
+    experiments.each do |exp|
+      if exp.status == Experiment::STATUS_ONLINE
+        number += 1
+      end
+    end
+    return number
+  end
+
 end

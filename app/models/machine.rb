@@ -11,6 +11,8 @@ class Machine < ActiveRecord::Base
     if config['status'] == 'CREATE_COMPLETE'
       self.status = STATUS_AVAILABLE
       self.ip_address = config[:ip_address]
+    elsif config['status'] == 'CREATE_IN_PROGRESS'
+      self.status = STATUS_ONPROCESS
     else
       self.status = STATUS_ERROR
     end
@@ -48,11 +50,9 @@ class Machine < ActiveRecord::Base
 
     Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
     params = {
-        :setting => self.cluster_configuration.specifier,
-        :cluster_configuration_id => self.cluster_configuration.id,
-        :status => STATUS_OCCUPIED
+        :cluster_configuration_id => self.cluster_configuration.id
     }
-    Delayed::Job.enqueue(MachineCreateJob.new(1, params))
+    Delayed::Job.enqueue(MachineCreateJob.new(params))
     {external_ip: self.ip_address}
   end
 
@@ -67,15 +67,15 @@ class Machine < ActiveRecord::Base
 
   def setup_environment info
     set_uo_keys info
-    execute_playbook cluster_configuration.name, ip_address
+    # execute_playbook cluster_configuration.name, ip_address
   end
 
   def set_uo_keys info
     public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
-    public_key.write(info[:pub_key])
+    public_key.write(info[:pub_key].read)
     public_key.close()
     private_key = open(Rails.root.join('playbook', 'tmp', 'pri_key'), 'w')
-    private_key.write(info[:pri_key])
+    private_key.write(info[:pri_key].read)
     private_key.close()
   end
 
@@ -85,13 +85,15 @@ class Machine < ActiveRecord::Base
     cmd += '-i ' + base_address + '/hosts '
     cmd += base_address + '/playbooks/' + name + '.yml '
     cmd += '-e ' + 'host=' + ip_address
-    puts cmd
+    # puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('cd ' + Rails.root.join('playbook').to_s)
       stdin.puts(cmd)
       stdin.close
 
+      puts 'STDOUT:'
       puts stdout.read.strip
+      puts 'STDERR'
       puts stderr.read.strip
     end
   end

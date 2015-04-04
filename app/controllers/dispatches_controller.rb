@@ -58,8 +58,16 @@ class DispatchesController < ApplicationController
   end
 
   def assign
-    machine_apply_params = params.require(:cluster_configuration).permit(:pub_key, :pri_key, :user_name, :exp_name, :params)
-    exp = Experiment.find_last_by_name(machine_apply_params[:exp_name])
+    machine_apply_params = params.permit(:pub_key, :pri_key, :user_name, :exp_name, :params)
+    if machine_apply_params[:pub_key] and machine_apply_params[:pub_key].class == String
+      machine_apply_params[:pub_key] = StringIO.new(machine_apply_params[:pub_key])
+    end
+    if machine_apply_params[:pri_key] and machine_apply_params[:pri_key].class == String
+      machine_apply_params[:pri_key] = StringIO.new(:machine_apply_params[:pri_key])
+    end
+    exp = Experiment.where("name='#{machine_apply_params[:exp_name]}'")
+    exp = exp[0] if exp.size > 0
+    # exp = Experiment.find_last_by_name(machine_apply_params[:exp_name])
     machine = nil
     exp.cluster_configuration.machines.each do |m|
       if m.status == CloudToolkit::STATUS_AVAILABLE
