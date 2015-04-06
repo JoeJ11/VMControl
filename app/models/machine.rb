@@ -67,7 +67,7 @@ class Machine < ActiveRecord::Base
 
   def setup_environment info
     set_uo_keys info
-    execute_playbook cluster_configuration.name, ip_address
+    execute_playbook info[:exp_name], ip_address
   end
 
   def set_uo_keys info
