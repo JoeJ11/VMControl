@@ -7,16 +7,16 @@ class Machine < ActiveRecord::Base
   # Start / Create a machine
   def start
     setting = {'config_id' => self.setting, 'cluster_number' => 1}
-    config = create_machine setting
-    if config['status'] == 'CREATE_COMPLETE'
-      self.status = STATUS_AVAILABLE
-      self.ip_address = config[:ip_address]
-    elsif config['status'] == 'CREATE_IN_PROGRESS'
-      self.status = STATUS_ONPROCESS
-    else
-      self.status = STATUS_ERROR
-    end
-    self.save
+    create_machine setting
+    # if config['status'] == 'CREATE_COMPLETE'
+    #   self.status = STATUS_AVAILABLE
+    #   self.ip_address = config[:ip_address]
+    # elsif config['status'] == 'CREATE_IN_PROGRESS'
+    #   self.status = STATUS_ONPROCESS
+    # else
+    #   self.status = STATUS_ERROR
+    # end
+    # self.save
   end
 
   # Stop / Delete a machine

@@ -83,7 +83,7 @@ module CloudToolkit
                                  'username' => user_name
                              }.to_json
       )
-      if response['code'] == 0
+      if response['code'] == 0 or response['code'] == '0'
         return true
       end
 
@@ -118,6 +118,7 @@ module CloudToolkit
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
     self.class.require_token @tenant_name
+    puts setting
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster',
                            :body => {
