@@ -7,8 +7,7 @@
     <th>IP Address</th>
     <th>Setting</th>
     <th>Status</th>
-    <th>Student ID</th>
-    <th>Group</th>
+    <th>User Name</th>
     <th>Specifier</th>
     <th>Start</th>
     <th>Stop</th>
@@ -30,8 +29,7 @@
       <% else %>
           <td>Undefined</td>
       <% end %>
-      <td><%=machine.student_id%></td>
-      <td><%=machine.group%></td>
+      <td><%=machine.user_name%></td>
       <td><%=machine.specifier%></td>
       <th><%=link_to 'Start', start_dispatch_path(machine.id) %></th>
       <th><%=link_to 'Stop', stop_dispatch_path(machine.id) %></th>

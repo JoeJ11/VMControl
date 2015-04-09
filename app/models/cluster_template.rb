@@ -4,7 +4,7 @@ class ClusterTemplate < ActiveRecord::Base
   def has_bad_int_ip
     ip = self.internal_ip
     if ip == nil
-      return true
+      return false
     end
     if ip.split('.').count != 4
       return true

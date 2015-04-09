@@ -29,7 +29,7 @@ class ClusterConfigurationsController < ApplicationController
     @cluster_configuration.instantiated = 'false'
     if cluster_configuration_params['size'].to_i > 0
       cluster_configuration_params['size'].to_i.times do
-        @cluster_configuration.cluster_templates += [ClusterTemplate.create()]
+        @cluster_configuration.cluster_templates += [ClusterTemplate.create]
       end
     end
 
@@ -61,6 +61,7 @@ class ClusterConfigurationsController < ApplicationController
   # DELETE /cluster_configurations/1
   # DELETE /cluster_configurations/1.json
   def destroy
+    @cluster_configuration.delete_template
     @cluster_configuration.destroy
     respond_to do |format|
       format.html { redirect_to cluster_configurations_url }

@@ -1,4 +1,13 @@
 VMControl::Application.routes.draw do
+  resources :experiments do
+    member do
+      get 'start'
+      get 'stop'
+    end
+  end
+
+  resources :courses
+
   resources :cluster_configurations do
     member do
       get 'new_machine'
@@ -21,12 +30,20 @@ VMControl::Application.routes.draw do
     collection do
       get 'list'
       get 'service'
+      post 'assign'
     end
     member do
       get 'progress'
       get 'start'
       get 'stop'
-      post 'assign'
+    end
+  end
+
+  namespace :api do
+    resources :cluster_configurations do
+      collection do
+        get 'testpost'
+      end
     end
   end
   # get 'dispatches/list'

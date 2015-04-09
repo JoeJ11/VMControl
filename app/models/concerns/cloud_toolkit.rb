@@ -4,8 +4,8 @@ module CloudToolkit
   STATUS_AVAILABLE = 1
   STATUS_ONPROCESS = 2
   STATUS_ERROR = 3
-  X_AUTH_USER = 'andyjvan@gmail.com'
-  X_AUTH_KEY = 'pass4test'
+  X_AUTH_USER = 'thu_mooc@hotmail.com'
+  X_AUTH_KEY = 'pwd4p0wercloud'
   BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
   ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
 
@@ -101,15 +101,15 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
-    puts 'Returned Packet: '
     puts response
     if response['clusters']
+      self.status = STATUS_ONPROCESS
       self.specifier = response['clusters'][0]['cluster_id']
-      configs = self.show_machine
-      return {:ip_address => configs['ext_ip'], :status => configs['status']}
     else
-      return {:ip_address => 'N/A', :status => 'CREATION FAILED'}
+      self.status = STATUS_ERROR
     end
+    self.save
+    Delayed::Job.enqueue(MachineStatusJob.new(self.id), 10, 10.seconds.from_now)
   end
 
   # Stop a machine
@@ -134,7 +134,13 @@ module CloudToolkit
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                 }
     )
-    return {'status' => response['status'], 'ext_ip' => response['ext_ip']}
+    if response['status'] == 'CREATE_IN_PROGRESS' or response['status'] == 'DELETE_IN_PROGRESS'
+      return { :status => STATUS_ONPROCESS }
+    elsif response['status'] == 'CREATE_COMPLETE'
+      return { :status => STATUS_AVAILABLE, :ip_address => response['ext_ip'] }
+    else
+      return { :status => STATUS_ERROR }
+    end
   end
 
   # Delete a machine
@@ -144,7 +150,7 @@ module CloudToolkit
   end
 
   # Get machine status
-  def machine_status (specifier)
+  def machine_status
     self.class.require_token @tenant_name
     response = HTTParty.get(
                            CloudToolkit::BASE_URL + 'cluster/' + self.specifier,
@@ -158,7 +164,6 @@ module CloudToolkit
 
   # Create a template
   def create_template(settings)
-    # TODO: POST will give an internal server error
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster_config',
@@ -238,7 +243,7 @@ module CloudToolkit
   def show_image(specifier)
     self.class.require_token @tenant_name
     response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'images/' +specifier,
+                CloudToolkit::BASE_URL + 'images/' + specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
