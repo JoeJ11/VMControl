@@ -7,16 +7,16 @@ class Machine < ActiveRecord::Base
   # Start / Create a machine
   def start
     setting = {'config_id' => self.setting, 'cluster_number' => 1}
-    config = create_machine setting
-    if config['status'] == 'CREATE_COMPLETE'
-      self.status = STATUS_AVAILABLE
-      self.ip_address = config[:ip_address]
-    elsif config['status'] == 'CREATE_IN_PROGRESS'
-      self.status = STATUS_ONPROCESS
-    else
-      self.status = STATUS_ERROR
-    end
-    self.save
+    create_machine setting
+    # if config['status'] == 'CREATE_COMPLETE'
+    #   self.status = STATUS_AVAILABLE
+    #   self.ip_address = config[:ip_address]
+    # elsif config['status'] == 'CREATE_IN_PROGRESS'
+    #   self.status = STATUS_ONPROCESS
+    # else
+    #   self.status = STATUS_ERROR
+    # end
+    # self.save
   end
 
   # Stop / Delete a machine
@@ -67,7 +67,7 @@ class Machine < ActiveRecord::Base
 
   def setup_environment info
     set_uo_keys info
-    # execute_playbook cluster_configuration.name, ip_address
+    execute_playbook info[:exp_name], ip_address
   end
 
   def set_uo_keys info
