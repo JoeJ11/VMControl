@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150326083201) do
+ActiveRecord::Schema.define(version: 20150409090038) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
@@ -94,9 +94,9 @@ ActiveRecord::Schema.define(version: 20150326083201) do
   add_index "machines", ["student_id"], name: "index_machines_on_student_id"
 
   create_table "students", force: true do |t|
-    t.string "xuetang_id"
     t.string "mail_address"
     t.string "public_key"
+    t.string "private_key"
   end
 
 end
