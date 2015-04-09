@@ -7,6 +7,7 @@ module CloudToolkit
   X_AUTH_USER = 'thu_mooc@hotmail.com'
   X_AUTH_KEY = 'pwd4p0wercloud'
   BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
+  ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -264,8 +265,45 @@ module CloudToolkit
     puts response
   end
 
-  # mocked method
-  def validate_user(user_name)
-    true
+  # Check if a user exists
+  def validate_user(username)
+    self.class.require_token @tanent_name
+    response = HTTParty.post(
+                           CloudToolkit::ACCOUNT_URL,
+                           :headers => {
+                               'Content-type' => 'application/json',
+                               'apikey' => '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
+                           },
+                           :body => {
+                               'username' => username
+                           }.to_json
+
+    )
+    if response[:code] == '0'
+      return true
+    else
+      return false
+    end
+  end
+
+  # Register a user
+  def register_user(user_name, password)
+    self.class.require_token @tanent_name
+    response = HTTParty.post(
+                           CloudToolkit::ACCOUNT_URL,
+                           :headers => {
+                               'Content-type' => 'application/json',
+                               'apikey' => '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
+                           },
+                           :body => {
+                               'passwd' => password,
+                               'username' => user_name
+                           }.to_json
+    )
+    if response[:code] == '0'
+      return true
+    else
+      return false
+    end
   end
 end
