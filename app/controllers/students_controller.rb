@@ -1,5 +1,5 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy, :assign]
+  before_action :set_student, only: [:show, :edit, :update, :destroy]
 
   # GET /students
   # GET /students.json
@@ -63,29 +63,29 @@ class StudentsController < ApplicationController
 
   # Get /students/1/assign
   # Get /students/1/assign.json
-  def assign
-    if @student.machine and @student.machine.status == CloudToolkit::STATUS_OCCUPIED
-      render json: { :address => @student.machine.ip_address } and return
-    end
-    machine = Machine.find_by_status CloudToolkit::STATUS_AVAILABLE
-    if machine
-      ip_address = '0.0.0.0' #machine.assign @student.id
-      # MachineControlJob.new(machine.id).perform
-      Delayed::Job.enqueue(MachineControlJob.new(machine.id), 100, 5.minute.from_now)
-      render json: { :address => ip_address }
-    else
-      render json: { :information => "No available machine!"}
-    end
-  end
+  # def assign
+  #   if @student.machine and @student.machine.status == CloudToolkit::STATUS_OCCUPIED
+  #     render json: { :address => @student.machine.ip_address } and return
+  #   end
+  #   machine = Machine.find_by_status CloudToolkit::STATUS_AVAILABLE
+  #   if machine
+  #     ip_address = '0.0.0.0' #machine.assign @student.id
+  #     # MachineControlJob.new(machine.id).perform
+  #     Delayed::Job.enqueue(MachineControlJob.new(machine.id), 100, 5.minute.from_now)
+  #     render json: { :address => ip_address }
+  #   else
+  #     render json: { :information => "No available machine!"}
+  #   end
+  # end
 
   # Get /students/1/release
   # Get /students/1/release.json
-  def release
-    if @student.machine and @student.machine == CloudToolkit::STATUS_OCCUPIED
-      @student.machine.restart
-    end
-    redirect_to :back
-  end
+  # def release
+  #   if @student.machine and @student.machine == CloudToolkit::STATUS_OCCUPIED
+  #     @student.machine.restart
+  #   end
+  #   redirect_to :back
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.

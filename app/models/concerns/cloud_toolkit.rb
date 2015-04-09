@@ -297,44 +297,36 @@ module CloudToolkit
   end
 
   # Check if a user exists
-  def validate_user(username)
-    self.class.require_token @tanent_name
+  def validate_user(user_name)
+    self.class.require_token @tenant_name
     response = HTTParty.post(
-                           CloudToolkit::ACCOUNT_URL,
-                           :headers => {
-                               'Content-type' => 'application/json',
-                               'apikey' => '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
-                           },
-                           :body => {
-                               'username' => username
-                           }.to_json
-
+        CloudToolkit::BASE_ACCOUNT_URL,
+        :headers => {
+            'Content-Type' => 'application/json',
+            'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+            'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+        },
+        :body => {
+            'username' => user_name
+        }.to_json
     )
-    if response[:code] == '0'
+    if response['code'] == 0
       return true
-    else
-      return false
     end
+    pwd = 'thumooc123'
+    HTTParty.post(
+        CloudToolkit::BASE_ACCOUNT_URL,
+        :headers => {
+            'Content-type' => 'application/json',
+            'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+            'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+        },
+        :body => {
+            'username' => user_name,
+            'passwd' => pwd
+        }.to_json
+    )
+    return false
   end
 
-  # Register a user
-  def register_user(user_name, password)
-    self.class.require_token @tanent_name
-    response = HTTParty.post(
-                           CloudToolkit::ACCOUNT_URL,
-                           :headers => {
-                               'Content-type' => 'application/json',
-                               'apikey' => '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
-                           },
-                           :body => {
-                               'passwd' => password,
-                               'username' => user_name
-                           }.to_json
-    )
-    if response[:code] == '0'
-      return true
-    else
-      return false
-    end
-  end
 end
