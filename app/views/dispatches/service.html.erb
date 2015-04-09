@@ -1,10 +1,27 @@
 <h1>Dispatch#service</h1>
 <p>Find me in app/views/dispatch/service.html.erb</p>
 <%= form_tag({controller: :dispatches, action: :assign}, multipart: true) do %>
-    <%= file_field_tag 'pub_key' %>
-    <%= file_field_tag 'pri_key' %>
-    <%= text_field_tag 'user_name' %>
-    <%= text_field_tag 'exp_name' %>
-    <%= text_area_tag 'params' %>
-    <%= submit_tag 'assign' %>
+    <div>
+      <%= label_tag 'Public Key' %>
+      <%= file_field_tag 'pub_key' %>
+    </div>
+    <div>
+      <%= label_tag 'Private Key' %>
+      <%= file_field_tag 'pri_key' %>
+    </div>
+    <div>
+      <%= label_tag 'User Name' %>
+      <%= text_field_tag 'user_name' %>
+    </div>
+    <div>
+      <%= label_tag 'Experiment' %>
+      <%= text_field_tag 'exp_name' %>
+    </div>
+    <div>
+      <%= label_tag 'Extra Variables' %>
+      <%= text_area_tag 'params' %>
+    </div>
+    <div>
+      <%= submit_tag 'assign' %>
+    </div>
 <% end %>
