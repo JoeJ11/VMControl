@@ -4,11 +4,12 @@ class Student < ActiveRecord::Base
   has_one :machine
 
   def self.setup(user_name)
-    student = Student.find_by_xuetang_id user_name
+    student = Student.find_by_mail_address user_name
     if student
       return {
-          :user_name => student.xuetang_id,
+          :user_name => student.mail_address,
           :pub_key => student.public_key,
+          :pri_key => student.private_key
       }
     end
   end
