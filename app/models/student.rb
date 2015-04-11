@@ -39,7 +39,7 @@ class Student < ActiveRecord::Base
   end
 
   def setup_repo
-    repo_id = self.create_repo('test')
-    self.fork_repo(repo_id, 1)
+    self.get_token
+    self.fork_repo(1)
   end
 end

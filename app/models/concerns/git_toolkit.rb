@@ -82,6 +82,7 @@ module GitToolkit
         }
 
     )
+    puts response
     self.git_token = response['private_token']
   end
 
@@ -101,12 +102,23 @@ module GitToolkit
     return response['id']
   end
 
-  # Fork the specified repo
-  def fork_repo(dst, src)
+  # Change the fork relationship
+  def admin_fork_repo(dst, src)
     response = HTTParty.post(
         GIT_BASE_URL + 'projects/' + dst.to_s + '/fork/' + src.to_s,
         :headers => {
             'PRIVATE-TOKEN' => GIT_TOKEN
+        }
+    )
+    puts response
+  end
+
+  # Fork the specified repo
+  def fork_repo(src)
+    response = HTTParty.post(
+        GIT_BASE_URL + 'projects/fork/' + src.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => self.git_token
         }
     )
     puts response
