@@ -8,8 +8,8 @@ class Student < ActiveRecord::Base
     if student
       return {
           :user_name => student.mail_address,
-          :pub_key => student.public_key,
-          :pri_key => student.private_key
+          :pub_key => StringIO.new(student.public_key),
+          :pri_key => StringIO.new(student.private_key)
       }
     else
       student = Student.new
