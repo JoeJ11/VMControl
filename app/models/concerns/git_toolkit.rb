@@ -122,6 +122,20 @@ module GitToolkit
         }
     )
     puts response
+    return response['id']
   end
 
+  # Change the visibility of the repo
+  def edit_repo(repo_id)
+    response = HTTParty.put(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        },
+        :body => {
+            :visibility_level => 0
+        }
+    )
+    puts response
+  end
 end

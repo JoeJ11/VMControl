@@ -40,6 +40,7 @@ class Student < ActiveRecord::Base
 
   def setup_repo
     self.get_token
-    self.fork_repo(1)
+    repo_id = self.fork_repo(1)
+    self.edit_repo(repo_id)
   end
 end
