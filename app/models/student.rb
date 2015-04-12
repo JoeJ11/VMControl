@@ -34,7 +34,7 @@ class Student < ActiveRecord::Base
   end
 
   def setup_git_server
-    self.create_git_user
+    self.create_git_user("User_#{id.to_s}", "Unknown_#{id.to_s}")
     self.add_ssh_key
   end
 

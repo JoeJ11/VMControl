@@ -25,6 +25,14 @@ class CoursesController < ApplicationController
   # POST /courses.json
   def create
     @course = Course.new(course_params)
+    old_account = Course.find_by_mail_address @course.mail_address
+    if old_account
+      @course.git_id = old_account.id
+      @course.git_token = old_account.git_token
+      @course.teacher = old_account.teacher
+    else
+      @course.setup
+    end
 
     respond_to do |format|
       if @course.save
@@ -69,6 +77,6 @@ class CoursesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def course_params
-      params.require(:course).permit(:name, :teacher)
+      params.require(:course).permit(:name, :teacher, :pub_key, :mail_address)
     end
 end
