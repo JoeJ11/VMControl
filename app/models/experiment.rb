@@ -1,4 +1,6 @@
 class Experiment < ActiveRecord::Base
+  include GitToolkit
+
   belongs_to :cluster_configuration
   belongs_to :course
 
@@ -39,6 +41,10 @@ class Experiment < ActiveRecord::Base
         puts tem_number.to_s + '/' + tem_limit.to_s
       end
     end
+  end
+
+  def setup_git
+
   end
 
 end

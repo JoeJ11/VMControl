@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150409151024) do
+ActiveRecord::Schema.define(version: 20150412071151) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
@@ -41,6 +41,9 @@ ActiveRecord::Schema.define(version: 20150409151024) do
     t.string   "teacher"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "git_token"
+    t.string   "pub_key"
+    t.string   "mail_address"
   end
 
   create_table "delayed_jobs", force: true do |t|
@@ -66,6 +69,8 @@ ActiveRecord::Schema.define(version: 20150409151024) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "status"
+    t.integer  "code_repo_id"
+    t.integer  "config_repo_id"
   end
 
   add_index "experiments", ["cluster_configuration_id"], name: "index_experiments_on_cluster_configuration_id"
