@@ -95,7 +95,7 @@ module GitToolkit
         },
         :body => {
             :name => repo_name,
-            :visibility_level => 0
+            :visibility_level => 20
         }
     )
     puts response
@@ -134,6 +134,20 @@ module GitToolkit
         },
         :body => {
             :visibility_level => 0
+        }
+    )
+    puts response
+  end
+
+  # Change the name of the repo
+  def change_name(repo_id, name)
+    response = HTTParty.put(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        },
+        :body => {
+            :name => name
         }
     )
     puts response

@@ -25,6 +25,9 @@ class ExperimentsController < ApplicationController
   # POST /experiments.json
   def create
     @experiment = Experiment.new(experiment_params)
+    repo = @experiment.course.setup_repo(@experiment.name)
+    @experiment.code_repo_id = repo[:code]
+    @experiment.config_repo_id = repo[:config]
 
     respond_to do |format|
       if @experiment.save

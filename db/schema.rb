@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150412071751) do
+ActiveRecord::Schema.define(version: 20150412082209) do
 
   create_table "cluster_configurations", force: true do |t|
     t.string   "specifier"
@@ -42,9 +42,9 @@ ActiveRecord::Schema.define(version: 20150412071751) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "git_token"
-    t.string   "pub_key"
     t.string   "mail_address"
     t.integer  "git_id"
+    t.string   "public_key"
   end
 
   create_table "delayed_jobs", force: true do |t|
