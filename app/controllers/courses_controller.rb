@@ -27,7 +27,7 @@ class CoursesController < ApplicationController
     @course = Course.new(course_params)
     old_account = Course.find_by_mail_address @course.mail_address
     if old_account
-      @course.git_id = old_account.id
+      @course.git_id = old_account.git_id
       @course.git_token = old_account.git_token
       @course.teacher = old_account.teacher
     else
