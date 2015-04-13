@@ -35,7 +35,7 @@ module GitToolkit
   end
 
   # Create a new user
-  def create_git_user
+  def create_git_user(user_name, name)
     # self.class.require_token
 
     response = HTTParty.post(
@@ -46,12 +46,12 @@ module GitToolkit
         :body => {
             :email => self.mail_address,
             :password => 'pass4git',
-            :username => 'mooc_user' + self.id.to_s,
-            :name => 'Unknown_user' + self.id.to_s
+            :username => user_name,
+            :name => name
         }
     )
     puts response
-    self.git_id = response['id'].to_s
+    self.git_id = response['id']
     get_token
   end
 
@@ -60,7 +60,7 @@ module GitToolkit
     # self.class.require_token
 
     response = HTTParty.post(
-        GitToolkit::GIT_BASE_URL + 'users/' + self.git_id + '/keys',
+        GitToolkit::GIT_BASE_URL + 'users/' + self.git_id.to_s + '/keys',
         :headers => {
             'PRIVATE-TOKEN' => GIT_TOKEN
         },
@@ -89,13 +89,13 @@ module GitToolkit
   # Create new repo
   def create_repo(repo_name)
     response = HTTParty.post(
-        GIT_BASE_URL + 'projects/user/' + self.git_id,
+        GIT_BASE_URL + 'projects/user/' + self.git_id.to_s,
         :headers => {
             'PRIVATE-TOKEN' => GIT_TOKEN
         },
         :body => {
             :name => repo_name,
-            :visibility_level => 0
+            :visibility_level => 20
         }
     )
     puts response
@@ -134,6 +134,31 @@ module GitToolkit
         },
         :body => {
             :visibility_level => 0
+        }
+    )
+    puts response
+  end
+
+  # Change the name of the repo
+  def change_name(repo_id, name)
+    response = HTTParty.put(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        },
+        :body => {
+            :name => name
+        }
+    )
+    puts response
+  end
+
+  # Delete a user
+  def delete_user
+    response = HTTParty.delete(
+        GIT_BASE_URL + 'users/' + self.git_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
     puts response

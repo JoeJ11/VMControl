@@ -23,7 +23,6 @@ class Student < ActiveRecord::Base
 
     self.generate_keys
     self.setup_git_server
-    self.setup_repo
     self.save
   end
 
@@ -34,13 +33,14 @@ class Student < ActiveRecord::Base
   end
 
   def setup_git_server
-    self.create_git_user
+    self.create_git_user("User_#{id.to_s}", "Unknown_#{id.to_s}")
     self.add_ssh_key
   end
 
-  def setup_repo
+  def setup_repo(exp_id)
     self.get_token
-    repo_id = self.fork_repo(1)
+    exp = Experiment.find exp_id
+    repo_id = self.fork_repo(exp.code_repo_id) if exp
     self.edit_repo(repo_id)
   end
 end
