@@ -54,6 +54,7 @@ class StudentsController < ApplicationController
   # DELETE /students/1
   # DELETE /students/1.json
   def destroy
+    @student.delete_user
     @student.destroy
     respond_to do |format|
       format.html { redirect_to students_url }

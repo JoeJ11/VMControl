@@ -4,9 +4,9 @@
 <table>
   <thead>
     <tr>
-      <th>Xuetang</th>
+      <th>Git ID</th>
+      <th>Git Token</th>
       <th>Mail address</th>
-      <th>Public key</th>
       <th></th>
       <th></th>
       <th></th>
@@ -16,9 +16,9 @@
   <tbody>
     <% @students.each do |student| %>
       <tr>
-        <td><%= student.xuetang_id %></td>
+        <th><%= student.git_id %></th>
+        <td><%= student.git_token %></td>
         <td><%= student.mail_address %></td>
-        <td><%= student.public_key %></td>
         <td><%= link_to 'Show', student %></td>
         <td><%= link_to 'Edit', edit_student_path(student) %></td>
         <td><%= link_to 'Destroy', student, method: :delete, data: { confirm: 'Are you sure?' } %></td>

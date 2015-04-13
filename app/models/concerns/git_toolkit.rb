@@ -152,4 +152,15 @@ module GitToolkit
     )
     puts response
   end
+
+  # Delete a user
+  def delete_user
+    response = HTTParty.delete(
+        GIT_BASE_URL + 'users/' + self.git_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        }
+    )
+    puts response
+  end
 end
