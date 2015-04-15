@@ -5,16 +5,16 @@ class Student < ActiveRecord::Base
 
   def self.setup(user_name)
     student = Student.find_by_mail_address user_name
-    if student
+    unless student
+      student = Student.new
+      student.setup_new_user(user_name)
       return {
           :user_name => student.mail_address,
           :pub_key => StringIO.new(student.public_key),
           :pri_key => StringIO.new(student.private_key)
       }
-    else
-      student = Student.new
-      student.setup_new_user(user_name)
     end
+    return student
   end
 
   def setup_new_user(user_name)

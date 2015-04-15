@@ -65,12 +65,18 @@ class Machine < ActiveRecord::Base
   def check_setting_valid
   end
 
-  def setup_environment info
-    set_uo_keys info
-    execute_playbook info[:exp_name], ip_address
+  def setup_environment(info)
+    keys_info = info.permit(:pub_key, :pri_key)
+    set_uo_keys keys_info
+
+    load_config_repo info[:exp]
+
+    # code_repo = Student.list_repo info[:exp].code_repo_id
+    code_repo = "http://thuvmcontrol.cloudapp.net/#{info[:exp].course.name}/#{exp.name}_code.git"
+    execute_playbook ip_address, code_repo
   end
 
-  def set_uo_keys info
+  def set_uo_keys(info)
     public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
     public_key.write(info[:pub_key].read)
     public_key.close()
@@ -79,16 +85,31 @@ class Machine < ActiveRecord::Base
     private_key.close()
   end
 
-  def execute_playbook name, ip_address
+  def execute_playbook(ip_address, code_repo)
     base_address = Rails.root.join('playbook').to_s
     cmd = 'ansible-playbook '
     cmd += '-i ' + base_address + '/hosts '
-    cmd += base_address + '/playbooks/' + name + '.yml '
-    cmd += '-e ' + 'host=' + ip_address
-    # puts cmd
+    cmd += "#{base_address}/trial_project/main.yml "
+    cmd += '-e ' + '"host=' + ip_address
+    cmd += " git_repo=#{code_repo}\""
+    puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('cd ' + Rails.root.join('playbook').to_s)
       stdin.puts(cmd)
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR'
+      puts stderr.read.strip
+    end
+  end
+
+  def load_config_repo(exp)
+    repo = Student.list_repo(exp.config_repo_id)
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts("cd #{Rails.root.join('playbook').to_s}")
+      stdin.puts("git clone http://thuvmcontrol.cloudapp.net/Teacher_#{exp.course.teacher}/trial_project.git")
       stdin.close
 
       puts 'STDOUT:'

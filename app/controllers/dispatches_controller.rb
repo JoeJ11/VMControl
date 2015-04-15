@@ -26,9 +26,6 @@ class DispatchesController < ApplicationController
   def progress
   end
 
-  def service
-  end
-
   def start
     @machine.start
     redirect_to :back
@@ -75,6 +72,22 @@ class DispatchesController < ApplicationController
       end
     end
     rtn = machine ? machine.assign(machine_apply_params) : 'No available machines now.'
+    render json: {notice: rtn}
+  end
+
+  def service
+    apply_params = params.permit(:user_name, :exp_id)
+    info = Student.setup(apply_params[:user_name])
+    exp = Experiment.find apply_params[:exp_id]
+    info[:exp] = exp
+
+    machine = nil
+    exp.cluster_configuration.machines.each do |m|
+      if m.status == CloudToolkit::STATUS_AVAILABLE
+        machine = m
+      end
+    end
+    rtn = machine ? machine.assign(info) : 'No available machine now.'
     render json: {notice: rtn}
   end
 
