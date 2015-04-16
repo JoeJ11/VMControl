@@ -88,7 +88,11 @@ class DispatchesController < ApplicationController
       end
     end
     rtn = machine ? machine.assign(info) : 'No available machine now.'
-    render json: {notice: rtn}
+    if rtn.has_key? external_ip
+      redirect_to rtn[:external_ip]
+    else
+      render json: {:error => rtn[:error]}
+    end
   end
 
 end

@@ -55,7 +55,7 @@ class Machine < ActiveRecord::Base
         :cluster_configuration_id => self.cluster_configuration.id
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
-    {external_ip: 'thuvmcontrol.cloudapp.net:8000/4201'}
+    {external_ip: 'thuvmcontrol.cloudapp.net:8000/4201/'}
   end
 
   # Create a machine
@@ -77,7 +77,7 @@ class Machine < ActiveRecord::Base
     load_config_repo info[:exp]
 
     # code_repo = Student.list_repo info[:exp].code_repo_id
-    code_repo = "http://thuvmcontrol.cloudapp.net/#{info[:exp].course.name}/#{info[:exp].name}_code.git"
+    code_repo = "http://THUVMControl.cloudapp.net/Teacher_#{info[:exp].course.teacher}/#{info[:exp].name.downcase}_code.git"
     # execute_playbook ip_address, code_repo
     execute_playbook 'mooctesting2.cloudapp.net', code_repo
   end
