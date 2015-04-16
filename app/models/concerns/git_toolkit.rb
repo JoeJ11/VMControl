@@ -176,4 +176,15 @@ module GitToolkit
     puts response
   end
 
+  # Get a user info
+  def get_user
+    response = HTTParty.get(
+        GIT_BASE_URL + 'users/' + self.git_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        }
+    )
+    puts response
+    return response
+  end
 end

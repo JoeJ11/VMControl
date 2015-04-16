@@ -36,10 +36,10 @@ class Student < ActiveRecord::Base
     self.add_ssh_key
   end
 
-  def setup_repo(exp_id)
+  def setup_repo(code_repo_id)
     self.get_token
-    exp = Experiment.find exp_id
-    repo_id = self.fork_repo(exp.code_repo_id) if exp
+    repo_id = self.fork_repo(code_repo_id)
     self.edit_repo(repo_id)
   end
+
 end
