@@ -86,6 +86,7 @@ class Machine < ActiveRecord::Base
     # code_repo = Student.list_repo info[:exp].code_repo_id
     code_repo = "http://THUVMControl.cloudapp.net/#{name}/#{info[:exp].name.downcase}_code.git"
     # execute_playbook ip_address, code_repo
+    student.publicize_repo(repo_id)
     execute_playbook 'mooctesting2.cloudapp.net', code_repo
     student.edit_repo(repo_id)
   end
