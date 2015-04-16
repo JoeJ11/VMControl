@@ -52,8 +52,8 @@ module CloudToolkit
       )
       puts response
       return response['clusters']
-    rescue => exception
-      redirect_to :back, notice: exception.message
+    # rescue => exception
+    #   redirect_to :back, notice: exception.message
     end
 
     # List all templates(configurations)
