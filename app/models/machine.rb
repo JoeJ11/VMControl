@@ -26,7 +26,7 @@ class Machine < ActiveRecord::Base
     end
 
     self.delete_machine
-    self.status = STATUS_ONPROCESS
+    self.status = STATUS_ERROR
     self.student_id = 0
     self.save
   end
@@ -81,12 +81,13 @@ class Machine < ActiveRecord::Base
     load_config_repo info[:exp]
 
     student = Student.find_by_mail_address info[:user_name]
-    student.setup_repo info[:exp].code_repo_id
-    name = student.get_user['name']
+    repo_id = student.setup_repo info[:exp].code_repo_id
+    name = student.get_user['username']
     # code_repo = Student.list_repo info[:exp].code_repo_id
     code_repo = "http://THUVMControl.cloudapp.net/#{name}/#{info[:exp].name.downcase}_code.git"
     # execute_playbook ip_address, code_repo
     execute_playbook 'mooctesting2.cloudapp.net', code_repo
+    student.edit_repo(repo_id)
   end
 
   def set_uo_keys(info)
