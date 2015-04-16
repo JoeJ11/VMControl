@@ -78,7 +78,7 @@ class DispatchesController < ApplicationController
   def service
     apply_params = params.permit(:user_name, :exp_id)
     info = Student.setup(apply_params[:user_name])
-    exp = Experiment.find apply_params[:exp_id]
+    exp = Experiment.find apply_params[:exp_id].to_i
     info[:exp] = exp
 
     machine = nil

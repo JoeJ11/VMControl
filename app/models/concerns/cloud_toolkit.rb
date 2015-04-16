@@ -298,6 +298,7 @@ module CloudToolkit
 
   # Check if a user exists
   def validate_user(user_name)
+    return true
     self.class.require_token @tenant_name
     response = HTTParty.post(
         CloudToolkit::BASE_ACCOUNT_URL,

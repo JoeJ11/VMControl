@@ -8,13 +8,12 @@ class Student < ActiveRecord::Base
     unless student
       student = Student.new
       student.setup_new_user(user_name)
-      return {
-          :user_name => student.mail_address,
-          :pub_key => StringIO.new(student.public_key),
-          :pri_key => StringIO.new(student.private_key)
-      }
     end
-    return student
+    return {
+        :user_name => student.mail_address,
+        :pub_key => StringIO.new(student.public_key),
+        :pri_key => StringIO.new(student.private_key)
+    }
   end
 
   def setup_new_user(user_name)
