@@ -83,9 +83,9 @@ class Machine < ActiveRecord::Base
     student = Student.find_by_mail_address info[:user_name]
     repo_id = student.setup_repo info[:exp].code_repo_id
     student.publicize_repo(repo_id)
-    name = student.get_user['username']
-    code_repo = "http://THUVMControl.cloudapp.net/#{name}/#{info[:exp].name.downcase}_code.git"
-    execute_playbook 'mooctesting2.cloudapp.net', code_repo
+    user_info = student.get_user
+    code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
+    execute_playbook 'mooctesting2.cloudapp.net', code_repo, user_info['username'], user_info['email']
     student.edit_repo(repo_id)
   end
 
@@ -98,13 +98,15 @@ class Machine < ActiveRecord::Base
     private_key.close()
   end
 
-  def execute_playbook(ip_address, code_repo)
+  def execute_playbook(ip_address, code_repo, user_name, user_mail)
     base_address = Rails.root.join('playbook').to_s
     cmd = 'ansible-playbook '
     cmd += '-i ' + base_address + '/hosts '
     cmd += "#{base_address}/trial_project/main.yml "
     cmd += '-e ' + '"host=' + ip_address
-    cmd += " git_repo=#{code_repo}\""
+    cmd += " git_repo=#{code_repo}"
+    cmd += " git_name=#{user_name}"
+    cmd += " git_mail=#{user_mail}\""
     puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('cd ' + Rails.root.join('playbook').to_s)

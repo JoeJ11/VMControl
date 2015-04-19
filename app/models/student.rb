@@ -40,7 +40,7 @@ class Student < ActiveRecord::Base
     self.get_token
     repo_id = self.fork_repo(code_repo_id)
     return repo_id
-    # This will set repo to be private, but will cause trouble
+    # This will set repo to be private, will cause trouble
     # self.edit_repo(repo_id)
   end
 
