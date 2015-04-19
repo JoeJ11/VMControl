@@ -82,11 +82,9 @@ class Machine < ActiveRecord::Base
 
     student = Student.find_by_mail_address info[:user_name]
     repo_id = student.setup_repo info[:exp].code_repo_id
-    name = student.get_user['username']
-    # code_repo = Student.list_repo info[:exp].code_repo_id
-    code_repo = "http://THUVMControl.cloudapp.net/#{name}/#{info[:exp].name.downcase}_code.git"
-    # execute_playbook ip_address, code_repo
     student.publicize_repo(repo_id)
+    name = student.get_user['username']
+    code_repo = "http://THUVMControl.cloudapp.net/#{name}/#{info[:exp].name.downcase}_code.git"
     execute_playbook 'mooctesting2.cloudapp.net', code_repo
     student.edit_repo(repo_id)
   end
@@ -140,7 +138,7 @@ class Machine < ActiveRecord::Base
     cmd += "-i #{base_address}/hosts "
     cmd += "#{base_address}/playbooks/proxy.yml "
     # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
-    cmd += '-e "ip=mooctesting2.cloudapp.net port=4201"'
+    cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
     puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts cmd

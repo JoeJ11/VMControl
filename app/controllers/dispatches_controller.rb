@@ -1,5 +1,5 @@
 class DispatchesController < ApplicationController
-  before_action :set_machines, only: [:stop, :start, :progress]
+  before_action :set_machines, only: [:stop, :start, :progress, :destroy]
 
   def index
     @machines = Machine.all
@@ -48,6 +48,11 @@ class DispatchesController < ApplicationController
   end
 
   def update
+  end
+
+  def destroy
+    @machine.destroy
+    redirect_to :back
   end
 
   def set_machines
