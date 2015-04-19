@@ -5,16 +5,15 @@ class Student < ActiveRecord::Base
 
   def self.setup(user_name)
     student = Student.find_by_mail_address user_name
-    if student
-      return {
-          :user_name => student.mail_address,
-          :pub_key => StringIO.new(student.public_key),
-          :pri_key => StringIO.new(student.private_key)
-      }
-    else
+    unless student
       student = Student.new
       student.setup_new_user(user_name)
     end
+    return {
+        :user_name => student.mail_address,
+        :pub_key => StringIO.new(student.public_key),
+        :pri_key => StringIO.new(student.private_key)
+    }
   end
 
   def setup_new_user(user_name)
@@ -37,10 +36,12 @@ class Student < ActiveRecord::Base
     self.add_ssh_key
   end
 
-  def setup_repo(exp_id)
+  def setup_repo(code_repo_id)
     self.get_token
-    exp = Experiment.find exp_id
-    repo_id = self.fork_repo(exp.code_repo_id) if exp
-    self.edit_repo(repo_id)
+    repo_id = self.fork_repo(code_repo_id)
+    return repo_id
+    # This will set repo to be private, will cause trouble
+    # self.edit_repo(repo_id)
   end
+
 end

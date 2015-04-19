@@ -1,5 +1,5 @@
 class DispatchesController < ApplicationController
-  before_action :set_machines, only: [:stop, :start, :progress]
+  before_action :set_machines, only: [:stop, :start, :progress, :destroy]
 
   def index
     @machines = Machine.all
@@ -26,9 +26,6 @@ class DispatchesController < ApplicationController
   def progress
   end
 
-  def service
-  end
-
   def start
     @machine.start
     redirect_to :back
@@ -51,6 +48,11 @@ class DispatchesController < ApplicationController
   end
 
   def update
+  end
+
+  def destroy
+    @machine.destroy
+    redirect_to :back
   end
 
   def set_machines
@@ -76,6 +78,26 @@ class DispatchesController < ApplicationController
     end
     rtn = machine ? machine.assign(machine_apply_params) : 'No available machines now.'
     render json: {notice: rtn}
+  end
+
+  def service
+    apply_params = params.permit(:user_name, :exp_id)
+    info = Student.setup(apply_params[:user_name])
+    exp = Experiment.find apply_params[:exp_id].to_i
+    info[:exp] = exp
+
+    machine = nil
+    exp.cluster_configuration.machines.each do |m|
+      if m.status == CloudToolkit::STATUS_AVAILABLE
+        machine = m
+      end
+    end
+    rtn = machine ? machine.assign(info) : {:error => 'No available machine now.'}
+    if rtn.has_key? :external_ip
+      render json: {:ip => rtn[:external_ip]}
+    else
+      render json: {:error => rtn[:error]}
+    end
   end
 
 end

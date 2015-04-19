@@ -32,6 +32,18 @@ module GitToolkit
       @@token = response['private_token']
     end
 
+    # List the information of a project
+    def list_repo(repo_id)
+      response = HTTParty.get(
+          GIT_BASE_URL + 'projects/' + repo_id.to_s,
+          :headers => {
+              'PRIVATE-TOKEN' => GIT_TOKEN
+          }
+      )
+      puts response
+      return response
+    end
+
   end
 
   # Create a new user
@@ -159,6 +171,32 @@ module GitToolkit
         GIT_BASE_URL + 'users/' + self.git_id.to_s,
         :headers => {
             'PRIVATE-TOKEN' => GIT_TOKEN
+        }
+    )
+    puts response
+  end
+
+  # Get a user info
+  def get_user
+    response = HTTParty.get(
+        GIT_BASE_URL + 'users/' + self.git_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        }
+    )
+    puts response
+    return response
+  end
+
+  # Change public repo
+  def publicize_repo(repo_id)
+    response = HTTParty.put(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s,
+        :headers => {
+            'PRIVATE-TOKEN' => GIT_TOKEN
+        },
+        :body => {
+            :visibility_level => 20
         }
     )
     puts response

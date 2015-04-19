@@ -52,8 +52,8 @@ module CloudToolkit
       )
       puts response
       return response['clusters']
-    rescue => exception
-      redirect_to :back, notice: exception.message
+    # rescue => exception
+    #   redirect_to :back, notice: exception.message
     end
 
     # List all templates(configurations)
@@ -298,6 +298,7 @@ module CloudToolkit
 
   # Check if a user exists
   def validate_user(user_name)
+    return true
     self.class.require_token @tenant_name
     response = HTTParty.post(
         CloudToolkit::BASE_ACCOUNT_URL,

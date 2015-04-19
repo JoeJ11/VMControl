@@ -21,7 +21,7 @@ VMControl::Application.routes.draw do
 
   resources :students
 
-  resources :dispatches, only: [:new, :create, :update, :index] do
+  resources :dispatches do
     collection do
       get 'list'
       get 'service'

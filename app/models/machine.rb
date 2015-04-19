@@ -21,8 +21,12 @@ class Machine < ActiveRecord::Base
 
   # Stop / Delete a machine
   def stop
-    stop_machine
-    self.status = STATUS_ONPROCESS
+    if self.status == STATUS_OCCUPIED
+      stop_proxy
+    end
+
+    self.delete_machine
+    self.status = STATUS_ERROR
     self.student_id = 0
     self.save
   end
@@ -48,12 +52,14 @@ class Machine < ActiveRecord::Base
     self.status = STATUS_OCCUPIED
     self.save
 
+    setup_proxy
+
     Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
     params = {
         :cluster_configuration_id => self.cluster_configuration.id
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
-    {external_ip: self.ip_address}
+    {external_ip: 'http://thuvmcontrol.cloudapp.net:8000/4201/'}
   end
 
   # Create a machine
@@ -65,12 +71,25 @@ class Machine < ActiveRecord::Base
   def check_setting_valid
   end
 
-  def setup_environment info
-    set_uo_keys info
-    execute_playbook info[:exp_name], ip_address
+  def setup_environment(info)
+    keys_info = {
+        :pri_key => info[:pri_key],
+        :pub_key => info[:pub_key]
+    }
+    set_uo_keys keys_info
+
+    load_config_repo info[:exp]
+
+    student = Student.find_by_mail_address info[:user_name]
+    repo_id = student.setup_repo info[:exp].code_repo_id
+    student.publicize_repo(repo_id)
+    user_info = student.get_user
+    code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
+    execute_playbook 'mooctesting2.cloudapp.net', code_repo, user_info['username'], user_info['email']
+    student.edit_repo(repo_id)
   end
 
-  def set_uo_keys info
+  def set_uo_keys(info)
     public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
     public_key.write(info[:pub_key].read)
     public_key.close()
@@ -79,13 +98,16 @@ class Machine < ActiveRecord::Base
     private_key.close()
   end
 
-  def execute_playbook name, ip_address
+  def execute_playbook(ip_address, code_repo, user_name, user_mail)
     base_address = Rails.root.join('playbook').to_s
     cmd = 'ansible-playbook '
     cmd += '-i ' + base_address + '/hosts '
-    cmd += base_address + '/playbooks/' + name + '.yml '
-    cmd += '-e ' + 'host=' + ip_address
-    # puts cmd
+    cmd += "#{base_address}/trial_project/main.yml "
+    cmd += '-e ' + '"host=' + ip_address
+    cmd += " git_repo=#{code_repo}"
+    cmd += " git_name=#{user_name}"
+    cmd += " git_mail=#{user_mail}\""
+    puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('cd ' + Rails.root.join('playbook').to_s)
       stdin.puts(cmd)
@@ -94,6 +116,57 @@ class Machine < ActiveRecord::Base
       puts 'STDOUT:'
       puts stdout.read.strip
       puts 'STDERR'
+      puts stderr.read.strip
+    end
+  end
+
+  def load_config_repo(exp)
+    repo = Student.list_repo(exp.config_repo_id)
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts("cd #{Rails.root.join('playbook').to_s}")
+      stdin.puts("git clone http://thuvmcontrol.cloudapp.net/Teacher_#{exp.course.teacher}/trial_project.git")
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR'
+      puts stderr.read.strip
+    end
+  end
+
+  def setup_proxy
+    base_address = Rails.root.join('playbook').to_s
+    cmd = 'ansible-playbook '
+    cmd += "-i #{base_address}/hosts "
+    cmd += "#{base_address}/playbooks/proxy.yml "
+    # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
+    cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
+    puts cmd
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts cmd
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
+      puts stderr.read.strip
+    end
+  end
+
+  def stop_proxy
+    base_address = Rails.root.join('playbook').to_s
+    cmd = 'ansible-playbook '
+    cmd += "-i #{base_address}/hosts "
+    cmd += "#{base_address}/playbooks/proxy_stop.yml "
+    cmd += '-e "port=4201"'
+    puts cmd
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts cmd
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
       puts stderr.read.strip
     end
   end
