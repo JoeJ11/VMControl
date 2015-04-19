@@ -9,6 +9,7 @@
     <th>Status</th>
     <th>User Name</th>
     <th>Specifier</th>
+    <th>Progress</th>
     <th>Start</th>
     <th>Stop</th>
     <th>Destroy</th>
@@ -32,6 +33,7 @@
       <% end %>
       <td><%=machine.user_name%></td>
       <td><%=machine.specifier%></td>
+      <td><%=machine.progress%></td>
       <th><%=link_to 'Start', start_dispatch_path(machine.id) %></th>
       <th><%=link_to 'Stop', stop_dispatch_path(machine.id) %></th>
       <th><%=link_to 'Destroy', dispatch_path(machine.id), method: :delete, data: { confirm: 'Are you sure?'} %></th>

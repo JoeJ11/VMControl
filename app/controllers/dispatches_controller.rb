@@ -23,9 +23,6 @@ class DispatchesController < ApplicationController
     redirect_to :back
   end
 
-  def progress
-  end
-
   def start
     @machine.start
     redirect_to :back
@@ -59,45 +56,69 @@ class DispatchesController < ApplicationController
     @machine = Machine.find(params[:id])
   end
 
-  def assign
-    machine_apply_params = params.permit(:pub_key, :pri_key, :user_name, :exp_name, :params)
-    if machine_apply_params[:pub_key] and machine_apply_params[:pub_key].class == String
-      machine_apply_params[:pub_key] = StringIO.new(machine_apply_params[:pub_key])
-    end
-    if machine_apply_params[:pri_key] and machine_apply_params[:pri_key].class == String
-      machine_apply_params[:pri_key] = StringIO.new(:machine_apply_params[:pri_key])
-    end
-    exp = Experiment.where("name='#{machine_apply_params[:exp_name]}'")
-    exp = exp[0] if exp.size > 0
-    # exp = Experiment.find_last_by_name(machine_apply_params[:exp_name])
-    machine = nil
-    exp.cluster_configuration.machines.each do |m|
-      if m.status == CloudToolkit::STATUS_AVAILABLE
-        machine = m
-      end
-    end
-    rtn = machine ? machine.assign(machine_apply_params) : 'No available machines now.'
-    render json: {notice: rtn}
-  end
+  # def assign
+  #   machine_apply_params = params.permit(:pub_key, :pri_key, :user_name, :exp_name, :params)
+  #   if machine_apply_params[:pub_key] and machine_apply_params[:pub_key].class == String
+  #     machine_apply_params[:pub_key] = StringIO.new(machine_apply_params[:pub_key])
+  #   end
+  #   if machine_apply_params[:pri_key] and machine_apply_params[:pri_key].class == String
+  #     machine_apply_params[:pri_key] = StringIO.new(:machine_apply_params[:pri_key])
+  #   end
+  #   exp = Experiment.where("name='#{machine_apply_params[:exp_name]}'")
+  #   exp = exp[0] if exp.size > 0
+  #   # exp = Experiment.find_last_by_name(machine_apply_params[:exp_name])
+  #   machine = nil
+  #   exp.cluster_configuration.machines.each do |m|
+  #     if m.status == CloudToolkit::STATUS_AVAILABLE
+  #       machine = m
+  #     end
+  #   end
+  #   rtn = machine ? machine.assign(machine_apply_params) : 'No available machines now.'
+  #   render json: {notice: rtn}
+  # end
 
   def service
     apply_params = params.permit(:user_name, :exp_id)
+
+    # Check User name is a email address
+    user_name = apply_params[:user_name]
+    unless /(.+)@(.+)\.(.+)/.match(user_name)
+      render json: { :machine => -1, :message => 'Email not valid' } and return
+    end
+
+    # Set up Account locally
     info = Student.setup(apply_params[:user_name])
+
+    # Set up Account Remotely
+    unless Machine.validate_user(user_name)
+      render json: { :machine => -1, :message => 'A remote account is setup. Password thumooc123'} and return
+    end
+
+    # Get experiment Inforamtion
     exp = Experiment.find apply_params[:exp_id].to_i
     info[:exp] = exp
 
+    # Assign Machine
     machine = nil
     exp.cluster_configuration.machines.each do |m|
       if m.status == CloudToolkit::STATUS_AVAILABLE
         machine = m
       end
     end
-    rtn = machine ? machine.assign(info) : {:error => 'No available machine now.'}
-    if rtn.has_key? :external_ip
-      render json: {:ip => rtn[:external_ip]}
+    if machine
+      machine.user_name = info[:user_name]
+      machine.status = CloudToolkit::STATUS_ONPROCESS
+      machine.progress = 0
+      machine.save
+
+      machine.delay.assign(info)
+      render json: { :machine => machine.id } and return
     else
-      render json: {:error => rtn[:error]}
+      render json: { :machine => -1, :message => 'No available machine.' } and return
     end
+  end
+
+  def progress
   end
 
 end

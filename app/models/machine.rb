@@ -39,28 +39,26 @@ class Machine < ActiveRecord::Base
 
   # Assign a machine to a student
   def assign (info)
-    user_name = info[:user_name]
-    unless /(.+)@(.+)\.(.+)/.match(user_name)
-      return {error: "Not an email!"}
-    end
-    unless validate_user(user_name)
-      return {error: "Email not valid!"}
-    end
-    setup_environment info
-
-    self.user_name = user_name
-    self.status = STATUS_OCCUPIED
+    self.progress = 1
     self.save
 
-    setup_proxy
-
-    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
     params = {
         :cluster_configuration_id => self.cluster_configuration.id
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
-    {external_ip: 'http://thuvmcontrol.cloudapp.net:8000/4201/'}
+
+    setup_environment info
+    self.progress = 2
+    self.save
+
+    setup_proxy
+    self.progress = 3
+    self.save
+
+    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
   end
+
+  handle_asynchronously :assign, :priority => 100
 
   # Create a machine
   # Not used now!
@@ -91,10 +89,10 @@ class Machine < ActiveRecord::Base
 
   def set_uo_keys(info)
     public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
-    public_key.write(info[:pub_key].read)
+    public_key.write(info[:pub_key])
     public_key.close()
     private_key = open(Rails.root.join('playbook', 'tmp', 'pri_key'), 'w')
-    private_key.write(info[:pri_key].read)
+    private_key.write(info[:pri_key])
     private_key.close()
   end
 
