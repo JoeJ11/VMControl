@@ -107,9 +107,8 @@ module CloudToolkit
 
     # Check if a user exists
     def validate_user(user_name)
-      return true
       response = HTTParty.post(
-          CloudToolkit::BASE_ACCOUNT_URL,
+          CloudToolkit::BASE_ACCOUNT_URL + '/verify/exist',
           :headers => {
               'Content-Type' => 'application/json',
               # 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
