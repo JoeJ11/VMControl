@@ -9,6 +9,7 @@ module CloudToolkit
   BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
   ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
   BASE_ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
+  API_KEY = '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -62,8 +63,8 @@ module CloudToolkit
       response = HTTParty.get(
                              CloudToolkit::BASE_URL + 'cluster_config',
                              :headers => {
-                                 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-                                 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                                 # 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                                 # 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                              }
       )
       puts response
@@ -77,8 +78,8 @@ module CloudToolkit
                              CloudToolkit::BASE_ACCOUNT_URL,
                              :headers => {
                                  'Content-Type' => 'application/json',
-                                 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-                                 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                                 # 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+                                 # 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                              },
                              :body => {
                                  'username' => user_name
@@ -103,6 +104,43 @@ module CloudToolkit
       )
       return false
     end
+
+    # Check if a user exists
+    def validate_user(user_name)
+      response = HTTParty.post(
+          CloudToolkit::BASE_ACCOUNT_URL + '/verify/exist',
+          :headers => {
+              'Content-Type' => 'application/json',
+              # 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+              # 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY,
+              'apikey' => CloudToolkit::API_KEY
+          },
+          :body => {
+              'username' => user_name
+          }.to_json
+      )
+      puts response
+      if response['code'] == 0
+        return true
+      end
+      pwd = 'thumooc123'
+      HTTParty.post(
+          CloudToolkit::BASE_ACCOUNT_URL,
+          :headers => {
+              'Content-type' => 'application/json',
+              # 'X-Auth-User' => CloudToolkit::X_AUTH_USER,
+              # 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY,
+              'apikey' => CloudToolkit::API_KEY
+          },
+          :body => {
+              'username' => user_name,
+              'passwd' => pwd
+          }.to_json
+      )
+      puts response
+      return false
+    end
+
   end
 
   # Do nothing but add class variable @tenant_name
@@ -277,7 +315,7 @@ module CloudToolkit
                 CloudToolkit::BASE_URL + 'images/' + specifier,
                 :headers => {
                     'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-                    'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                    'X-Auth-Key' => CloudToolkit::X_AUTH_KEY,
                 }
     )
     puts response
@@ -290,44 +328,10 @@ module CloudToolkit
                            CloudToolkit::BASE_URL + 'images/' + self.specifier,
                            :headers => {
                                'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-                               'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
+                               'X-Auth-Key' => CloudToolkit::X_AUTH_KEY,
                            }
     )
     puts response
-  end
-
-  # Check if a user exists
-  def validate_user(user_name)
-    return true
-    self.class.require_token @tenant_name
-    response = HTTParty.post(
-        CloudToolkit::BASE_ACCOUNT_URL,
-        :headers => {
-            'Content-Type' => 'application/json',
-            'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-            'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
-        },
-        :body => {
-            'username' => user_name
-        }.to_json
-    )
-    if response['code'] == 0
-      return true
-    end
-    pwd = 'thumooc123'
-    HTTParty.post(
-        CloudToolkit::BASE_ACCOUNT_URL,
-        :headers => {
-            'Content-type' => 'application/json',
-            'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-            'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
-        },
-        :body => {
-            'username' => user_name,
-            'passwd' => pwd
-        }.to_json
-    )
-    return false
   end
 
 end

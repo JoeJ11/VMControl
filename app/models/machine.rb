@@ -1,5 +1,7 @@
 class Machine < ActiveRecord::Base
   include CloudToolkit
+  include ProxyToolkit
+
   belongs_to :cluster_configuration
 
   MAXIMUM_MACHINES = 20
@@ -39,28 +41,33 @@ class Machine < ActiveRecord::Base
 
   # Assign a machine to a student
   def assign (info)
-    user_name = info[:user_name]
-    unless /(.+)@(.+)\.(.+)/.match(user_name)
-      return {error: "Not an email!"}
-    end
-    unless validate_user(user_name)
-      return {error: "Email not valid!"}
-    end
-    setup_environment info
-
-    self.user_name = user_name
-    self.status = STATUS_OCCUPIED
+    self.progress = 1
     self.save
 
-    setup_proxy
-
-    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
     params = {
         :cluster_configuration_id => self.cluster_configuration.id
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
-    {external_ip: 'http://thuvmcontrol.cloudapp.net:8000/4201/'}
+
+    setup_environment info
+    self.progress = 2
+    self.save
+
+    self.url = start_proxy
+    unless self.url
+      self.progress = -1
+      self.save
+      Delayed::Job.enqueue(MachineDeleteJob.new(self.id))
+      return
+    end
+    self.progress = 3
+    self.status = STATUS_OCCUPIED
+    self.save
+
+    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 30.minute.from_now)
   end
+
+  handle_asynchronously :assign, :priority => 100
 
   # Create a machine
   # Not used now!
@@ -91,10 +98,10 @@ class Machine < ActiveRecord::Base
 
   def set_uo_keys(info)
     public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
-    public_key.write(info[:pub_key].read)
+    public_key.write(info[:pub_key])
     public_key.close()
     private_key = open(Rails.root.join('playbook', 'tmp', 'pri_key'), 'w')
-    private_key.write(info[:pri_key].read)
+    private_key.write(info[:pri_key])
     private_key.close()
   end
 
@@ -134,42 +141,42 @@ class Machine < ActiveRecord::Base
     end
   end
 
-  def setup_proxy
-    base_address = Rails.root.join('playbook').to_s
-    cmd = 'ansible-playbook '
-    cmd += "-i #{base_address}/hosts "
-    cmd += "#{base_address}/playbooks/proxy.yml "
-    # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
-    cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
-    puts cmd
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-      stdin.puts cmd
-      stdin.close
+  # def setup_proxy
+  #   base_address = Rails.root.join('playbook').to_s
+  #   cmd = 'ansible-playbook '
+  #   cmd += "-i #{base_address}/hosts "
+  #   cmd += "#{base_address}/playbooks/proxy.yml "
+  #   # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
+  #   cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
+  #   puts cmd
+  #   status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+  #     stdin.puts cmd
+  #     stdin.close
+  #
+  #     puts 'STDOUT:'
+  #     puts stdout.read.strip
+  #     puts 'STDERR:'
+  #     puts stderr.read.strip
+  #   end
+  # end
 
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR:'
-      puts stderr.read.strip
-    end
-  end
-
-  def stop_proxy
-    base_address = Rails.root.join('playbook').to_s
-    cmd = 'ansible-playbook '
-    cmd += "-i #{base_address}/hosts "
-    cmd += "#{base_address}/playbooks/proxy_stop.yml "
-    cmd += '-e "port=4201"'
-    puts cmd
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-      stdin.puts cmd
-      stdin.close
-
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR:'
-      puts stderr.read.strip
-    end
-  end
+  # def stop_proxy
+  #   base_address = Rails.root.join('playbook').to_s
+  #   cmd = 'ansible-playbook '
+  #   cmd += "-i #{base_address}/hosts "
+  #   cmd += "#{base_address}/playbooks/proxy_stop.yml "
+  #   cmd += '-e "port=4201"'
+  #   puts cmd
+  #   status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+  #     stdin.puts cmd
+  #     stdin.close
+  #
+  #     puts 'STDOUT:'
+  #     puts stdout.read.strip
+  #     puts 'STDERR:'
+  #     puts stderr.read.strip
+  #   end
+  # end
   # Auto-release a machine
   # def auto_release(student_id)
   #  if self.status == CloudToolkit::STATUS_OCCUPIED and self.student_id == student_id

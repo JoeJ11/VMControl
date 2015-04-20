@@ -3,6 +3,8 @@ class Student < ActiveRecord::Base
 
   has_one :machine
 
+  # handle_asynchronously :setup_new_user, :priority => 100
+
   def self.setup(user_name)
     student = Student.find_by_mail_address user_name
     unless student
@@ -11,8 +13,8 @@ class Student < ActiveRecord::Base
     end
     return {
         :user_name => student.mail_address,
-        :pub_key => StringIO.new(student.public_key),
-        :pri_key => StringIO.new(student.private_key)
+        :pub_key => student.public_key,
+        :pri_key => student.private_key
     }
   end
 
