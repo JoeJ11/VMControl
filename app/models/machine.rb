@@ -1,5 +1,7 @@
 class Machine < ActiveRecord::Base
   include CloudToolkit
+  include ProxyToolkit
+
   belongs_to :cluster_configuration
 
   MAXIMUM_MACHINES = 20
@@ -51,11 +53,18 @@ class Machine < ActiveRecord::Base
     self.progress = 2
     self.save
 
-    setup_proxy
+    self.url = start_proxy
+    unless self.url
+      self.progress = -1
+      self.save
+      Delayed::Job.enqueue(MachineDeleteJob.new(self.id))
+      return
+    end
     self.progress = 3
+    self.status = STATUS_OCCUPIED
     self.save
 
-    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 5.minute.from_now)
+    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 30.minute.from_now)
   end
 
   handle_asynchronously :assign, :priority => 100
@@ -132,42 +141,42 @@ class Machine < ActiveRecord::Base
     end
   end
 
-  def setup_proxy
-    base_address = Rails.root.join('playbook').to_s
-    cmd = 'ansible-playbook '
-    cmd += "-i #{base_address}/hosts "
-    cmd += "#{base_address}/playbooks/proxy.yml "
-    # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
-    cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
-    puts cmd
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-      stdin.puts cmd
-      stdin.close
+  # def setup_proxy
+  #   base_address = Rails.root.join('playbook').to_s
+  #   cmd = 'ansible-playbook '
+  #   cmd += "-i #{base_address}/hosts "
+  #   cmd += "#{base_address}/playbooks/proxy.yml "
+  #   # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
+  #   cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
+  #   puts cmd
+  #   status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+  #     stdin.puts cmd
+  #     stdin.close
+  #
+  #     puts 'STDOUT:'
+  #     puts stdout.read.strip
+  #     puts 'STDERR:'
+  #     puts stderr.read.strip
+  #   end
+  # end
 
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR:'
-      puts stderr.read.strip
-    end
-  end
-
-  def stop_proxy
-    base_address = Rails.root.join('playbook').to_s
-    cmd = 'ansible-playbook '
-    cmd += "-i #{base_address}/hosts "
-    cmd += "#{base_address}/playbooks/proxy_stop.yml "
-    cmd += '-e "port=4201"'
-    puts cmd
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-      stdin.puts cmd
-      stdin.close
-
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR:'
-      puts stderr.read.strip
-    end
-  end
+  # def stop_proxy
+  #   base_address = Rails.root.join('playbook').to_s
+  #   cmd = 'ansible-playbook '
+  #   cmd += "-i #{base_address}/hosts "
+  #   cmd += "#{base_address}/playbooks/proxy_stop.yml "
+  #   cmd += '-e "port=4201"'
+  #   puts cmd
+  #   status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+  #     stdin.puts cmd
+  #     stdin.close
+  #
+  #     puts 'STDOUT:'
+  #     puts stdout.read.strip
+  #     puts 'STDERR:'
+  #     puts stderr.read.strip
+  #   end
+  # end
   # Auto-release a machine
   # def auto_release(student_id)
   #  if self.status == CloudToolkit::STATUS_OCCUPIED and self.student_id == student_id

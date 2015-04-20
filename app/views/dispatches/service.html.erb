@@ -1,27 +1,17 @@
 <h1>Dispatch#service</h1>
-<p>Find me in app/views/dispatch/service.html.erb</p>
-<%= form_tag({controller: :dispatches, action: :assign}, multipart: true) do %>
+<script type="text/javascript" src="/js/service.js"></script>
+
+<%- if @machine == -1 %>
     <div>
-      <%= label_tag 'Public Key' %>
-      <%= file_field_tag 'pub_key' %>
+      <%= @message %>
     </div>
-    <div>
-      <%= label_tag 'Private Key' %>
-      <%= file_field_tag 'pri_key' %>
-    </div>
-    <div>
-      <%= label_tag 'User Name' %>
-      <%= text_field_tag 'user_name' %>
-    </div>
-    <div>
-      <%= label_tag 'Experiment' %>
-      <%= text_field_tag 'exp_name' %>
-    </div>
-    <div>
-      <%= label_tag 'Extra Variables' %>
-      <%= text_area_tag 'params' %>
-    </div>
-    <div>
-      <%= submit_tag 'assign' %>
-    </div>
-<% end %>
+<%- else %>
+    <body onload="timer = setInterval(function () {
+                get_progress(<%= @machine %>)
+            }, 5000)">
+        <div id="infoBar">
+          Information can be seen here.
+        </div>
+    </body>
+    <iframe id="iframe"></iframe>
+<%- end %>

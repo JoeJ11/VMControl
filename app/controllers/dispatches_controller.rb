@@ -83,7 +83,9 @@ class DispatchesController < ApplicationController
     # Check User name is a email address
     user_name = apply_params[:user_name]
     unless /(.+)@(.+)\.(.+)/.match(user_name)
-      render json: { :machine => -1, :message => 'Email not valid' } and return
+      @machine = -1
+      @message = 'Email Not Valid.'
+      render :service and return
     end
 
     # Set up Account locally
@@ -91,10 +93,12 @@ class DispatchesController < ApplicationController
 
     # Set up Account Remotely
     unless Machine.validate_user(user_name)
-      render json: { :machine => -1, :message => 'A remote account is setup. Password thumooc123'} and return
+      @machine = -1
+      @message = 'A remote account has been setup. Password thumooc123'
+      render :service and return
     end
 
-    # Get experiment Inforamtion
+    # Get experiment Information
     exp = Experiment.find apply_params[:exp_id].to_i
     info[:exp] = exp
 
@@ -112,13 +116,23 @@ class DispatchesController < ApplicationController
       machine.save
 
       machine.delay.assign(info)
-      render json: { :machine => machine.id } and return
+      @machine = machine.id
+      render :service
     else
-      render json: { :machine => -1, :message => 'No available machine.' } and return
+      @machine = -1
+      @message = 'No available machine.'
+      render :service
     end
   end
 
   def progress
+    if @machine.progress == 3
+      puts @machine.progress
+      render json: { :progress => 3, :url => @machine.url}
+    else
+      puts @machine.progress
+      render json: { :progress => @machine.progress }
+    end
   end
 
 end
