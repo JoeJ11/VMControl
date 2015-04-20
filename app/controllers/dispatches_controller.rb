@@ -78,7 +78,11 @@ class DispatchesController < ApplicationController
   # end
 
   def service
-    apply_params = params.permit(:user_name, :exp_id)
+    apply_params = params.permit(:user_name, :exp_id, :xuetang_id)
+
+    if apply_params.has_key? :xuetang_id
+      apply_params[:user_name] = 'haha'
+    end
 
     # Check User name is a email address
     user_name = apply_params[:user_name]
@@ -135,4 +139,13 @@ class DispatchesController < ApplicationController
     end
   end
 
+  def get_xuetang_user(anonymous_id)
+    response = HTTParty.get(
+        "http://www.xuetangx.com/internal_api/check_anonymous?anonymous_id=#{anonymous_id}",
+        :headers => {
+            'XUETANGX-API-KEY' => '3nW28f2fS6CbztLERiYfQqHtC7ZhB8Y2'
+        }
+    )
+    puts response
+  end
 end
