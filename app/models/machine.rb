@@ -92,28 +92,29 @@ class Machine < ActiveRecord::Base
     student.publicize_repo(repo_id)
     user_info = student.get_user
     code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
-    execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email']
+    execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email'], info[:exp].name
     student.edit_repo(repo_id)
   end
 
   def set_uo_keys(info)
-    public_key = open(Rails.root.join('playbook', 'tmp' ,'pub_key'), 'w')
+    public_key = open(Rails.root.join('ansible', 'roles' , 'common', 'files','pub_key'), 'w')
     public_key.write(info[:pub_key])
     public_key.close()
-    private_key = open(Rails.root.join('playbook', 'tmp', 'pri_key'), 'w')
+    private_key = open(Rails.root.join('ansible', 'roles', 'common', 'files','pri_key'), 'w')
     private_key.write(info[:pri_key])
     private_key.close()
   end
 
-  def execute_playbook(ip_address, code_repo, user_name, user_mail)
-    base_address = Rails.root.join('playbook').to_s
-    cmd = 'ansible-playbook '
+  def execute_playbook(ip_address, code_repo, user_name, user_mail, exp)
+    base_address = Rails.root.join('ansible').to_s
+    cmd = 'ansible-ansible '
     cmd += '-i ' + base_address + '/hosts '
-    cmd += "#{base_address}/trial_project/main.yml "
+    cmd += "#{base_address}/machine.yml "
     cmd += '-e ' + '"host=' + ip_address
     cmd += " git_repo=#{code_repo}"
     cmd += " git_name=#{user_name}"
-    cmd += " git_mail=#{user_mail}\""
+    cmd += " git_mail=#{user_mail}"
+    cmd += " exp=#{exp}\""
     puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
@@ -130,7 +131,7 @@ class Machine < ActiveRecord::Base
   def load_config_repo(exp)
     repo = Student.list_repo(exp.config_repo_id)
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-      stdin.puts("cd #{Rails.root.join('playbook').to_s}")
+      stdin.puts("cd #{Rails.root.join('ansible').to_s}")
       stdin.puts("git clone http://thuvmcontrol.cloudapp.net/Teacher_#{exp.course.teacher}/trial_project.git")
       stdin.close
 
@@ -142,8 +143,8 @@ class Machine < ActiveRecord::Base
   end
 
   # def setup_proxy
-  #   base_address = Rails.root.join('playbook').to_s
-  #   cmd = 'ansible-playbook '
+  #   base_address = Rails.root.join('ansible').to_s
+  #   cmd = 'ansible-ansible '
   #   cmd += "-i #{base_address}/hosts "
   #   cmd += "#{base_address}/playbooks/proxy.yml "
   #   # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
@@ -161,8 +162,8 @@ class Machine < ActiveRecord::Base
   # end
 
   # def stop_proxy
-  #   base_address = Rails.root.join('playbook').to_s
-  #   cmd = 'ansible-playbook '
+  #   base_address = Rails.root.join('ansible').to_s
+  #   cmd = 'ansible-ansible '
   #   cmd += "-i #{base_address}/hosts "
   #   cmd += "#{base_address}/playbooks/proxy_stop.yml "
   #   cmd += '-e "port=4201"'

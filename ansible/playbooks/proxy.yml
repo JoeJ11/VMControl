@@ -1,0 +1,5 @@
+- hosts: proxy
+  gather_facts: False
+  tasks:
+    - name: Start proxy
+      shell: ~/start-siab.sh "{{ip}}" "{{port}}"
