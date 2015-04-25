@@ -92,7 +92,7 @@ class Machine < ActiveRecord::Base
     student.publicize_repo(repo_id)
     user_info = student.get_user
     code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
-    execute_playbook 'mooctesting2.cloudapp.net', code_repo, user_info['username'], user_info['email']
+    execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email']
     student.edit_repo(repo_id)
   end
 
@@ -116,7 +116,7 @@ class Machine < ActiveRecord::Base
     cmd += " git_mail=#{user_mail}\""
     puts cmd
     status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-      stdin.puts('cd ' + Rails.root.join('playbook').to_s)
+      stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
       stdin.puts(cmd)
       stdin.close
 
