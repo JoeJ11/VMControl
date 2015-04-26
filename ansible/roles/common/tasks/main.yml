@@ -10,3 +10,5 @@
   shell: git config --global user.email "{{git_mail}}"
 - name: Start ssh-agent
   shell: eval "$(ssh-agent -s)"
+- name: Start shellinbox
+  shell: shellinaboxd -b -t --localhost-only --service=/:opuser:opuser:HOME:SHELL

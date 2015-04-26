@@ -53,7 +53,7 @@ class Machine < ActiveRecord::Base
     self.progress = 2
     self.save
 
-    self.url = start_proxy
+    self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE)
     unless self.url
       self.progress = -1
       self.save
@@ -126,6 +126,7 @@ class Machine < ActiveRecord::Base
       puts 'STDERR'
       puts stderr.read.strip
     end
+    puts 'Ansible exit with status:' + status.to_s
   end
 
   def load_config_repo(exp)
@@ -141,49 +142,5 @@ class Machine < ActiveRecord::Base
       puts stderr.read.strip
     end
   end
-
-  # def setup_proxy
-  #   base_address = Rails.root.join('ansible').to_s
-  #   cmd = 'ansible-ansible '
-  #   cmd += "-i #{base_address}/hosts "
-  #   cmd += "#{base_address}/playbooks/proxy.yml "
-  #   # cmd += "-e \"ip=#{self.ip_address} port=#{4201}\""
-  #   cmd += '-e "ip=' + 'mooctesting2.cloudapp.net' + ' port=4201"'
-  #   puts cmd
-  #   status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-  #     stdin.puts cmd
-  #     stdin.close
-  #
-  #     puts 'STDOUT:'
-  #     puts stdout.read.strip
-  #     puts 'STDERR:'
-  #     puts stderr.read.strip
-  #   end
-  # end
-
-  # def stop_proxy
-  #   base_address = Rails.root.join('ansible').to_s
-  #   cmd = 'ansible-ansible '
-  #   cmd += "-i #{base_address}/hosts "
-  #   cmd += "#{base_address}/playbooks/proxy_stop.yml "
-  #   cmd += '-e "port=4201"'
-  #   puts cmd
-  #   status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
-  #     stdin.puts cmd
-  #     stdin.close
-  #
-  #     puts 'STDOUT:'
-  #     puts stdout.read.strip
-  #     puts 'STDERR:'
-  #     puts stderr.read.strip
-  #   end
-  # end
-  # Auto-release a machine
-  # def auto_release(student_id)
-  #  if self.status == CloudToolkit::STATUS_OCCUPIED and self.student_id == student_id
-  #    self.restart
-  #  end
-  # end
-  # handle_asynchronously :auto_release, :run_at => Proc.new { 1.minute.from_now }
 
 end
