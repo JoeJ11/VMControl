@@ -67,7 +67,7 @@ class Machine < ActiveRecord::Base
     Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 30.minute.from_now)
   end
 
-  handle_asynchronously :assign, :priority => 100
+  # handle_asynchronously :assign, :priority => 100
 
   # Create a machine
   # Not used now!
@@ -85,14 +85,14 @@ class Machine < ActiveRecord::Base
     }
     set_uo_keys keys_info
 
-    load_config_repo info[:exp]
+    # load_config_repo info[:exp]
 
     student = Student.find_by_mail_address info[:user_name]
     repo_id = student.setup_repo info[:exp].code_repo_id
     student.publicize_repo(repo_id)
     user_info = student.get_user
     code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
-    execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email'], info[:exp].name
+    execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
     student.edit_repo(repo_id)
   end
 
@@ -107,7 +107,7 @@ class Machine < ActiveRecord::Base
 
   def execute_playbook(ip_address, code_repo, user_name, user_mail, exp)
     base_address = Rails.root.join('ansible').to_s
-    cmd = 'ansible-ansible '
+    cmd = 'ansible-playbook '
     cmd += '-i ' + base_address + '/hosts '
     cmd += "#{base_address}/machine.yml "
     cmd += '-e ' + '"host=' + ip_address

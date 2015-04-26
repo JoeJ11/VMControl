@@ -119,7 +119,10 @@ class DispatchesController < ApplicationController
       machine.progress = 0
       machine.save
 
-      machine.delay.assign(info)
+      Thread.new do
+        puts 'Assign process'
+        machine.assign(info)
+      end
       @machine = machine.id
       render :service
     else
