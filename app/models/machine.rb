@@ -54,12 +54,7 @@ class Machine < ActiveRecord::Base
     self.save
 
     self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE)
-    unless self.url
-      self.progress = -1
-      self.save
-      Delayed::Job.enqueue(MachineDeleteJob.new(self.id))
-      return
-    end
+    puts '***************************************************************'
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save

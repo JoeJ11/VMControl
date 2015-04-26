@@ -122,6 +122,7 @@ class DispatchesController < ApplicationController
       Thread.new do
         puts 'Assign process'
         machine.assign(info)
+        ActiveRecord::Base.connection.close
       end
       @machine = machine.id
       render :service
@@ -134,7 +135,6 @@ class DispatchesController < ApplicationController
 
   def progress
     if @machine.progress == 3
-      puts @machine.progress
       render json: { :progress => 3, :url => @machine.url}
     else
       puts @machine.progress

@@ -1,7 +1,7 @@
 - name: Copy public key
-  copy: src=../files/pub_key dest=~/.ssh/id_rsa.pub owner=azureuser group=azureuser mode=0600
+  copy: src=../files/pub_key dest=~/.ssh/id_rsa.pub owner=opuser group=opuser mode=0600
 - name: Copy private key
-  copy: src=../files/pri_key dest=~/.ssh/id_rsa owner=azureuser group=azureuser mode=0600
+  copy: src=../files/pri_key dest=~/.ssh/id_rsa owner=opuser group=opuser mode=0600
 - name: Clone a remote git repo
   git: repo="{{git_repo}}" dest=~/trial/ accept_hostkey=yes
 - name: Set git account

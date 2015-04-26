@@ -1,5 +1,2 @@
 [template]
-server ansible_ssh_host="{{host}}" ansible_ssh_user=azureuser
-
-[proxy]
-proxy ansible_ssh_host=thuvmcontrol.cloudapp.net ansible_ssh_user=thu_mooc
+server ansible_ssh_host="{{host}}" ansible_ssh_user=opuser

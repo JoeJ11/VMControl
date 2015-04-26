@@ -1,6 +1,6 @@
 module ProxyToolkit
 
-  PROXY_URL = 'http://thuwebproxy.cloudapp.net:3000/thu-manage/'
+  PROXY_URL = 'http://thuwebproxy.cloudapp.net:3000/'
   PROXY_GENERAL_MODE = 0
   PROXY_SHELL_MODE = 1
 
@@ -13,7 +13,7 @@ module ProxyToolkit
 
   def start_proxy(token, mode)
     response = HTTParty.post(
-        PROXY_URL + 'create',
+        PROXY_URL + 'thu-manage/create',
         :body => {
             'target' => self.ip_address,
             'token' => token,
@@ -21,24 +21,16 @@ module ProxyToolkit
         }
     )
     puts response
-    if response['status'] == 'success'
-      return response['url']
-    else
-      return false
-    end
+    return PROXY_URL + response['proxy']
   end
 
   def stop_proxy
     response = HTTParty.post(
-        PROXY_URL + 'delete',
+        PROXY_URL + 'thu-manage/delete',
         :body => {
             'target' => self.ip_address
         }
     )
     puts response
-  end
-
-  def release_all
-    HTTParty.get(PROXY_URL + 'release-all')
   end
 end
