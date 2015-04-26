@@ -277,15 +277,15 @@ module CloudToolkit
   end
 
   # Create image
-  def create_image
+  def create_image(m_id, name)
     self.class.require_token @tenant_name
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'images',
                            :body => {
-                               'tenant-id' => 'WTF',
-                               'instance-id' => '220f77d2-49b0-452f-90f8-440b4f29163a',
-                               'image-name' => 'test-image',
-                               'members' => []
+                               # 'tenant-id' => 'WTH',
+                               'instance_id' => m_id,
+                               'image_name' => name,
+                               'members' => [X_AUTH_USER]
                            }.to_json,
                            :headers => {
                                'Content-type' => 'application/json',

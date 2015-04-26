@@ -1,6 +1,8 @@
 module ProxyToolkit
 
-  PROXY_URL = 'http://thuvmcontrol.cloudapp.net:3000/ssh/'
+  PROXY_URL = 'http://thuwebproxy.cloudapp.net:3000/'
+  PROXY_GENERAL_MODE = 0
+  PROXY_SHELL_MODE = 1
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -9,26 +11,26 @@ module ProxyToolkit
   module ClassMethods
   end
 
-  def start_proxy
-    response = HTTParty.get(
-        PROXY_URL + 'assign/' + self.ip_address
+  def start_proxy(token, mode)
+    response = HTTParty.post(
+        PROXY_URL + 'thu-manage/create',
+        :body => {
+            'target' => self.ip_address,
+            'token' => token,
+            'mode' => mode
+        }
     )
     puts response
-    if response['status'] == 'success'
-      return response['url']
-    else
-      return false
-    end
+    return PROXY_URL + response['proxy']
   end
 
   def stop_proxy
-    response = HTTParty.get(
-        PROXY_URL + 'release/' + self.ip_address
+    response = HTTParty.post(
+        PROXY_URL + 'thu-manage/delete',
+        :body => {
+            'target' => self.ip_address
+        }
     )
     puts response
-  end
-
-  def release_all
-    HTTParty.get(PROXY_URL + 'release-all')
   end
 end

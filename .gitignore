@@ -15,5 +15,6 @@
 /log/*.log
 /tmp
 /.idea/*
-playbook/playbooks
-playbook/tmp
+ansible/roles/common/files/pub_key
+ansible/roles/common/files/pri_key
+ansible/roles/*

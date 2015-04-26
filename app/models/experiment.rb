@@ -43,8 +43,17 @@ class Experiment < ActiveRecord::Base
     end
   end
 
-  def setup_git
+  def update_config_git
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts "cd #{Rails.root.join('ansible', 'roles', name).to_s}"
+      stdin.puts 'git pull origin master'
+      stdin.close
 
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
+      puts stderr.read.strip
+    end
   end
 
 end

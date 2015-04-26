@@ -1,5 +1,6 @@
 class DispatchesController < ApplicationController
   before_action :set_machines, only: [:stop, :start, :progress, :destroy]
+  after_action :allow_iframe, only: [:service]
 
   def index
     @machines = Machine.all
@@ -119,7 +120,11 @@ class DispatchesController < ApplicationController
       machine.progress = 0
       machine.save
 
-      machine.delay.assign(info)
+      Thread.new do
+        puts 'Assign process'
+        machine.assign(info)
+        ActiveRecord::Base.connection.close
+      end
       @machine = machine.id
       render :service
     else
@@ -131,7 +136,6 @@ class DispatchesController < ApplicationController
 
   def progress
     if @machine.progress == 3
-      puts @machine.progress
       render json: { :progress => 3, :url => @machine.url}
     else
       puts @machine.progress
@@ -148,4 +152,10 @@ class DispatchesController < ApplicationController
     )
     puts response
   end
+
+  # Allow iframe to be seen from xuetangX
+  def allow_iframe
+    response.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.xuetangx.com'
+  end
+
 end
