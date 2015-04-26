@@ -23,7 +23,7 @@ function get_progress(id) {
             }
             else if (data['progress'] == 3) {
                 document.getElementById('infoBar').textContent = '准备就绪！'
-                document.getElementById('iframe').src = data['url']
+                document.getElementById('iframe').src = data['url'] + '?innerframe=true'
                 clearInterval(timer);
             }
             else {

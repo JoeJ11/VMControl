@@ -3,12 +3,15 @@
 - name: Copy private key
   copy: src=../files/pri_key dest=~/.ssh/id_rsa owner=opuser group=opuser mode=0600
 - name: Clone a remote git repo
-  git: repo="{{git_repo}}" dest=~/trial/ accept_hostkey=yes
+  git: repo="{{git_repo}}" dest=~/project accept_hostkey=yes
 - name: Set git account
   shell: git config --global user.name "{{git_name}}"
 - name: Set git mail address
   shell: git config --global user.email "{{git_mail}}"
 - name: Start ssh-agent
   shell: eval "$(ssh-agent -s)"
+- name: Start apache
+  service: name=apache2 state=started
+  sudo: yes
 - name: Start shellinbox
   shell: shellinaboxd -b -t --localhost-only --service=/:opuser:opuser:HOME:SHELL
