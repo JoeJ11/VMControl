@@ -1,5 +1,6 @@
 class DispatchesController < ApplicationController
   before_action :set_machines, only: [:stop, :start, :progress, :destroy]
+  after_action :allow_iframe, only: [:service]
 
   def index
     @machines = Machine.all
@@ -151,4 +152,10 @@ class DispatchesController < ApplicationController
     )
     puts response
   end
+
+  # Allow iframe to be seen from xuetangX
+  def allow_iframe
+    response.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.xuetangx.com'
+  end
+
 end
