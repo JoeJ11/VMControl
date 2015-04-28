@@ -1,4 +1,3 @@
-<h1>Dispatch#service</h1>
 <script type="text/javascript" src="/js/service.js"></script>
 
 <%- if @machine == -1 %>
@@ -9,9 +8,11 @@
     <body onload="timer = setInterval(function () {
                 get_progress(<%= @machine %>)
             }, 5000)">
-        <div id="infoBar">
+    <div class="row">
+        <iframe class="col-md-10" id="iframe" frameborder="0" height="500" r></iframe>
+        <div class="col-md-2" id="infoBar">
           Information can be seen here.
         </div>
+    </div>
     </body>
-    <iframe id="iframe"></iframe>
 <%- end %>

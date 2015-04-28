@@ -45,6 +45,11 @@ gem 'open4'
 # Use SSHKey
 gem 'sshkey'
 
+# Use boostrap
+gem 'bootstrap-sass', '~> 3.3.4'
+gem 'autoprefixer-rails'
+
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
