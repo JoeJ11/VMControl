@@ -10,24 +10,27 @@ function get_progress(id) {
         type: 'get',
         success: function(data) {
             if (data['progress'] == -1) {
-                document.getElementById('infoBar').textContent = 'Please wait and try again.'
+                document.getElementById('stage_1').className = 'bg-danger'
+                document.getElementById('stage_2').className = 'bg-danger'
+                document.getElementById('stage_3').className = 'bg-danger'
             }
             else if (data['progress'] == 0) {
-                document.getElementById('infoBar').textContent = '正在等待...'
             }
             else if (data['progress'] == 1) {
-                document.getElementById('infoBar').textContent = '正在准备虚拟机环境...'
+                document.getElementById('stage_1').className = 'bg-success'
             }
             else if (data['progress'] == 2) {
-                document.getElementById('infoBar').textContent = '正在准备代理...'
+                document.getElementById('stage_2').className = 'bg-success'
             }
             else if (data['progress'] == 3) {
-                document.getElementById('infoBar').textContent = '准备就绪！'
+                document.getElementById('stage_3').className = 'bg-success'
                 document.getElementById('iframe').src = data['url'] + '?innerframe=true'
                 clearInterval(timer);
             }
             else {
-                document.getElementById('infoBar').textContent = 'finished.'
+                document.getElementById('stage_1').className = 'bg-warning'
+                document.getElementById('stage_2').className = 'bg-warning'
+                document.getElementById('stage_3').className = 'bg-warning'
             }
         }
     })
