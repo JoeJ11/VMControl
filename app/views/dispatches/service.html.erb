@@ -1,4 +1,3 @@
-<h1>Dispatch#service</h1>
 <script type="text/javascript" src="/js/service.js"></script>
 
 <%- if @machine == -1 %>
@@ -9,9 +8,13 @@
     <body onload="timer = setInterval(function () {
                 get_progress(<%= @machine %>)
             }, 5000)">
-        <div id="infoBar">
-          Information can be seen here.
+    <div class="row">
+        <iframe class="col-md-10" id="iframe" frameborder="0" height="500" r></iframe>
+        <div class="col-md-2">
+          <p class="bg-info" id="stage_1"> 正在准备开始</p>
+          <p class="bg-info" id="stage_2"> 正在配置虚拟机环境</p>
+          <p class="bg-info" id="stage_3"> 正在准备代理</p>
         </div>
+    </div>
     </body>
-    <iframe id="iframe"></iframe>
 <%- end %>

@@ -1,6 +1,6 @@
 <h1>Listing experiments</h1>
 
-<table>
+<table class="table">
   <thead>
     <tr>
       <th>Name</th>
@@ -26,11 +26,11 @@
         <%- else %>
             <td>Offline</td>
         <%- end %>
-        <td><%= link_to 'Show', experiment %></td>
-        <td><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
-        <td><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-        <td><%= link_to 'Start', start_experiment_path(experiment) %></td>
-        <td><%= link_to 'Stop', stop_experiment_path(experiment) %></td>
+        <td class="btn btn-default"><%= link_to 'Show', experiment %></td>
+        <td class="btn btn-default"><%= link_to 'Edit', edit_experiment_path(experiment) %></td>
+        <td class="btn btn-default"><%= link_to 'Destroy', experiment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td class="btn btn-default"><%= link_to 'Start', start_experiment_path(experiment) %></td>
+        <td class="btn btn-default"><%= link_to 'Stop', stop_experiment_path(experiment) %></td>
       </tr>
     <% end %>
   </tbody>
