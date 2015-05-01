@@ -49,6 +49,8 @@ gem 'sshkey'
 gem 'bootstrap-sass', '~> 3.3.4'
 gem 'autoprefixer-rails'
 
+# Integrate Azure
+gem 'azure'
 
 # Use capistrano
 gem 'capistrano', '~> 3.1.0'

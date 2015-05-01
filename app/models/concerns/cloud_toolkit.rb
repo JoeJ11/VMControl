@@ -206,11 +206,11 @@ module CloudToolkit
                 }
     )
     if response['status'] == 'CREATE_IN_PROGRESS' or response['status'] == 'DELETE_IN_PROGRESS'
-      return { :status => STATUS_ONPROCESS }
+      { :status => STATUS_ONPROCESS }
     elsif response['status'] == 'CREATE_COMPLETE'
-      return { :status => STATUS_AVAILABLE, :ip_address => response['ext_ip'] }
+      { :status => STATUS_AVAILABLE, :ip_address => response['ext_ip'] }
     else
-      return { :status => STATUS_ERROR }
+      { :status => STATUS_ERROR }
     end
   end
 
@@ -230,7 +230,7 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
-    return {:status => response['status'], :ip => response['ext_ip']}
+    {:status => response['status'], :ip => response['ext_ip']}
   end
 
   # Create a template
@@ -248,7 +248,7 @@ module CloudToolkit
     # self.specifier = response['config_id']
     # self.save
     puts response
-    return response['config_id']
+    response['config_id']
   #rescue => exception
   #  return {:error => exception.message}
   end
