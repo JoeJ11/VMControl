@@ -122,6 +122,7 @@ class Machine < ActiveRecord::Base
       puts stderr.read.strip
     end
     puts 'Ansible exit with status:' + status.to_s
+    return status.exitstatus
   end
 
   def load_config_repo(exp)

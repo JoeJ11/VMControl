@@ -20,11 +20,14 @@ function get_progress(id) {
                 document.getElementById('stage_1').className = 'bg-success'
             }
             else if (data['progress'] == 2) {
+                document.getElementById('stage_1').className = 'bg-success'
                 document.getElementById('stage_2').className = 'bg-success'
             }
             else if (data['progress'] == 3) {
+                document.getElementById('stage_1').className = 'bg-success'
+                document.getElementById('stage_2').className = 'bg-success'
                 document.getElementById('stage_3').className = 'bg-success'
-                document.getElementById('iframe').src = data['url'] + '?innerframe=true'
+                document.getElementById('iframe').src = data['url'] + '/?innerframe=true'
                 clearInterval(timer);
             }
             else {
