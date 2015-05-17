@@ -137,8 +137,11 @@ class DispatchesController < ApplicationController
   def progress
     if @machine.progress == 3
       render json: { :progress => 3, :url => @machine.url}
+    elsif @machine.progress == -1
+      Delayed::Job.enqueue(MachineDeleteJob.new(@machine.id))
+
+      render json: { :progress => @machine.progress }
     else
-      puts @machine.progress
       render json: { :progress => @machine.progress }
     end
   end

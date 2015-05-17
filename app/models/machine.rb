@@ -23,9 +23,7 @@ class Machine < ActiveRecord::Base
 
   # Stop / Delete a machine
   def stop
-    if self.status == STATUS_OCCUPIED
-      stop_proxy
-    end
+    stop_proxy
 
     self.delete_machine
     self.status = STATUS_ERROR
@@ -49,7 +47,12 @@ class Machine < ActiveRecord::Base
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
 
-    setup_environment info
+    unless setup_environment(info) == 0
+      self.progress = -1
+      self.save
+      return
+    end
+
     self.progress = 2
     self.save
 
@@ -87,8 +90,9 @@ class Machine < ActiveRecord::Base
     student.publicize_repo(repo_id)
     user_info = student.get_user
     code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
-    execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
+    rtn_status = execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
     student.edit_repo(repo_id)
+    return rtn_status
   end
 
   def set_uo_keys(info)

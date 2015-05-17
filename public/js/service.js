@@ -13,6 +13,8 @@ function get_progress(id) {
                 document.getElementById('stage_1').className = 'bg-danger'
                 document.getElementById('stage_2').className = 'bg-danger'
                 document.getElementById('stage_3').className = 'bg-danger'
+                document.getElementById('failure_info').style.display = "block"
+                clearInterval(timer)
             }
             else if (data['progress'] == 0) {
             }
@@ -27,6 +29,7 @@ function get_progress(id) {
                 document.getElementById('stage_1').className = 'bg-success'
                 document.getElementById('stage_2').className = 'bg-success'
                 document.getElementById('stage_3').className = 'bg-success'
+                document.getElementById('success_info').style.display = "block"
                 document.getElementById('iframe').src = data['url'] + '/?innerframe=true'
                 clearInterval(timer);
             }
@@ -34,6 +37,8 @@ function get_progress(id) {
                 document.getElementById('stage_1').className = 'bg-warning'
                 document.getElementById('stage_2').className = 'bg-warning'
                 document.getElementById('stage_3').className = 'bg-warning'
+                document.getElementById('failure_info').style.display = "block"
+                clearInterval(timer)
             }
         }
     })

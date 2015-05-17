@@ -50,11 +50,23 @@ gem 'bootstrap-sass', '~> 3.3.4'
 gem 'autoprefixer-rails'
 
 
+# Use capistrano
+gem 'capistrano', '~> 3.1.0'
+gem 'capistrano-bundler', '~> 1.1.2'
+gem 'capistrano-rails', '~> 1.1.1'
+gem 'capistrano-unicorn-nginx', '~> 2.0'
+
+# Add this if you're using rbenv
+gem 'capistrano-rbenv', github: "capistrano/rbenv"
+
+# Add this if you're using rvm
+# gem 'capistrano-rvm', github: "capistrano/rvm"
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
 # Use unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn'
 
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
