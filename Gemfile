@@ -49,6 +49,15 @@ gem 'sshkey'
 gem 'bootstrap-sass', '~> 3.3.4'
 gem 'autoprefixer-rails'
 
+gem 'capistrano', '~> 3.1.0'
+gem 'capistrano-bundler', '~> 1.1.2'
+gem 'capistrano-rails', '~> 1.1.1'
+
+# Add this if you're using rbenv
+gem 'capistrano-rbenv', github: "capistrano/rbenv"
+
+# Add this if you're using rvm
+# gem 'capistrano-rvm', github: "capistrano/rvm"
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
