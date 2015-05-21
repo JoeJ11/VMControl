@@ -14,7 +14,9 @@ class Machine < ActiveRecord::Base
   # Stop / Delete a machine
   def stop
     self.stop_proxy
-    self.cleanup_after_stop
+    if machine_status and (machine_status == STATUS_AVAILABLE or machine_status == STATUS_OCCUPIED)
+      self.cleanup_after_stop
+    end
 
     self.delete_machine
     self.status = STATUS_ERROR
