@@ -8,17 +8,7 @@ class Machine < ActiveRecord::Base
 
   # Start / Create a machine
   def start
-    setting = {'config_id' => self.setting, 'cluster_number' => 1}
-    create_machine setting
-    # if config['status'] == 'CREATE_COMPLETE'
-    #   self.status = STATUS_AVAILABLE
-    #   self.ip_address = config[:ip_address]
-    # elsif config['status'] == 'CREATE_IN_PROGRESS'
-    #   self.status = STATUS_ONPROCESS
-    # else
-    #   self.status = STATUS_ERROR
-    # end
-    # self.save
+    create_machine :config_id => self.setting, :cluster_number => 1
   end
 
   # Stop / Delete a machine
@@ -47,6 +37,8 @@ class Machine < ActiveRecord::Base
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
 
+    # This set up remote VM
+    # Return value 0 means no error
     unless setup_environment(info) == 0
       self.progress = -1
       self.save
@@ -56,8 +48,8 @@ class Machine < ActiveRecord::Base
     self.progress = 2
     self.save
 
+    # This starts the proxy
     self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE)
-    puts '***************************************************************'
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save
@@ -125,7 +117,6 @@ class Machine < ActiveRecord::Base
       puts 'STDERR'
       puts stderr.read.strip
     end
-    puts 'Ansible exit with status:' + status.to_s
     return status.exitstatus
   end
 
@@ -142,5 +133,46 @@ class Machine < ActiveRecord::Base
       puts stderr.read.strip
     end
   end
+
+  def setup_after_creation
+    base_address = Rails.root.join('ansible').to_s
+    cmd = 'ansible-playbook'
+    cmd += "-i #{base_address}/hosts "
+    cmd += "#{base_address}/machine_start.yml "
+    cmd += '-e ' + '"host="' + ip_address
+    puts cmd
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
+      stdin.puts(cmd)
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
+      puts stderr.read.strip
+    end
+    return status
+  end
+
+  def cleanup_after_stop
+    base_address = Rails.root.join('ansible').to_s
+    cmd = 'ansible-playbook'
+    cmd += "-i #{base_address}/hosts "
+    cmd += "#{base_address}/machine_stop.yml "
+    cmd += '-e ' + '"host="' + ip_address
+    puts cmd
+    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
+      stdin.puts(cmd)
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
+      puts stderr.read.strip
+    end
+    return status
+  end
+
 
 end

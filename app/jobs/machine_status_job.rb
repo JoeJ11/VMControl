@@ -5,7 +5,7 @@ class MachineStatusJob < Struct.new(:machine_id)
     if machine
       information = machine.show_machine
       if information[:status] == CloudToolkit::STATUS_AVAILABLE
-        machine.status = CloudToolkit::STATUS_AVAILABLE
+        machine.status = CloudToolkit::STATUS_PREPARE
         machine.ip_address = information[:ip_address]
         machine.save
       elsif information[:status] == CloudToolkit::STATUS_ONPROCESS

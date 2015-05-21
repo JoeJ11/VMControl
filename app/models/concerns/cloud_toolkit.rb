@@ -4,6 +4,8 @@ module CloudToolkit
   STATUS_AVAILABLE = 1
   STATUS_ONPROCESS = 2
   STATUS_ERROR = 3
+  STATUS_PREPARE = 4
+
   X_AUTH_USER = 'thu_mooc@hotmail.com'
   X_AUTH_KEY = 'pwd4p0wercloud'
   BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
