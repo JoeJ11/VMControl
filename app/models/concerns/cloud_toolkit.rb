@@ -163,8 +163,8 @@ module CloudToolkit
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster',
                            :body => {
-                               'conf_id' => setting['config_id'],
-                               'cluster_number' => setting['cluster_number']
+                               'conf_id' => setting[:config_id],
+                               'cluster_number' => setting[:cluster_number]
                            }.to_json,
                            :headers => {
                                'Content-type' => 'application/json',
