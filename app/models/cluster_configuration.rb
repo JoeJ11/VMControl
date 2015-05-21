@@ -5,7 +5,6 @@ class ClusterConfiguration < ActiveRecord::Base
   include CloudToolkit
 
   def bad_int_ips
-    return false
     int_ips = []
     flag = false
     self.cluster_templates.each do |template|
@@ -16,7 +15,7 @@ class ClusterConfiguration < ActiveRecord::Base
         break
       end
     end
-    return flag
+    flag
   end
 
   def instantiate
@@ -43,7 +42,7 @@ class ClusterConfiguration < ActiveRecord::Base
         number += 1
       end
     end
-    return number
+    number
   end
 
   def experiment_number

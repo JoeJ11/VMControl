@@ -90,10 +90,10 @@ class Machine < ActiveRecord::Base
   def set_uo_keys(info)
     public_key = open(Rails.root.join('ansible', 'roles' , 'common', 'files','pub_key'), 'w')
     public_key.write(info[:pub_key])
-    public_key.close()
+    public_key.close
     private_key = open(Rails.root.join('ansible', 'roles', 'common', 'files','pri_key'), 'w')
     private_key.write(info[:pri_key])
-    private_key.close()
+    private_key.close
   end
 
   def execute_playbook(code_repo, user_name, user_mail, exp)
@@ -107,7 +107,7 @@ class Machine < ActiveRecord::Base
     cmd += " git_mail=#{user_mail}"
     cmd += " exp=#{exp}\""
     puts cmd
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+    Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
       stdin.puts(cmd)
       stdin.close

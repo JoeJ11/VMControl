@@ -25,7 +25,7 @@ class Course < ActiveRecord::Base
     initialize_repo "#{exp_name.downcase}_stop"
     push_to_remote "#{exp_name.downcase}_stop"
 
-    return {:code => code_id, :config => config_id, :start_id => start_id, :stop_id => stop_id}
+    {:code => code_id, :config => config_id, :start_id => start_id, :stop_id => stop_id}
   end
 
   def initialize_repo(repo_name)
@@ -35,7 +35,7 @@ class Course < ActiveRecord::Base
   end
 
   def push_to_remote(repo_name)
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+    Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts 'cd ' + Rails.root.join('ansible', 'roles', repo_name).to_s
       stdin.puts 'git init'
       stdin.puts 'git add .'
