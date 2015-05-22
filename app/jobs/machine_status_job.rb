@@ -9,7 +9,7 @@ class MachineStatusJob < Struct.new(:machine_id)
         machine.ip_address = information[:ip_address]
         machine.save
 
-        sleep(5.seconds)
+        sleep(10.seconds)
         unless machine.setup_after_creation == 0
           machine.status = CloudToolkit::STATUS_ERROR
           machine.save

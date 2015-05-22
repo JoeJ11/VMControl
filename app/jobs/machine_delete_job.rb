@@ -4,6 +4,7 @@ class MachineDeleteJob < Struct.new(:machine_id)
     machine = Machine.find machine_id
     if machine
       machine.stop
+      sleep(5.seconds)
       while machine.show_machine == CloudToolkit::STATUS_ONPROCESS
         sleep(5.seconds)
       end
