@@ -1,11 +1,10 @@
 class ClusterConfiguration < ActiveRecord::Base
   has_many :cluster_templates
   has_many :machines
-  has_many :experiments
+  has_one :experiment
   include CloudToolkit
 
   def bad_int_ips
-    return false
     int_ips = []
     flag = false
     self.cluster_templates.each do |template|
@@ -16,18 +15,18 @@ class ClusterConfiguration < ActiveRecord::Base
         break
       end
     end
-    return flag
+    flag
   end
 
   def instantiate
     settings = []
     cluster_templates.each do |template|
       setting = {
-          'name' => template.name,
-          'image_id' => template.image_id,
-          'flavor_id' => template.flavor_id,
-          'internal_ip' => template.internal_ip,
-          'ext_enable' => template.ext_enable,
+          :name => template.name,
+          :image_id => template.image_id,
+          :flavor_id => template.flavor_id,
+          :internal_ip => template.internal_ip,
+          :ext_enable => template.ext_enable,
       }
       settings.push setting
     end
@@ -43,17 +42,19 @@ class ClusterConfiguration < ActiveRecord::Base
         number += 1
       end
     end
-    return number
+    number
   end
 
   def experiment_number
-    number = 0
-    experiments.each do |exp|
-      if exp.status == Experiment::STATUS_ONLINE
-        number += 1
-      end
-    end
-    return number
+    experiment.status == Experiment::STATUS_ONLINE ? 1 : 0
+
+    # number = 0
+    # experiments.each do |exp|
+    #   if exp.status == Experiment::STATUS_ONLINE
+    #     number += 1
+    #   end
+    # end
+    # return number
   end
 
 end

@@ -104,6 +104,6 @@ class ExperimentsController < ApplicationController
       tem = params.require(:experiment).permit(:name, :cluster_configuration, :course)
       tem[:cluster_configuration] = ClusterConfiguration.find tem[:cluster_configuration].to_i
       tem[:course] = Course.find tem[:course]
-      return tem
+      tem
     end
 end

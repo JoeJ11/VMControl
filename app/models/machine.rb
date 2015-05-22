@@ -8,22 +8,15 @@ class Machine < ActiveRecord::Base
 
   # Start / Create a machine
   def start
-    setting = {'config_id' => self.setting, 'cluster_number' => 1}
-    create_machine setting
-    # if config['status'] == 'CREATE_COMPLETE'
-    #   self.status = STATUS_AVAILABLE
-    #   self.ip_address = config[:ip_address]
-    # elsif config['status'] == 'CREATE_IN_PROGRESS'
-    #   self.status = STATUS_ONPROCESS
-    # else
-    #   self.status = STATUS_ERROR
-    # end
-    # self.save
+    create_machine :config_id => self.setting, :cluster_number => 1
   end
 
   # Stop / Delete a machine
   def stop
-    stop_proxy
+    self.stop_proxy
+    if machine_status and (machine_status == STATUS_AVAILABLE or machine_status == STATUS_OCCUPIED)
+      self.cleanup_after_stop
+    end
 
     self.delete_machine
     self.status = STATUS_ERROR
@@ -47,6 +40,8 @@ class Machine < ActiveRecord::Base
     }
     Delayed::Job.enqueue(MachineCreateJob.new(params))
 
+    # This set up remote VM
+    # Return value 0 means no error
     unless setup_environment(info) == 0
       self.progress = -1
       self.save
@@ -56,8 +51,8 @@ class Machine < ActiveRecord::Base
     self.progress = 2
     self.save
 
+    # This starts the proxy
     self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE)
-    puts '***************************************************************'
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save
@@ -71,9 +66,6 @@ class Machine < ActiveRecord::Base
   # Not used now!
   def new_machine
     self.start
-  end
-
-  def check_setting_valid
   end
 
   def setup_environment(info)
@@ -90,7 +82,7 @@ class Machine < ActiveRecord::Base
     student.publicize_repo(repo_id)
     user_info = student.get_user
     code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
-    rtn_status = execute_playbook self.ip_address, code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
+    rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
     student.edit_repo(repo_id)
     return rtn_status
   end
@@ -98,24 +90,24 @@ class Machine < ActiveRecord::Base
   def set_uo_keys(info)
     public_key = open(Rails.root.join('ansible', 'roles' , 'common', 'files','pub_key'), 'w')
     public_key.write(info[:pub_key])
-    public_key.close()
+    public_key.close
     private_key = open(Rails.root.join('ansible', 'roles', 'common', 'files','pri_key'), 'w')
     private_key.write(info[:pri_key])
-    private_key.close()
+    private_key.close
   end
 
-  def execute_playbook(ip_address, code_repo, user_name, user_mail, exp)
+  def execute_playbook(code_repo, user_name, user_mail, exp)
     base_address = Rails.root.join('ansible').to_s
     cmd = 'ansible-playbook '
     cmd += '-i ' + base_address + '/hosts '
     cmd += "#{base_address}/machine.yml "
-    cmd += '-e ' + '"host=' + ip_address
+    cmd += '-e ' + '"host=' + self.ip_address
     cmd += " git_repo=#{code_repo}"
     cmd += " git_name=#{user_name}"
     cmd += " git_mail=#{user_mail}"
     cmd += " exp=#{exp}\""
     puts cmd
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+    Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
       stdin.puts(cmd)
       stdin.close
@@ -125,13 +117,11 @@ class Machine < ActiveRecord::Base
       puts 'STDERR'
       puts stderr.read.strip
     end
-    puts 'Ansible exit with status:' + status.to_s
-    return status.exitstatus
   end
 
   def load_config_repo(exp)
     repo = Student.list_repo(exp.config_repo_id)
-    status = Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+    Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts("cd #{Rails.root.join('ansible').to_s}")
       stdin.puts("git clone http://thuvmcontrol.cloudapp.net/Teacher_#{exp.course.teacher}/trial_project.git")
       stdin.close
@@ -142,5 +132,48 @@ class Machine < ActiveRecord::Base
       puts stderr.read.strip
     end
   end
+
+  def setup_after_creation
+    base_address = Rails.root.join('ansible').to_s
+    cmd = 'ansible-playbook '
+    cmd += "-i #{base_address}/hosts "
+    cmd += "#{base_address}/machine_start.yml "
+    cmd += '-e ' + '"host=' + ip_address
+    cmd += " exp=#{self.cluster_configuration.experiment.name.downcase}\""
+    puts cmd
+
+    Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
+      stdin.puts(cmd)
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
+      puts stderr.read.strip
+    end
+  end
+
+  def cleanup_after_stop
+    base_address = Rails.root.join('ansible').to_s
+    cmd = 'ansible-playbook '
+    cmd += "-i #{base_address}/hosts "
+    cmd += "#{base_address}/machine_stop.yml "
+    cmd += '-e ' + '"host=' + ip_address
+    cmd += " exp=#{self.cluster_configuration.experiment.name.downcase}\""
+    puts cmd
+
+    Open4::popen4('sh') do |pid, stdin, stdout, stderr|
+      stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
+      stdin.puts(cmd)
+      stdin.close
+
+      puts 'STDOUT:'
+      puts stdout.read.strip
+      puts 'STDERR:'
+      puts stderr.read.strip
+    end
+  end
+
 
 end

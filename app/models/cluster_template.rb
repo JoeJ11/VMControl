@@ -14,6 +14,6 @@ class ClusterTemplate < ActiveRecord::Base
         return true
       end
     end
-    return false
+    false
   end
 end
