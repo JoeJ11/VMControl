@@ -1,0 +1,2 @@
+- name: Common stop
+  shell: echo "Just a test"
