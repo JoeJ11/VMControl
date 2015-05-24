@@ -3,6 +3,8 @@ class MachineDeleteJob < Struct.new(:machine_id)
   def perform
     machine = Machine.find machine_id
     if machine
+      machine.stop_proxy
+      machine.cleanup_after_stop
       machine.stop
       sleep(5.seconds)
       while machine.show_machine == CloudToolkit::STATUS_ONPROCESS

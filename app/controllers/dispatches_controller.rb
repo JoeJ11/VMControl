@@ -20,6 +20,8 @@ class DispatchesController < ApplicationController
   end
 
   def stop
+    @machine.stop_proxy
+    @machine.cleanup_after_stop
     @machine.stop
     redirect_to :back
   end
