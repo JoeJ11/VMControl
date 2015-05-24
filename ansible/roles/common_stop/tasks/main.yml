@@ -1,2 +1,4 @@
-- name: Common stop
-  shell: echo "Just a test"
+- name: Test Operation
+  shell: echo "Bye, world"
+- name: Copy bash log to local
+  fetch: src=/var/shellhistory.log dest="../shelllog/{{logname}}"
