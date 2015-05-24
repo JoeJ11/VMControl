@@ -1,4 +1,4 @@
 - name: Test Operation
   shell: echo "Bye, world"
 - name: Copy bash log to local
-  fetch: src=/var/shellhistory.log dest="../shelllog/{{logname}}"
+  fetch: src=~/.shellhistory.log dest="../shelllog/{{logname}}"
