@@ -160,7 +160,7 @@ class Machine < ActiveRecord::Base
     cmd += "-i #{base_address}/hosts "
     cmd += "#{base_address}/machine_stop.yml "
     cmd += '-e ' + '"host=' + ip_address
-    cmd += " logname=#{self.student_id + Time.now.strftime("%d_%m_%Y_%H_%M")}.log"
+    cmd += " logname=#{self.user_name + Time.now.strftime("%d_%m_%Y_%H_%M")}.log" if self.user_name
     cmd += " exp=#{self.cluster_configuration.experiment.name.downcase}\""
     puts cmd
 
