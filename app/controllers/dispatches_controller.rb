@@ -111,7 +111,7 @@ class DispatchesController < ApplicationController
 
     # Check if there is a machine yet not released
     tem_m = Machine.find_by_user_name info[:user_name]
-    if tem_m and tem_m.status == CloudToolkit::STATUS_OCCUPIED
+    if tem_m and tem_m.status != CloudToolkit::STATUS_ERROR
       @machine = tem_m.id
       render :service and return
     end
