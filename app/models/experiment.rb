@@ -7,7 +7,7 @@ class Experiment < ActiveRecord::Base
   STATUS_ONLINE = 1
   STATUS_OFFLINE = 0
 
-  MACHINE_QUOTA = 3
+  MACHINE_QUOTA = 5
 
   def start
     self.status = STATUS_ONLINE
@@ -18,10 +18,6 @@ class Experiment < ActiveRecord::Base
     MACHINE_QUOTA.times do
       Delayed::Job.enqueue(MachineCreateJob.new(params))
     end
-    # MACHINE_QUOTA.times do
-    #   machine = Machine.new(params)
-    #   machine.start
-    # end
   end
 
   def stop
@@ -35,10 +31,9 @@ class Experiment < ActiveRecord::Base
     machines.each do |machine|
       if machine.status == Machine::STATUS_ERROR
         Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
-      elsif tem_number > tem_limit and machine.status == Machine::STATUS_AVAILABLE
+      elsif tem_number > tem_limit and (machine.status == Machine::STATUS_AVAILABLE or machine.status == Machine::STATUS_OCCUPIED)
         Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
         tem_number = tem_number - 1
-        puts tem_number.to_s + '/' + tem_limit.to_s
       end
     end
   end

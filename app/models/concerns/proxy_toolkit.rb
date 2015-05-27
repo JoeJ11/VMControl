@@ -1,6 +1,6 @@
 module ProxyToolkit
 
-  PROXY_URL = 'http://thuwebproxy.cloudapp.net:3000/'
+  PROXY_URL = 'https://crl.ptopenlab.com:8800/thuproxy/'
   PROXY_GENERAL_MODE = 0
   PROXY_SHELL_MODE = 1
 
