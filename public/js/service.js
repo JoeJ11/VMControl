@@ -31,7 +31,7 @@ function get_progress(id) {
                 document.getElementById('stage_3').className = 'bg-success'
                 document.getElementById('success_info').style.display = "block"
                 document.getElementById('myButton').style.display = "block"
-                document.getElementById('iframe').src = data['url'] + '/?innerframe=true'
+                document.getElementById('iframe').src = data['url']
                 clearInterval(timer);
             }
             else {
