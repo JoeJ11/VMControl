@@ -81,7 +81,11 @@ class DispatchesController < ApplicationController
   # end
 
   def service
-    apply_params = params.permit(:user_name, :exp_id, :xuetang_id)
+    apply_params = params.permit(:user_name, :exp_id, :xuetang_id, :account_name)
+
+    if apply_params[:account_name].length < 8
+      apply_params[:account_name] = apply_params[:account_name] + '________'
+    end
 
     if apply_params.has_key? :xuetang_id
       apply_params[:user_name] = 'haha'
@@ -96,7 +100,7 @@ class DispatchesController < ApplicationController
     end
 
     # Set up Account locally
-    info = Student.setup(apply_params[:user_name])
+    info = Student.setup(apply_params[:user_name], apply_params[:account_name])
 
     # Set up Account Remotely
     unless Machine.validate_user(user_name)

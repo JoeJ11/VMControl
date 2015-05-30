@@ -5,11 +5,11 @@ class Student < ActiveRecord::Base
 
   # handle_asynchronously :setup_new_user, :priority => 100
 
-  def self.setup(user_name)
+  def self.setup(user_name, account_name)
     student = Student.find_by_mail_address user_name
     unless student
       student = Student.new
-      student.setup_new_user(user_name)
+      student.setup_new_user(user_name, account_name)
     end
     return {
         :user_name => student.mail_address,
@@ -18,12 +18,12 @@ class Student < ActiveRecord::Base
     }
   end
 
-  def setup_new_user(user_name)
+  def setup_new_user(user_name, account_name)
     self.mail_address = user_name
     self.save
 
     self.generate_keys
-    self.setup_git_server
+    self.setup_git_server account_name
     self.save
   end
 
@@ -33,8 +33,8 @@ class Student < ActiveRecord::Base
     self.private_key = key.private_key
   end
 
-  def setup_git_server
-    self.create_git_user("User_#{id.to_s}", "Unknown_#{id.to_s}")
+  def setup_git_server(account_name)
+    self.create_git_user account_name, account_name
     self.add_ssh_key
   end
 
