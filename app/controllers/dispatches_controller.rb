@@ -167,7 +167,7 @@ class DispatchesController < ApplicationController
 
   # Allow iframe to be seen from xuetangX
   def allow_iframe
-    response.headers['X-Frame-Options'] = 'ALLOW-FROM https://www.xuetangx.com'
+    response.headers['X-Frame-Options'] = 'ALLOWALL'
   end
 
 end

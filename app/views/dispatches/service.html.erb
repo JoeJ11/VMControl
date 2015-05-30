@@ -1,9 +1,8 @@
 <script type="text/javascript" src="/js/service.js"></script>
 <script>
-    $('#myButton').on('click', function () {
+    function btn_click() {
         window.open(document.getElementById('iframe').src)
-        $btn.button('reset')
-    })
+    }
 </script>
 
 <%- if @machine == -1 %>
@@ -24,8 +23,8 @@
       <div class="alert alert-success" style="display:none" role="alert" id="success_info">
         Success! Enjoy yourself.
       </div>
-      <button type="button" id="myButton" class="btn btn-primary" autocomplete="off">
-        Open in new window
+      <button type="button" id="myButton" style="display:none" class="btn btn-primary" onclick="btn_click()">
+        Open terminal in a new window
       </button>
     </div>
     <div class = "row" style="overflow:hidden">
