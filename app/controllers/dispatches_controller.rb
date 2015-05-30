@@ -101,7 +101,7 @@ class DispatchesController < ApplicationController
     # Set up Account Remotely
     unless Machine.validate_user(user_name)
       @machine = -1
-      @message = 'A remote account has been setup. Password thumooc123'
+      @message = 'GitLab和IBM云的远程账号已创建。请查收相关邮件。'
       render :service and return
     end
 
