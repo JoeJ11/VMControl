@@ -2,7 +2,10 @@
 <script>
     function btn_click() {
         window.open(document.getElementById('iframe').src)
-    }
+    };
+    $("#iframe").click(function(e) {
+        e.preventDefault();
+    });
 </script>
 
 <%- if @machine == -1 %>
