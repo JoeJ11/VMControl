@@ -3,7 +3,7 @@
     function btn_click() {
         window.open(document.getElementById('iframe').src)
     };
-    $("#iframe").click(function(e) {
+    $('#bd').click(function(e) {
         e.preventDefault();
     });
 </script>
@@ -27,13 +27,14 @@
         Success! Enjoy yourself.
       </div>
       <button type="button" id="myButton" style="display:none" class="btn btn-primary" onclick="btn_click()">
-        Open terminal in a new window
+        打开全屏界面
       </button>
     </div>
-    <div class = "row" style="overflow:hidden">
+    <div class = "row" id="bd" style="overflow:hidden">
       <div class="col-md-1"></div>
-      <iframe frameborder="0" style="overflow:hidden;width:100%" height="1000" width="100%" class="col-md-10" id="iframe"></iframe>
+      <iframe frameborder="0"  style="overflow:hidden;width:100%" height="600" width="100%" class="col-md-10" id="iframe"></iframe>
       <div class="col-md-1"></div>
     </div>
+    <div class = "row"></div>
     </body>
 <%- end %>

@@ -83,8 +83,8 @@ class DispatchesController < ApplicationController
   def service
     apply_params = params.permit(:user_name, :exp_id, :xuetang_id, :account_name)
 
-    if apply_params[:account_name].length < 8
-      apply_params[:account_name] = apply_params[:account_name] + '________'
+    if apply_params[:account_name].length < 4
+      apply_params[:account_name] = apply_params[:account_name] + '____'
     end
 
     if apply_params.has_key? :xuetang_id
