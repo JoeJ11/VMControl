@@ -12,6 +12,13 @@ module AzureCloudToolkit
   STORAGE_ACCOUNT_NAME = 'thumoocy2qawigx'
   AFFINITY_GROUP = 'Wonderland'
 
+
+  STATUS_OCCUPIED = 0
+  STATUS_AVAILABLE = 1
+  STATUS_ONPROCESS = 2
+  STATUS_ERROR = 3
+  STATUS_PREPARE = 4
+
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -27,8 +34,10 @@ module AzureCloudToolkit
 
   end
 
+
   def create_machine
-    setting = JSON.parse(self.setting)
+    # setting = JSON.parse(self.setting)
+    setting = {}
     config = self.cluster_configuration
     machines = config.cluster_templates
 
@@ -66,7 +75,7 @@ module AzureCloudToolkit
         # :winrm_transport => ['https','http'], #Currently http is supported. To enable https, set the transport protocol to https, simply rdp to the VM once VM is in ready state, export the certificate ( CN name would be the deployment name) from the certstore of the VM and install to your local machine and communicate WinRM via https.
         :cloud_service_name => service_name,
         :deployment_name => 'thu',
-        :tcp_endpoints => '80',
+        # :tcp_endpoints => '80',
         # :private_key_file => 'c:/private_key.key', #required for ssh or winrm(https) certificate.
         # :certificate_file => 'c:/certificate.pem', #required for ssh or winrm(https) certificate.
         :ssh_port => 22,
@@ -94,7 +103,7 @@ module AzureCloudToolkit
     options = {
         :storage_account_name => STORAGE_ACCOUNT_NAME,
         # :winrm_transport => ['https','http'], #Currently http is supported. To enable https, set the transport protocol to https, simply rdp to the VM once VM is in ready state, export the certificate ( CN name would be the deployment name) from the certstore of the VM and install to your local machine and communicate WinRM via https.
-        :tcp_endpoints => '80',
+        # :tcp_endpoints => '80'
         # :private_key_file => 'c:/private_key.key', #required for ssh or winrm(https) certificate.
         # :certificate_file => 'c:/certificate.pem', #required for ssh or winrm(https) certificate.
         # :winrm_https_port => 5999,

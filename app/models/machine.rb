@@ -1,5 +1,5 @@
 class Machine < ActiveRecord::Base
-  include CloudToolkit
+  include AzureCloudToolkit
   include ProxyToolkit
 
   belongs_to :cluster_configuration
@@ -8,7 +8,8 @@ class Machine < ActiveRecord::Base
 
   # Start / Create a machine
   def start
-    create_machine :config_id => self.setting, :cluster_number => 1
+    create_machine
+    # create_machine :config_id => self.setting, :cluster_number => 1
   end
 
   # Stop / Delete a machine
