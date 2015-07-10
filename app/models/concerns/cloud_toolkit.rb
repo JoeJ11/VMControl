@@ -205,12 +205,15 @@ module CloudToolkit
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                 }
     )
+    puts response
     if response['status'] == 'CREATE_IN_PROGRESS' or response['status'] == 'DELETE_IN_PROGRESS'
       return { :status => STATUS_ONPROCESS }
     elsif response['status'] == 'CREATE_COMPLETE'
       return { :status => STATUS_AVAILABLE, :ip_address => response['ext_ip'] }
-    else
+    elsif response['status'] == 'CREATE_FAILED' or 'DELETE_FAILED'
       return { :status => STATUS_ERROR }
+    else
+      return { :status => -1 }
     end
   end
 

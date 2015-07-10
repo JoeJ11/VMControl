@@ -9,16 +9,31 @@ class MachineStatusJob < Struct.new(:machine_id)
         machine.ip_address = information[:ip_address]
         machine.save
 
-        sleep(10.seconds)
-        unless machine.setup_after_creation == 0
-          machine.status = CloudToolkit::STATUS_ERROR
-          machine.save
-          return
+        Thread.new do
+          # ActiveRecord::Base.establish_connection Rails.env
+          sleep(10.seconds)
+          begin
+            if machine.setup_after_creation == 0
+              print 'Machine Creation Success!'
+              machine.status = CloudToolkit::STATUS_AVAILABLE
+              machine.save
+            else
+              print 'Machine Creation Fail!'
+              machine.status = CloudToolkit::STATUS_ERROR
+              machine.save
+            end
+          rescue => exception
+            print exception.inspect
+            machine.status = CloudToolkit::STATUS_ERROR
+            machine.save
+          end
+          # sleep(10.seconds)
+          # ActiveRecord::Base.connection.close
         end
-        machine.status = CloudToolkit::STATUS_AVAILABLE
-        machine.save
+
       elsif information[:status] == CloudToolkit::STATUS_ONPROCESS
         Delayed::Job.enqueue(MachineStatusJob.new(machine_id), 10, 10.seconds.from_now)
+
       elsif information[:status] == CloudToolkit::STATUS_ERROR
         machine.status = CloudToolkit::STATUS_ERROR
         machine.save
