@@ -210,7 +210,7 @@ module CloudToolkit
       return { :status => STATUS_ONPROCESS }
     elsif response['status'] == 'CREATE_COMPLETE'
       return { :status => STATUS_AVAILABLE, :ip_address => response['ext_ip'] }
-    elsif response['status'] == 'CREATE_FAILED' or 'DELETE_FAILED'
+    elsif response['status'] == 'CREATE_FAILED' or response['status'] == 'DELETE_FAILED'
       return { :status => STATUS_ERROR }
     else
       return { :status => -1 }

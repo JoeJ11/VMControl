@@ -28,7 +28,7 @@ class MachineStatusJob < Struct.new(:machine_id)
             machine.save
           end
           # sleep(10.seconds)
-          # ActiveRecord::Base.connection.close
+          ActiveRecord::Base.connection.close
         end
 
       elsif information[:status] == CloudToolkit::STATUS_ONPROCESS
