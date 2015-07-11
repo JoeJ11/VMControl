@@ -31,7 +31,7 @@ class Experiment < ActiveRecord::Base
     machines.each do |machine|
       if machine.status == Machine::STATUS_ERROR
         Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
-      elsif tem_number > tem_limit and (machine.status == Machine::STATUS_AVAILABLE or machine.status == Machine::STATUS_OCCUPIED)
+      elsif tem_number > tem_limit # and (machine.status == Machine::STATUS_AVAILABLE or machine.status == Machine::STATUS_OCCUPIED)
         Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
         tem_number = tem_number - 1
       end

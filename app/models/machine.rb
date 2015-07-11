@@ -57,7 +57,7 @@ class Machine < ActiveRecord::Base
     self.status = STATUS_OCCUPIED
     self.save
 
-    Delayed::Job.enqueue(MachineControlJob.new(self.id), 10, 120.minute.from_now)
+    Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 10, 120.minute.from_now)
   end
 
   # handle_asynchronously :assign, :priority => 100
@@ -177,6 +177,24 @@ class Machine < ActiveRecord::Base
       puts stdout.read.strip
       puts 'STDERR:'
       puts stderr.read.strip
+    end
+  end
+
+  def self.clear_errored
+    Machine.list_machines.each do |m|
+      m_i = Machine.new
+      m_i.specifier = m['cluster_id']
+      if m['status'] == 'CREATE_FAILED' or m['status'] == 'DELETE_FAILED'
+        m_i.delete_machine
+      end
+    end
+  end
+
+  def self.clear_all
+    Machine.list_machines.each do |m|
+      m_i = Machine.new
+      m_i.specifier = m['cluster_id']
+      m_i.delete_machine
     end
   end
 
