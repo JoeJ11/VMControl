@@ -68,6 +68,9 @@ gem 'capistrano-rbenv', github: "capistrano/rbenv"
 # Use unicorn as the app server
 gem 'unicorn'
 
+# Use passenger
+gem 'passenger'
+
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
 

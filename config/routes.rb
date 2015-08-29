@@ -1,4 +1,5 @@
 VMControl::Application.routes.draw do
+  scope '/thumanage' do
   resources :experiments do
     member do
       get 'start'
@@ -40,6 +41,7 @@ VMControl::Application.routes.draw do
         get 'testpost'
       end
     end
+  end
   end
   # get 'dispatches/list'
   # get 'dispatches/new'

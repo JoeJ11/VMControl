@@ -76,12 +76,11 @@ class Machine < ActiveRecord::Base
     set_uo_keys keys_info
 
     # load_config_repo info[:exp]
-
     student = Student.find_by_mail_address info[:user_name]
     repo_id = student.setup_repo info[:exp].code_repo_id
     student.publicize_repo(repo_id)
     user_info = student.get_user
-    code_repo = "git@THUVMControl.cloudapp.net:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
+    code_repo = "http://172.16.10.43/#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
     rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
     student.edit_repo(repo_id)
     return rtn_status

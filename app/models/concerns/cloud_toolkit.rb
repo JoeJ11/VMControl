@@ -8,9 +8,9 @@ module CloudToolkit
 
   X_AUTH_USER = 'thu_mooc@hotmail.com'
   X_AUTH_KEY = 'pwd4p0wercloud'
-  BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
-  ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
-  BASE_ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
+  BASE_URL = 'http://172.16.10.39:8080/supernova/'
+  ACCOUNT_URL = 'http://ptopenlab.com/cloudlab/api/user/account'
+  BASE_ACCOUNT_URL = 'http://ptopenlab.com/cloudlab/api/user/account'
   API_KEY = '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
 
   def self.included(base)

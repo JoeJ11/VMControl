@@ -1,9 +1,9 @@
 module GitToolkit
 
   GIT_USER = 'root'
-  GIT_KEY = 'thuvmcontrol'
-  GIT_BASE_URL = 'http://thuvmcontrol.cloudapp.net/api/v3/'
-  GIT_TOKEN = 'Rs4iykATCeUaBquz7F4L'
+  GIT_KEY = 'passw0rd'
+  GIT_BASE_URL = 'http://localhost/api/v3/'
+  GIT_TOKEN = '7uHj4p5wBmV3bLHuhr_a'
 
   def self.included(base)
     base.extend(ClassMethods)
