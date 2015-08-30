@@ -13,8 +13,7 @@ module ProxyToolkit
   end
 
   def start_proxy(token, mode)
-    puts "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[["
-    puts self.ip_address
+    Rails.logger.info "Start a proxy to IP: #{self.ip_address}"
     response = HTTParty.post(
         PROXY_URL + 'thu-manage/create',
         :body => {
@@ -23,8 +22,7 @@ module ProxyToolkit
             'mode' => mode
         }
     )
-    puts "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]"
-    puts response
+    Rails.logger.info "Proxy service response (start proxy): #{response}"
     return Return_URL + response['proxy']
   end
 
@@ -35,6 +33,6 @@ module ProxyToolkit
             'target' => self.ip_address
         }
     )
-    puts response
+    Rails.logger.info "Proxy service response (stop proxy): #{response}"
   end
 end

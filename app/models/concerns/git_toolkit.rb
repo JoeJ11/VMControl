@@ -28,7 +28,7 @@ module GitToolkit
               :password => GitToolkit::GIT_KEY
           }
       )
-      puts response
+      Rails.logger.info "Git server response (require token): #{response}"
       @@token = response['private_token']
     end
 
@@ -40,7 +40,7 @@ module GitToolkit
               'PRIVATE-TOKEN' => GIT_TOKEN
           }
       )
-      puts response
+      Rails.logger.info "Git server response (list repo): #{response}"
       return response
     end
 
@@ -62,7 +62,7 @@ module GitToolkit
             :name => name
         }
     )
-    puts response
+    Rails.logger.info "Git server response (create user): #{response}"
     self.git_id = response['id']
     get_token
   end
@@ -81,7 +81,7 @@ module GitToolkit
             :key => self.public_key
         }
     )
-    puts response
+    Rails.logger.info "Git server response (add key): #{response}"
   end
 
   # Require the token for a user
@@ -94,7 +94,7 @@ module GitToolkit
         }
 
     )
-    puts response
+    Rails.logger.info "Git server response (get token): #{response}"
     self.git_token = response['private_token']
   end
 
@@ -110,7 +110,7 @@ module GitToolkit
             :visibility_level => 20
         }
     )
-    puts response
+    Rails.logger.info "Git server response (Create repo): #{response}"
     return response['id']
   end
 
@@ -122,7 +122,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
-    puts response
+    Rails.logger.info "Git server response (fork repo): #{response}"
   end
 
   # Fork the specified repo
@@ -133,7 +133,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => self.git_token
         }
     )
-    puts response
+    Rails.logger.info "Git server response (fork repo): #{response}"
     return response['id']
   end
 
@@ -148,7 +148,7 @@ module GitToolkit
             :visibility_level => 0
         }
     )
-    puts response
+    Rails.logger.info "Git server response (edit repo): #{response}"
   end
 
   # Change the name of the repo
@@ -162,7 +162,7 @@ module GitToolkit
             :name => name
         }
     )
-    puts response
+    Rails.logger.info "Git server response (change name): #{response}"
   end
 
   # Delete a user
@@ -173,7 +173,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
-    puts response
+    Rails.logger.info "Git server response (delete user): #{response}"
   end
 
   # Get a user info
@@ -184,7 +184,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
-    puts response
+    Rails.logger.info "Git server response (get user): #{response}"
     return response
   end
 
@@ -199,6 +199,6 @@ module GitToolkit
             :visibility_level => 20
         }
     )
-    puts response
+    Rails.logger.info "Git server resposne (publicize repo): #{response}"
   end
 end

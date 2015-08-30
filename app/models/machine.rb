@@ -105,7 +105,7 @@ class Machine < ActiveRecord::Base
     cmd += " git_name=#{user_name}"
     cmd += " git_mail=#{user_mail}"
     cmd += " exp=#{exp}\""
-    puts cmd
+    Rails.logger.info "Ansible command: #{cmd}"
     Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
       stdin.puts(cmd)
@@ -139,7 +139,7 @@ class Machine < ActiveRecord::Base
     cmd += "#{base_address}/machine_start.yml "
     cmd += '-e ' + '"host=' + ip_address
     cmd += " exp=#{self.cluster_configuration.experiment.name.downcase}\""
-    puts cmd
+    Rails.logger.info "Ansible command: #{cmd}"
 
     Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
@@ -165,7 +165,7 @@ class Machine < ActiveRecord::Base
       cmd += " logname=Unknown#{Time.now.strftime("%d_%m_%Y_%H_%M")}"
     end
     cmd += " exp=#{self.cluster_configuration.experiment.name.downcase}\""
-    puts cmd
+    Rails.logger.info "Ansible command: #{cmd}"
 
     Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts('export ANSIBLE_HOST_KEY_CHECKING=False')
