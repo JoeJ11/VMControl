@@ -45,6 +45,7 @@ class Machine < ActiveRecord::Base
     unless setup_environment(info) == 0
       self.progress = -1
       self.save
+      self.status == CloudToolkit::STATUS_ERROR
       return
     end
 
@@ -78,11 +79,13 @@ class Machine < ActiveRecord::Base
     # load_config_repo info[:exp]
     student = Student.find_by_mail_address info[:user_name]
     repo_id = student.setup_repo info[:exp].code_repo_id
-    student.publicize_repo(repo_id)
+    # student.publicize_repo(repo_id)
     user_info = student.get_user
-    code_repo = "http://172.16.10.43/#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
+    code_repo = "git@#{GitToolkit::GIT_SERVER_ADDRESS}:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
     rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
-    student.edit_repo(repo_id)
+    if repo_id != -1
+      student.edit_repo(repo_id)
+    end
     return rtn_status
   end
 
@@ -111,10 +114,8 @@ class Machine < ActiveRecord::Base
       stdin.puts(cmd)
       stdin.close
 
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR'
-      puts stderr.read.strip
+      Rails.logger.info "ANSIBLE::STDOUT: #{stdout.read.strip}"
+      Rails.logger.info "ANSIBLE::STDERR: #{stderr.read.strip}"
     end
   end
 
@@ -122,13 +123,11 @@ class Machine < ActiveRecord::Base
     repo = Student.list_repo(exp.config_repo_id)
     Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts("cd #{Rails.root.join('ansible').to_s}")
-      stdin.puts("git clone http://thuvmcontrol.cloudapp.net/Teacher_#{exp.course.teacher}/trial_project.git")
+      stdin.puts("git clone git@#{GitToolkit::GIT_SERVER_ADDRESS}:Teacher_#{exp.course.teacher}/trial_project.git")
       stdin.close
 
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR'
-      puts stderr.read.strip
+      Rails.logger.info "GIT COMMAND::STDOUT: #{stdout.read.strip}"
+      Rails.logger.info "GIT COMMAND::STDERR: #{stderr.read.strip}"
     end
   end
 
@@ -146,10 +145,8 @@ class Machine < ActiveRecord::Base
       stdin.puts(cmd)
       stdin.close
 
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR:'
-      puts stderr.read.strip
+      Rails.logger.info "ANSIBLE::STDOUT: #{stdout.read.strip}"
+      Rails.logger.info "ANSIBLE::STDERR: #{stdout.read.strip}"
     end
   end
 
@@ -172,10 +169,8 @@ class Machine < ActiveRecord::Base
       stdin.puts(cmd)
       stdin.close
 
-      puts 'STDOUT:'
-      puts stdout.read.strip
-      puts 'STDERR:'
-      puts stderr.read.strip
+      Rails.logger.info "ANSIBLE::STDOUT: #{stdout.read.strip}"
+      Rails.logger.info "ANSIBLE::STDERR: #{stderr.read.strip}"
     end
   end
 
