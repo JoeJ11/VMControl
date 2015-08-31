@@ -14,16 +14,16 @@ class MachineStatusJob < Struct.new(:machine_id)
           sleep(10.seconds)
           begin
             if machine.setup_after_creation == 0
-              print 'Machine Creation Success!'
+              Rails.logger.info 'Machine Creation Success.'
               machine.status = CloudToolkit::STATUS_AVAILABLE
               machine.save
             else
-              print 'Machine Creation Fail!'
+              Rails.logger.error 'Machine Creation Fail.'
               machine.status = CloudToolkit::STATUS_ERROR
               machine.save
             end
           rescue => exception
-            print exception.inspect
+            Rails.logger.error exception.inspect
             machine.status = CloudToolkit::STATUS_ERROR
             machine.save
           end
