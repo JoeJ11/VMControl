@@ -80,7 +80,7 @@ class Machine < ActiveRecord::Base
     repo_id = student.setup_repo info[:exp].code_repo_id
     # student.publicize_repo(repo_id)
     user_info = student.get_user
-    code_repo = "#{GitToolkit::GIT_SERVER_ADDRESS}/#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
+    code_repo = "git@#{GitToolkit::GIT_SERVER_ADDRESS}:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
     rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
     if repo_id != -1
       student.edit_repo(repo_id)
@@ -122,7 +122,7 @@ class Machine < ActiveRecord::Base
     repo = Student.list_repo(exp.config_repo_id)
     Open4::popen4('sh') do |pid, stdin, stdout, stderr|
       stdin.puts("cd #{Rails.root.join('ansible').to_s}")
-      stdin.puts("git clone #{GitToolkit::GIT_SERVER_ADDRESS}/Teacher_#{exp.course.teacher}/trial_project.git")
+      stdin.puts("git clone git@#{GitToolkit::GIT_SERVER_ADDRESS}:Teacher_#{exp.course.teacher}/trial_project.git")
       stdin.close
 
       Rails.logger.info "GIT COMMAND::STDOUT: #{stdout.read.strip}"
