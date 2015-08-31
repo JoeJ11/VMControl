@@ -61,7 +61,9 @@ class ClusterConfigurationsController < ApplicationController
   # DELETE /cluster_configurations/1
   # DELETE /cluster_configurations/1.json
   def destroy
-    @cluster_configuration.delete_template
+    if @cluster_configuration.specifier != nil
+      @cluster_configuration.delete_template
+    end
     @cluster_configuration.destroy
     respond_to do |format|
       format.html { redirect_to cluster_configurations_url }
