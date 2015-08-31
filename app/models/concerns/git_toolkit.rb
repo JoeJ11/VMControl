@@ -4,6 +4,7 @@ module GitToolkit
   GIT_KEY = 'passw0rd'
   GIT_BASE_URL = 'http://localhost/api/v3/'
   GIT_TOKEN = '7uHj4p5wBmV3bLHuhr_a'
+  GIT_SERVER_ADDRESS = 'http://172.16.10.43'
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -134,7 +135,10 @@ module GitToolkit
         }
     )
     Rails.logger.info "Git server response (fork repo): #{response}"
-    return response['id']
+    if response.has_key? 'id'
+      return response['id']
+    end
+    -1
   end
 
   # Change the visibility of the repo
@@ -200,5 +204,20 @@ module GitToolkit
         }
     )
     Rails.logger.info "Git server resposne (publicize repo): #{response}"
+  end
+
+  # Add key to a repo
+  def add_key_to_repo(repo_id, pub_key)
+    response = HTTParty.post(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s + '/keys',
+        :headers => {
+        'PRIVATE-TOKEN' => GIT_TOKEN
+        },
+        :body => {
+            :title => 'DEPLOY_KEY',
+            :key => pub_key
+        }
+    )
+    Rails.logger.info "Git server response (add key to repo): #{response}"
   end
 end
