@@ -43,6 +43,7 @@ class Student < ActiveRecord::Base
     repo_id = self.fork_repo(code_repo_id)
     if repo_id != -1
       self.add_key_to_repo(repo_id, self.public_key)
+      Student.publicize_repo repo_id
     end
     repo_id
     # This will set repo to be private, will cause trouble
