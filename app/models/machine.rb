@@ -83,8 +83,8 @@ class Machine < ActiveRecord::Base
     code_repo = "git@#{GitToolkit::GIT_SERVER_ADDRESS}:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
     rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
     if repo_id != -1
-      # student.edit_repo(repo_id)
-      student.publicize_repo(repo_id)
+      student.edit_repo(repo_id)
+      # student.publicize_repo(repo_id)
     end
     return rtn_status
   end
