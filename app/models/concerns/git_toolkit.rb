@@ -1,9 +1,10 @@
 module GitToolkit
 
   GIT_USER = 'root'
-  GIT_KEY = 'thuvmcontrol'
-  GIT_BASE_URL = 'http://thuvmcontrol.cloudapp.net/api/v3/'
-  GIT_TOKEN = 'Rs4iykATCeUaBquz7F4L'
+  GIT_KEY = 'passw0rd'
+  GIT_BASE_URL = 'http://localhost/api/v3/'
+  GIT_TOKEN = '7uHj4p5wBmV3bLHuhr_a'
+  GIT_SERVER_ADDRESS = '172.16.10.43'
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -28,7 +29,7 @@ module GitToolkit
               :password => GitToolkit::GIT_KEY
           }
       )
-      puts response
+      Rails.logger.info "Git server response (require token): #{response}"
       @@token = response['private_token']
     end
 
@@ -40,7 +41,7 @@ module GitToolkit
               'PRIVATE-TOKEN' => GIT_TOKEN
           }
       )
-      puts response
+      Rails.logger.info "Git server response (list repo): #{response}"
       return response
     end
 
@@ -62,7 +63,7 @@ module GitToolkit
             :name => name
         }
     )
-    puts response
+    Rails.logger.info "Git server response (create user): #{response}"
     self.git_id = response['id']
     get_token
   end
@@ -81,7 +82,7 @@ module GitToolkit
             :key => self.public_key
         }
     )
-    puts response
+    Rails.logger.info "Git server response (add key): #{response}"
   end
 
   # Require the token for a user
@@ -94,7 +95,7 @@ module GitToolkit
         }
 
     )
-    puts response
+    Rails.logger.info "Git server response (get token): #{response}"
     self.git_token = response['private_token']
   end
 
@@ -110,7 +111,7 @@ module GitToolkit
             :visibility_level => 20
         }
     )
-    puts response
+    Rails.logger.info "Git server response (Create repo): #{response}"
     return response['id']
   end
 
@@ -122,7 +123,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
-    puts response
+    Rails.logger.info "Git server response (fork repo): #{response}"
   end
 
   # Fork the specified repo
@@ -133,8 +134,11 @@ module GitToolkit
             'PRIVATE-TOKEN' => self.git_token
         }
     )
-    puts response
-    return response['id']
+    Rails.logger.info "Git server response (fork repo): #{response}"
+    if response.has_key? 'id'
+      return response['id']
+    end
+    -1
   end
 
   # Change the visibility of the repo
@@ -148,7 +152,7 @@ module GitToolkit
             :visibility_level => 0
         }
     )
-    puts response
+    Rails.logger.info "Git server response (edit repo): #{response}"
   end
 
   # Change the name of the repo
@@ -162,7 +166,7 @@ module GitToolkit
             :name => name
         }
     )
-    puts response
+    Rails.logger.info "Git server response (change name): #{response}"
   end
 
   # Delete a user
@@ -173,7 +177,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
-    puts response
+    Rails.logger.info "Git server response (delete user): #{response}"
   end
 
   # Get a user info
@@ -184,7 +188,7 @@ module GitToolkit
             'PRIVATE-TOKEN' => GIT_TOKEN
         }
     )
-    puts response
+    Rails.logger.info "Git server response (get user): #{response}"
     return response
   end
 
@@ -199,6 +203,21 @@ module GitToolkit
             :visibility_level => 20
         }
     )
-    puts response
+    Rails.logger.info "Git server resposne (publicize repo): #{response}"
+  end
+
+  # Add key to a repo
+  def add_key_to_repo(repo_id, pub_key)
+    response = HTTParty.post(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s + '/keys',
+        :headers => {
+        'PRIVATE-TOKEN' => GIT_TOKEN
+        },
+        :body => {
+            :title => 'DEPLOY_KEY',
+            :key => pub_key
+        }
+    )
+    Rails.logger.info "Git server response (add key to repo): #{response}"
   end
 end

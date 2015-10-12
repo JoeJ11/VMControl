@@ -134,7 +134,7 @@ class DispatchesController < ApplicationController
       machine.save
 
       Thread.new do
-        puts 'Assign process'
+        Rails.logger.info 'Machine Assign Starts'
         machine.assign(info)
         ActiveRecord::Base.connection.close
       end

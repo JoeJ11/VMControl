@@ -3,8 +3,11 @@ class Course < ActiveRecord::Base
   include GitToolkit
 
   def setup
+    puts "*******************************"
     create_git_user("Teacher_#{self.teacher}", self.teacher)
+    puts "********************************"
     add_ssh_key
+    puts "*********************************"
   end
 
   def setup_repo(exp_name)

@@ -1,13 +1,13 @@
 - name: Copy public key
-  copy: src=../files/pub_key dest=~/.ssh/id_rsa.pub owner=opuser group=opuser mode=0600
+  copy: src=../files/pub_key dest=~/.ssh/git_id.pub owner=opuser group=opuser mode=0600
 - name: Copy private key
-  copy: src=../files/pri_key dest=~/.ssh/id_rsa owner=opuser group=opuser mode=0600
-- name: Clone a remote git repo
-  git: repo="{{git_repo}}" dest=~/project accept_hostkey=yes
+  copy: src=../files/pri_key dest=~/.ssh/git_id owner=opuser group=opuser mode=0600
 - name: Set git account
   shell: git config --global user.name "{{git_name}}"
 - name: Set git mail address
   shell: git config --global user.email "{{git_mail}}"
+- name: Clone a remote git repo
+  git: repo="{{git_repo}}" dest=~/project accept_hostkey=yes key_file=~/.ssh/git_id
 - name: Start ssh-agent
   shell: eval "$(ssh-agent -s)"
 - name: Start apache

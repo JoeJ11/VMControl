@@ -8,9 +8,9 @@ module CloudToolkit
 
   X_AUTH_USER = 'thu_mooc@hotmail.com'
   X_AUTH_KEY = 'pwd4p0wercloud'
-  BASE_URL = 'https://crl.ptopenlab.com:8800/supernova/'
-  ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
-  BASE_ACCOUNT_URL = 'https://ptopenlab.com/cloudlab/api/user/account'
+  BASE_URL = 'http://172.16.10.39:8080/supernova/'
+  ACCOUNT_URL = 'http://ptopenlab.com/cloudlab/api/user/account'
+  BASE_ACCOUNT_URL = 'http://ptopenlab.com/cloudlab/api/user/account'
   API_KEY = '86ed353a-4d63-47ea-92a5-9bc3d4daa18c'
 
   def self.included(base)
@@ -53,7 +53,7 @@ module CloudToolkit
                                   'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                               }
       )
-      puts response
+      Rails.logger.info "Cloud service response (list_machine): #{response}"
       return response['clusters']
     # rescue => exception
     #   redirect_to :back, notice: exception.message
@@ -69,7 +69,7 @@ module CloudToolkit
                                  # 'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                              }
       )
-      puts response
+      Rails.logger.info "Cloud service response (list templates): #{response}"
       return response['configs']
     end
 
@@ -121,7 +121,7 @@ module CloudToolkit
               'username' => user_name
           }.to_json
       )
-      puts response
+      Rails.logger.info "Cloud service response(validate user): #{response}"
       if response['code'] == 0
         return true
       end
@@ -139,7 +139,7 @@ module CloudToolkit
               'passwd' => pwd
           }.to_json
       )
-      puts response
+      Rails.logger.info "Cloud service response (create user): #{response}"
       return false
     end
 
@@ -159,7 +159,7 @@ module CloudToolkit
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
     self.class.require_token @tenant_name
-    puts setting
+    Rails.logger.info "Setting for new machine: #{setting}"
     response = HTTParty.post(
                            CloudToolkit::BASE_URL + 'cluster',
                            :body => {
@@ -172,7 +172,7 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
-    puts response
+    Rails.logger.info "Cloud service response (create machine): #{response}"
     if response['clusters']
       self.status = STATUS_ONPROCESS
       self.specifier = response['clusters'][0]['cluster_id']
@@ -205,7 +205,7 @@ module CloudToolkit
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                 }
     )
-    puts response
+    Rails.logger.info "Cloud service response (List machine): #{response}"
     if response['status'] == 'CREATE_IN_PROGRESS' or response['status'] == 'DELETE_IN_PROGRESS'
       return { :status => STATUS_ONPROCESS }
     elsif response['status'] == 'CREATE_COMPLETE'
@@ -233,6 +233,7 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
+    Rails.logger.info "Cloud service response (machine status): #{response}"
     return {:status => response['status'], :ip => response['ext_ip']}
   end
 
@@ -250,7 +251,7 @@ module CloudToolkit
     )
     # self.specifier = response['config_id']
     # self.save
-    puts response
+    Rails.logger.info "Cloud service response (create template): #{response}"
     return response['config_id']
   #rescue => exception
   #  return {:error => exception.message}
@@ -278,7 +279,7 @@ module CloudToolkit
                     'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                 }
     )
-    puts response
+    Rails.logger.info "Cloud service response (show template): #{response}"
   end
 
   # Create image
@@ -298,7 +299,7 @@ module CloudToolkit
                                'X-Auth-Key' => CloudToolkit::X_AUTH_KEY
                            }
     )
-    puts response
+    Rails.logger.info "Cloud service response (create image): #{response}"
   end
 
   # Delete an image
