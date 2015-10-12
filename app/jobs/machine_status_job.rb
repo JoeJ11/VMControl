@@ -11,7 +11,7 @@ class MachineStatusJob < Struct.new(:machine_id)
 
         Thread.new do
           # ActiveRecord::Base.establish_connection Rails.env
-          sleep(10.seconds)
+          sleep(60.seconds)
           begin
             if machine.setup_after_creation == 0
               Rails.logger.info 'Machine Creation Success.'
