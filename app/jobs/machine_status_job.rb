@@ -1,4 +1,4 @@
-class MachineStatusJob < Struct.new(:machine_id)
+class MachineStatusJob < Struct.new(:machine_id, :counter=0)
 
   def perform
     machine = Machine.find machine_id
@@ -18,9 +18,14 @@ class MachineStatusJob < Struct.new(:machine_id)
               machine.status = CloudToolkit::STATUS_AVAILABLE
               machine.save
             else
-              Rails.logger.error 'Machine Creation Fail.'
-              machine.status = CloudToolkit::STATUS_ERROR
-              machine.save
+              if counter > 3
+                Rails.logger.error 'Machine Creation Fail.'
+                machine.status = CloudToolkit::STATUS_ERROR
+                machine.save
+              else
+                Rails.logger.info 'Try to setup again'
+                Delayed::Job.enqueue(MachineStatusJob.new(machine_id, counter+1), 10, 60.seconds.from_now)
+              end
             end
           rescue => exception
             Rails.logger.error exception.inspect
