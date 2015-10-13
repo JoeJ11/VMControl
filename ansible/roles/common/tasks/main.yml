@@ -2,6 +2,8 @@
   copy: src=../files/pub_key dest=~/.ssh/git_id.pub owner=opuser group=opuser mode=0600
 - name: Copy private key
   copy: src=../files/pri_key dest=~/.ssh/git_id owner=opuser group=opuser mode=0600
+- name: Update SSH config
+  copy: src=../files/config dest=~/.ssh/config owner=opuser group=opuser mode=0600
 - name: Set git account
   shell: git config --global user.name "{{git_name}}"
 - name: Set git mail address
