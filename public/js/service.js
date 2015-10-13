@@ -46,4 +46,8 @@ function get_progress(id) {
             }
         }
     })
-}
+};
+
+function btn_open_editor() {
+  window.open(editor_url)
+};
