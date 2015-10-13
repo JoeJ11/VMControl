@@ -3,6 +3,7 @@
  */
 
 var timer = null
+var editor_url = ''
 
 function get_progress(id) {
     $.ajax({
@@ -32,6 +33,7 @@ function get_progress(id) {
                 document.getElementById('success_info').style.display = "block"
                 document.getElementById('myButton').style.display = "block"
                 document.getElementById('iframe').src = data['url']
+                editor_url = data['editor_url']
                 clearInterval(timer);
             }
             else {

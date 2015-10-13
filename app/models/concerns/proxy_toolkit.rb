@@ -12,12 +12,12 @@ module ProxyToolkit
   module ClassMethods
   end
 
-  def start_proxy(token, mode)
-    Rails.logger.info "Start a proxy to IP: #{self.ip_address}"
+  def start_proxy(token, mode, target_url)
+    Rails.logger.info "Start a proxy to URL: #{target_url}"
     response = HTTParty.post(
         PROXY_URL + 'thu-manage/create',
         :body => {
-            'target' => self.ip_address,
+            'target' => target_url,
             'token' => token,
             'mode' => mode
         }

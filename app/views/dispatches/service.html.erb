@@ -3,6 +3,9 @@
     function btn_click() {
         window.open(document.getElementById('iframe').src)
     };
+    function btn_open_editor() {
+      window.open(editor_url)
+    };
     $('#bd').click(function(e) {
         e.preventDefault();
     });
@@ -28,6 +31,9 @@
       </div>
       <button type="button" id="myButton" style="display:none" class="btn btn-primary" onclick="btn_click()">
         打开全屏界面
+      </button>
+      <button type="button" id="BtnEditor" style="display:none" class="btn btn-primary" onclick="btn_open_editor()">
+        打开在线编辑器
       </button>
     </div>
     <div class = "row" id="bd" style="overflow:hidden">

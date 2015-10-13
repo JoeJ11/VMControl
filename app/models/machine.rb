@@ -53,7 +53,9 @@ class Machine < ActiveRecord::Base
     self.save
 
     # This starts the proxy
-    self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE)
+    self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, self.ip_address)
+    self.url += ','
+    self.url += start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "self.ip_address:8000")
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save
