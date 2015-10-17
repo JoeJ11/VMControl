@@ -17,3 +17,7 @@
   sudo: yes
 - name: Start shellinbox
   shell: shellinaboxd --port=4201 -b -t --localhost-only --service=/:opuser:opuser:HOME:SHELL >> ~/.shellhistory.log
+- name: Start Online Editor
+  shell: cd /home/opuser/OnlineEditor/; sudo python app.py &
+  async: 7200
+  poll: 0

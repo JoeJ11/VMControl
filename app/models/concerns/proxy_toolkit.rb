@@ -23,7 +23,7 @@ module ProxyToolkit
         }
     )
     Rails.logger.info "Proxy service response (start proxy): #{response}"
-    return Return_URL + response['proxy']
+    return Return_URL + response['proxy'] + '/'
   end
 
   def stop_proxy
