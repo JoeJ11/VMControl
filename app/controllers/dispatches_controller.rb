@@ -169,6 +169,29 @@ class DispatchesController < ApplicationController
     puts response
   end
 
+  def file
+    apply_params = params.permit(:exp_id, :account_name, :file_path, :ref)
+    if apply_params[:account_name].length < 4
+      apply_params[:account_name] = apply_params[:account_name] + '____'
+    end
+
+    if apply_params.has_key? :ref
+      ref = apply_params[:ref]
+    else
+      ref = 'master'
+    end
+
+    experiment = Experiment.find params[:exp_id]
+    repo_name = "#{apply_params[:account_name]}%2F#{experiment.name}_code"
+    response = Student.get_file repo_name, apply_params[:file_path], ref
+
+    if response.code == 200
+      render json: { :found => 'True', :content => response['content']}
+    else
+      render json: { :found => 'False'}
+    end
+  end
+
   # Allow iframe to be seen from xuetangX
   def allow_iframe
     response.headers['X-Frame-Options'] = 'ALLOWALL'
