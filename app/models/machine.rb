@@ -4,7 +4,7 @@ class Machine < ActiveRecord::Base
 
   belongs_to :cluster_configuration
 
-  MAXIMUM_MACHINES = 20
+  MAXIMUM_MACHINES = 100
 
   # Start / Create a machine
   def start

@@ -7,7 +7,7 @@ class Experiment < ActiveRecord::Base
   STATUS_ONLINE = 1
   STATUS_OFFLINE = 0
 
-  MACHINE_QUOTA = 5
+  MACHINE_QUOTA = 20
 
   def start
     self.status = STATUS_ONLINE
