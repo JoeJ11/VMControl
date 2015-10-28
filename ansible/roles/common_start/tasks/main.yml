@@ -1,2 +1,4 @@
+- name: Update Online Editor
+  git: repo=https://github.com/xichuanglian/OnlineEditor dest=~/OnlineEditor force=yes
 - name: Common start
   shell: echo "Just a test"
