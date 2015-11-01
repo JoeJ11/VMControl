@@ -1,5 +1,4 @@
 VMControl::Application.routes.draw do
-  scope '/thumanage' do
   resources :experiments do
     member do
       get 'start'
@@ -36,14 +35,13 @@ VMControl::Application.routes.draw do
     end
   end
 
-  namespace :api do
-    resources :cluster_configurations do
-      collection do
-        get 'testpost'
-      end
-    end
-  end
-  end
+  # namespace :api do
+  #   resources :cluster_configurations do
+  #     collection do
+  #       get 'testpost'
+  #     end
+  #   end
+  # end
   # get 'dispatches/list'
   # get 'dispatches/new'
   # get 'dispatches/stop'
