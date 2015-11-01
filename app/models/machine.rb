@@ -4,7 +4,7 @@ class Machine < ActiveRecord::Base
 
   belongs_to :cluster_configuration
 
-  MAXIMUM_MACHINES = 20
+  MAXIMUM_MACHINES = 100
 
   # Start / Create a machine
   def start
@@ -53,7 +53,9 @@ class Machine < ActiveRecord::Base
     self.save
 
     # This starts the proxy
-    self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE)
+    self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, self.ip_address)
+    self.url += ','
+    self.url += start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:5000")
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save

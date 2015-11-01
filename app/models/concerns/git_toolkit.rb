@@ -42,6 +42,18 @@ module GitToolkit
           }
       )
       Rails.logger.info "Git server response (list repo): #{response}"
+      return response['content']
+    end
+
+    # Get a file
+    def get_file(repo_id, file_path, ref)
+      response = HTTParty.get(
+        GIT_BASE_URL + 'projects/' + repo_id.to_s + "/repository/files?file_path=#{file_path}&ref=#{ref}",
+        :headers => {
+          'PRIVATE-TOKEN' => GIT_TOKEN
+        }
+      )
+      Rails.logger.info "Git server response (get file): #{response}"
       return response
     end
 
@@ -220,4 +232,5 @@ module GitToolkit
     )
     Rails.logger.info "Git server response (add key to repo): #{response}"
   end
+
 end

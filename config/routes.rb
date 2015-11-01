@@ -26,6 +26,7 @@ VMControl::Application.routes.draw do
     collection do
       get 'list'
       get 'service'
+      get 'file'
       # post 'assign'
     end
     member do
@@ -89,7 +90,7 @@ VMControl::Application.routes.draw do
   #       get 'recent', on: :collection
   #     end
   #   end
-  
+
   # Example resource route with concerns:
   #   concern :toggleable do
   #     post 'toggle'

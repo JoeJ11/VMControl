@@ -149,7 +149,7 @@ class DispatchesController < ApplicationController
 
   def progress
     if @machine.progress == 3
-      render json: { :progress => 3, :url => @machine.url}
+      render json: { :progress => 3, :url => @machine.url.split(',')[0], :editor_url => @machine.url.split(',')[1]}
     elsif @machine.progress == -1
       Delayed::Job.enqueue(MachineDeleteJob.new(@machine.id))
 
@@ -167,6 +167,29 @@ class DispatchesController < ApplicationController
         }
     )
     puts response
+  end
+
+  def file
+    apply_params = params.permit(:exp_id, :account_name, :file_path, :ref)
+    if apply_params[:account_name].length < 4
+      apply_params[:account_name] = apply_params[:account_name] + '____'
+    end
+
+    if apply_params.has_key? :ref
+      ref = apply_params[:ref]
+    else
+      ref = 'master'
+    end
+
+    experiment = Experiment.find params[:exp_id]
+    repo_name = "#{apply_params[:account_name]}%2F#{experiment.name.downcase}_code"
+    response = Student.get_file repo_name, apply_params[:file_path], ref
+
+    if response.code == 200
+      render json: { :found => 'True', :content => response['content']}
+    else
+      render json: { :found => 'False'}
+    end
   end
 
   # Allow iframe to be seen from xuetangX
