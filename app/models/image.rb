@@ -1,3 +1,3 @@
 class Image < ActiveRecord::Base
-  include CloudToolkit
+  include OsCloudToolkit
 end

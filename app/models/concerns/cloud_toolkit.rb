@@ -1,5 +1,7 @@
 module CloudToolkit
 
+  ENABLE_VPN = true
+
   STATUS_OCCUPIED = 0
   STATUS_AVAILABLE = 1
   STATUS_ONPROCESS = 2
