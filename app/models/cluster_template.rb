@@ -16,4 +16,8 @@ class ClusterTemplate < ActiveRecord::Base
     end
     false
   end
+
+  def generate_config
+    return { :image_id => self.image_id }
+  end
 end

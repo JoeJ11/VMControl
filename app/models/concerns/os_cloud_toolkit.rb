@@ -13,9 +13,9 @@ module OsCloudToolkit
   X_AUTH_KEY = 'rDqxLz6hJ7-i'
   BASE_URL = 'http://218.247.230.193:5000/'
   TENANT_ID = 'caf6d92f5f794da393e00dee6ce781fc'
-  SERVER_URL = 'http://10.1.1.250:8774/'
-  NETWORK_URL = 'http://10.1.1.250:9696/'
-  IMAGE_URL = 'http://10.1.1.250:9292/'
+  SERVER_URL = 'http://218.247.230.193:8774/'
+  NETWORK_URL = 'http://218.247.230.193:9696/'
+  IMAGE_URL = 'http://218.247.230.193:9292/'
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -85,31 +85,29 @@ module OsCloudToolkit
   # The config info should include "ip_address", "specifier"
   def create_machine(setting)
     key = self.class.require_token
-    Rails.logger.info "Setting for new machine: #{setting}"
-    response = HTTParty.post(
-      "#{SERVER_URL}v2/#{TENANT_ID}/servers",
-      :body => {
-        'server' => {
-          'name' => rand_string,
-          'imageRef' => setting[:image_id],
-          'flavorRef' => setting[:flavor_id],
-          'networks' => [{
-            'uuid' => setting[:network_id]
-          }]
-        }
-      }.to_json,
-      :headers => {
-        'Content-type' => 'application/json',
-        'X-Auth-Token' => key
-      }
-    )
-    Rails.logger.info "Cloud service response (create machine): #{response}"
+    specifier_list = {:master => '', :slaves => []}
+
+    response = _create_single_machine setting[:master], key
     if response.code == 202
-      self.status = STATUS_ONPROCESS
-      self.specifier = response['server']['id']
+      specifier_list[:master] = response['server']['id']
     else
       self.status = STATUS_ERROR
+      self.save
+      return
     end
+
+    setting[:slaves].each do |slave_setting|
+      response = _create_single_machine slave_setting, key
+      if response.code == 202
+        specifier_list[:slaves].push response['server']['id']
+      else
+        self.status == STATUS_ERROR
+        self.save
+        return
+      end
+    end
+    self.specifier = JSON.generate(specifier_list)
+    self.status = STATUS_ONPROCESS
     self.save
     Delayed::Job.enqueue(MachineStatusJob.new(self.id), 10, 10.seconds.from_now)
   end
@@ -117,38 +115,69 @@ module OsCloudToolkit
   # Stop a machine
   def stop_machine
     key = self.class.require_token
-    HTTParty.delete(
-      "#{SERVER_URL}v2/#{TENANT_ID}/servers/#{self.specifier}",
-      :headers => {
-        'X-Auth-Token' => key
-      }
-    )
+    specifiers = JSON.parse(self.specifier)
+    specifiers = specifiers['slaves'].push specifiers['master']
+
+    specifiers.each do |s|
+      HTTParty.delete(
+        "#{SERVER_URL}v2/#{TENANT_ID}/servers/#{s}",
+        :headers => {
+          'X-Auth-Token' => key
+        }
+      )
+    end
   end
 
   # Show the detailed information about a cluster
   def show_machine
     key = self.class.require_token
-    response = HTTParty.get(
-      "#{SERVER_URL}v2/#{TENANT_ID}/servers/#{self.specifier}",
-      :headers => {
-        'X-Auth-Token' => key
-      }
-    )
-    Rails.logger.info "Cloud service response (List machine): #{response}"
+    specifiers = JSON.parse(self.specifier)
+    main_ip = ''
+    slave_ip_list = []
+    existing_counter = 0
+    all_active = true
+    response = _show_single_machine specifiers['master'], key
     if response.code == 404
-      return { :status => STATUS_DELETED}
-    end
-    status = response['server']['status']
-    puts status
-    if status == 'BUILD'
-      return { :status => STATUS_ONPROCESS }
-    elsif status == 'ACTIVE'
-      address = response['server']['addresses']
-      return { :status => STATUS_AVAILABLE, :ip_address => address[address.keys[0]][0]['addr'] }
-    elsif status == 'CREATE_FAILED' or status == 'DELETE_FAILED'
-      return { :status => STATUS_ERROR }
+      all_active = false
     else
-      return { :status => -1 }
+      existing_counter += 1
+      status = response['server']['status']
+      if status == 'BUILD'
+        all_active = false
+      elsif status == 'ACTIVE'
+        address = response['server']['addresses']
+        main_ip = address[address.keys[0]][0]['addr']
+      else
+        all_active = false
+        Rails.logger.error "Unexpected status: #{status}"
+      end
+    end
+
+    specifiers['slaves'].each do |s|
+      response = _show_single_machine s, key
+      if response.code == 404
+        all_active = false
+      else
+        existing_counter += 1
+        status = response['server']['status']
+        if status == 'BUILD'
+          all_active = false
+        elsif status == 'ACTIVE'
+          address = response['server']['addresses']
+          slave_ip_list.push address[address.keys[0]][0]['addr']
+        else
+          all_active = false
+          Rails.logger.error "Unexpected status: #{status}"
+        end
+      end
+
+      if all_active
+        return { :status => STATUS_AVAILABLE, :ip_address => main_ip, :slaves => slave_ip_list }
+      elsif existing_counter == 0
+        return { :status => STATUS_DELETED }
+      else
+        return { :status => STATUS_ONPROCESS }
+      end
     end
   end
 
@@ -206,7 +235,7 @@ module OsCloudToolkit
 
   # Delete an image
   def delete_image
-    self.class.require_token
+    key = self.class.require_token
     HTTParty.delete(
                 CloudToolkit::BASE_URL + 'images/' + self.specifier,
                 :headers => {
@@ -245,6 +274,44 @@ module OsCloudToolkit
   def rand_string
     wait_list = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     return (0..10).map { wait_list[rand(wait_list.length)] }.join
+  end
+
+  def _create_single_machine(setting, key)
+    Rails.logger.info "Setting for new machine: #{setting}"
+    response = HTTParty.post(
+      "#{SERVER_URL}v2/#{TENANT_ID}/servers",
+      :body => {
+        'server' => {
+          'name' => rand_string,
+          'imageRef' => setting[:image_id],
+          # 'flavorRef' => setting[:flavor_id],
+          # Fixed flavor: 1 core, 1G RAM, 40G Hard disk
+          'flavorRef' => '9',
+          'networks' => [{
+            # 'uuid' => setting[:network_id]
+            # Fixed network
+            'uuid' => 'd4a5460d-8743-4628-b27a-8fbde8dc708a'
+          }]
+        }
+      }.to_json,
+      :headers => {
+        'Content-type' => 'application/json',
+        'X-Auth-Token' => key
+      }
+    )
+    Rails.logger.info "Cloud service response (create machine): #{response}"
+    return response
+  end
+
+  def _show_single_machine(specifier, key)
+    response = HTTParty.get(
+      "#{SERVER_URL}v2/#{TENANT_ID}/servers/#{specifier}",
+      :headers => {
+        'X-Auth-Token' => key
+      }
+    )
+    Rails.logger.info "Cloud service response (List machine): #{response}"
+    return response
   end
 
 end

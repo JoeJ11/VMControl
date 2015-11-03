@@ -1,5 +1,5 @@
 class Machine < ActiveRecord::Base
-  include CloudToolkit
+  include OsCloudToolkit
   include ProxyToolkit
 
   belongs_to :cluster_configuration
@@ -8,16 +8,11 @@ class Machine < ActiveRecord::Base
 
   # Start / Create a machine
   def start
-    create_machine :config_id => self.setting, :cluster_number => 1
+    create_machine JSON.parse(self.setting)
   end
 
   # Stop / Delete a machine
   def stop
-    # self.stop_proxy
-    # if machine_status and (machine_status == STATUS_AVAILABLE or machine_status == STATUS_OCCUPIED)
-    #   self.cleanup_after_stop
-    # end
-
     self.delete_machine
     self.status = STATUS_ERROR
     self.student_id = 0
