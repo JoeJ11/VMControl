@@ -1,4 +1,8 @@
 - name: Update Online Editor
   git: repo=https://github.com/xichuanglian/OnlineEditor dest=~/OnlineEditor force=yes
+- name: Save slave information
+  shell: echo "{{slaves}}" >> ~/.slaves.json
+- name: Save master information
+  shell: echo "{{host}}" >> ~/.master_ip
 - name: Common start
   shell: echo "Just a test"

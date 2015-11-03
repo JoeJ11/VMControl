@@ -7,6 +7,7 @@ class MachineStatusJob < Struct.new(:machine_id)
       if information[:status] == CloudToolkit::STATUS_AVAILABLE
         machine.status = CloudToolkit::STATUS_PREPARE
         machine.ip_address = information[:ip_address]
+        machine.slaves = JSON.generate(information[:slaves])
         machine.save
 
         Thread.new do
