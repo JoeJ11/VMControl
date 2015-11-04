@@ -170,14 +170,14 @@ module OsCloudToolkit
           Rails.logger.error "Unexpected status: #{status}"
         end
       end
+    end
 
-      if all_active
-        return { :status => STATUS_AVAILABLE, :ip_address => main_ip, :slaves => slave_ip_list }
-      elsif existing_counter == 0
-        return { :status => STATUS_DELETED }
-      else
-        return { :status => STATUS_ONPROCESS }
-      end
+    if all_active
+      return { :status => STATUS_AVAILABLE, :ip_address => main_ip, :slaves => slave_ip_list }
+    elsif existing_counter == 0
+      return { :status => STATUS_DELETED }
+    else
+      return { :status => STATUS_ONPROCESS }
     end
   end
 
