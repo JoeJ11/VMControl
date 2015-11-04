@@ -66,12 +66,12 @@ module OsCloudToolkit
 
     # Check if given username is registered
     def check_username(user_name)
-      True
+      true
     end
 
     # Check if a user exists
     def validate_user(user_name)
-      True
+      true
     end
 
   end
