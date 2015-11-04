@@ -7,7 +7,7 @@ var editor_url = ''
 
 function get_progress(id) {
     $.ajax({
-        url: '/thumanage/dispatches/' + id + '/progress',
+        url: '/dispatches/' + id + '/progress',
         type: 'get',
         success: function(data) {
             if (data['progress'] == -1) {

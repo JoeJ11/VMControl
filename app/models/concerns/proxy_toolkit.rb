@@ -1,6 +1,6 @@
 module ProxyToolkit
 
-  Return_URL = 'https://218.247.230.203:3000/'
+  Return_URL = 'http://218.247.230.203:3000/'
   PROXY_URL = 'http://218.247.230.203:3000/'
   PROXY_GENERAL_MODE = 0
   PROXY_SHELL_MODE = 1
