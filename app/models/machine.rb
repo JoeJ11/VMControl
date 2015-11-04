@@ -39,8 +39,8 @@ class Machine < ActiveRecord::Base
     # Return value 0 means no error
     unless setup_environment(info) == 0
       self.progress = -1
-      self.save
       self.status == CloudToolkit::STATUS_ERROR
+      self.save
       return
     end
 
