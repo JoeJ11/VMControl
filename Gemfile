@@ -71,6 +71,7 @@ gem 'unicorn'
 # Use passenger
 gem 'passenger'
 
+gem 'json', '~> 1.8.3'
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
 
