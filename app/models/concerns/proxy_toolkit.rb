@@ -1,7 +1,7 @@
 module ProxyToolkit
 
-  Return_URL = 'https://crl.ptopenlab.com:8800/thuproxy/'
-  PROXY_URL = 'http://172.16.10.43:3000/thuproxy/'
+  Return_URL = 'https://218.247.230.203:8800/thuproxy/'
+  PROXY_URL = 'http://218.247.230.203:3000/thuproxy/'
   PROXY_GENERAL_MODE = 0
   PROXY_SHELL_MODE = 1
 

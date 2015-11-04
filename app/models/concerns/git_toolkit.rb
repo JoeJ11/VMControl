@@ -2,9 +2,9 @@ module GitToolkit
 
   GIT_USER = 'root'
   GIT_KEY = 'passw0rd'
-  GIT_BASE_URL = 'http://localhost/api/v3/'
+  GIT_BASE_URL = 'http://218.247.230.202/api/v3/'
   GIT_TOKEN = '7uHj4p5wBmV3bLHuhr_a'
-  GIT_SERVER_ADDRESS = '172.16.10.43'
+  GIT_SERVER_ADDRESS = '218.247.230.202'
 
   def self.included(base)
     base.extend(ClassMethods)
