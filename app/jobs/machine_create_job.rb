@@ -17,7 +17,6 @@ class MachineCreateJob < Struct.new(:params)
       }
       machine = Machine.new(new_params)
       machine.start
-      sleep(5.seconds)
     end
   end
 

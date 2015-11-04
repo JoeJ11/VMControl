@@ -16,7 +16,7 @@
   service: name=apache2 state=started
   sudo: yes
 - name: Start shellinbox
-  shell: shellinaboxd --port=4201 -b -t --localhost-only --service=/:opuser:opuser:HOME:SHELL >> ~/.shellhistory.log
+  shell: shellinaboxd --port=4201 -b -t --localhost-only --service=/:ubuntu:ubuntu:HOME:SHELL >> ~/.shellhistory.log
 - name: Start Online Editor
   shell: cd /home/opuser/OnlineEditor/; sudo python app.py >> ~/.editor.log &
   async: 7200

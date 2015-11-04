@@ -60,7 +60,7 @@ class ClusterTemplatesController < ApplicationController
   def destroy
     @cluster_template.destroy
     respond_to do |format|
-      format.html { redirect_to '/cluster_templates' }
+      format.html { redirect_to cluster_template_urls }
       format.json { head :no_content }
     end
   end

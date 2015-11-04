@@ -87,7 +87,7 @@ module OsCloudToolkit
     key = self.class.require_token
     specifier_list = {:master => '', :slaves => []}
 
-    response = _create_single_machine setting[:master], key
+    response = _create_single_machine setting['master'], key
     if response.code == 202
       specifier_list[:master] = response['server']['id']
     else
@@ -96,7 +96,7 @@ module OsCloudToolkit
       return
     end
 
-    setting[:slaves].each do |slave_setting|
+    setting['slaves'].each do |slave_setting|
       response = _create_single_machine slave_setting, key
       if response.code == 202
         specifier_list[:slaves].push response['server']['id']
@@ -283,12 +283,12 @@ module OsCloudToolkit
       :body => {
         'server' => {
           'name' => rand_string,
-          'imageRef' => setting[:image_id],
-          # 'flavorRef' => setting[:flavor_id],
+          'imageRef' => setting['image_id'],
+          # 'flavorRef' => setting['flavor_id'],
           # Fixed flavor: 1 core, 1G RAM, 40G Hard disk
           'flavorRef' => '9',
           'networks' => [{
-            # 'uuid' => setting[:network_id]
+            # 'uuid' => setting['network_id']
             # Fixed network
             'uuid' => 'd4a5460d-8743-4628-b27a-8fbde8dc708a'
           }]
@@ -310,7 +310,7 @@ module OsCloudToolkit
         'X-Auth-Token' => key
       }
     )
-    Rails.logger.info "Cloud service response (List machine): #{response}"
+    Rails.logger.info "Cloud service response (Show machine): #{response}"
     return response
   end
 

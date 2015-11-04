@@ -74,7 +74,7 @@ class ClusterConfigurationsController < ApplicationController
   # GET /cluster_configurations/1/new_machine
   def new_machine
     session[:cluster_id] = params[:id]
-    redirect_to '/cluster_templates/new'
+    redirect_to cluster_configurations_url
   end
 
   # GET /cluster_configurations/1/instantiate
