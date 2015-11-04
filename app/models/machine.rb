@@ -134,7 +134,7 @@ class Machine < ActiveRecord::Base
     cmd += "-i #{base_address}/hosts "
     cmd += "#{base_address}/machine_start.yml "
     cmd += '-e ' + '"host=' + ip_address
-    cmd += " slaves=#{JSON.generate(self.slaves)}"
+    cmd += " slaves=#{self.slaves}"
     cmd += " exp=#{self.cluster_configuration.experiment.name.downcase}\""
     Rails.logger.info "Ansible command: #{cmd}"
 
