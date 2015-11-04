@@ -5,11 +5,11 @@ class Student < ActiveRecord::Base
 
   # handle_asynchronously :setup_new_user, :priority => 100
 
-  def self.setup(user_name, account_name)
+  def self.setup(user_name, account_name, anonym_id)
     student = Student.find_by_mail_address user_name
     unless student
       student = Student.new
-      student.setup_new_user(user_name, account_name)
+      student.setup_new_user(user_name, account_name, anonym_id)
     end
     return {
         :user_name => student.mail_address,
@@ -18,8 +18,9 @@ class Student < ActiveRecord::Base
     }
   end
 
-  def setup_new_user(user_name, account_name)
+  def setup_new_user(user_name, account_name, anonym_id)
     self.mail_address = user_name
+    self.anonym_id = anonym_id
     self.save
 
     self.generate_keys
