@@ -1,2 +1,2 @@
 [template]
-server ansible_ssh_host="{{host}}" ansible_ssh_user=opuser
+server ansible_ssh_host="{{host}}" ansible_ssh_user=ubuntu
