@@ -4,5 +4,7 @@
   shell: echo "{{slaves}}" >> ~/.slaves.json
 - name: Save master information
   shell: echo "{{host}}" >> ~/.master_ip
+- name: copy configuration script
+  copy: src=../files/config.py dest=~/.config.py owner=ubuntu group=ubuntu mode=0644
 - name: Common start
   shell: echo "Just a test"
