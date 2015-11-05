@@ -42,7 +42,7 @@ module OsCloudToolkit
           }
         }.to_json
       )
-      Rails.logger.info "Cloud service response (require token): #{response}"
+      Rails.logger.info "Cloud service response (require token): #{response.code}"
       @@API_KEY = response['access']['token']['id']
       return @@API_KEY
     end
@@ -56,7 +56,7 @@ module OsCloudToolkit
           'X-Auth-Token' => @@API_KEY
         }
       )
-      Rails.logger.info "Cloud service response (list_machine): #{response}"
+      Rails.logger.info "Cloud service response (list_machine): #{response.code}"
       return response['servers']
     end
 
@@ -299,7 +299,7 @@ module OsCloudToolkit
         'X-Auth-Token' => key
       }
     )
-    Rails.logger.info "Cloud service response (create machine): #{response}"
+    Rails.logger.info "Cloud service response (create machine): #{response.code}"
     return response
   end
 
@@ -310,7 +310,7 @@ module OsCloudToolkit
         'X-Auth-Token' => key
       }
     )
-    Rails.logger.info "Cloud service response (Show machine): #{response}"
+    Rails.logger.info "Cloud service response (Show machine): #{response.code}"
     return response
   end
 
