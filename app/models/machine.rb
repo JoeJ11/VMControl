@@ -14,7 +14,7 @@ class Machine < ActiveRecord::Base
   # Stop / Delete a machine
   def stop
     self.delete_machine
-    self.status = STATUS_ERROR
+    self.status = STATUS_DELETED
     self.student_id = 0
     self.save
   end
