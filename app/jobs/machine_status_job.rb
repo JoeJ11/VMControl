@@ -1,8 +1,18 @@
-class MachineStatusJob < Struct.new(:machine_id)
+class MachineStatusJob < Struct.new(:machine_id, :counter)
 
   def perform
+    counter = 1 unless counter
     machine = Machine.find machine_id
     if machine
+      if counter == 60
+        machine.delete_machine
+        params = {
+            :cluster_configuration_id => machine.cluster_configuration_id
+        }
+        Delayed::Job.enqueue(MachineCreateJob.new(params))
+        Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
+        return
+      end
       information = machine.show_machine
       if information[:status] == CloudToolkit::STATUS_AVAILABLE
         machine.status = CloudToolkit::STATUS_PREPARE
@@ -12,7 +22,7 @@ class MachineStatusJob < Struct.new(:machine_id)
 
         Thread.new do
           # ActiveRecord::Base.establish_connection Rails.env
-          sleep(60.seconds)
+          sleep(10.seconds)
           begin
             if machine.setup_after_creation == 0
               Rails.logger.info 'Machine Creation Success.'
@@ -33,7 +43,7 @@ class MachineStatusJob < Struct.new(:machine_id)
         end
 
       elsif information[:status] == CloudToolkit::STATUS_ONPROCESS
-        Delayed::Job.enqueue(MachineStatusJob.new(machine_id), 10, 10.seconds.from_now)
+        Delayed::Job.enqueue(MachineStatusJob.new(machine_id, counter+1), 1, 10.seconds.from_now)
 
       elsif information[:status] == CloudToolkit::STATUS_ERROR
         machine.status = CloudToolkit::STATUS_ERROR
