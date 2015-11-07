@@ -75,5 +75,6 @@ gem 'json', '~> 1.8.3'
 # Use Capistrano for deployment
 # gem 'capistrano', group: :development
 
+gem 'pg'
 # Use debugger
 # gem 'debugger', group: [:development, :test]

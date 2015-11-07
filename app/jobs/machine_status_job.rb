@@ -1,7 +1,8 @@
 class MachineStatusJob < Struct.new(:machine_id, :counter)
 
   def perform
-    counter = 1 unless counter
+    tem_counter = counter
+    tem_counter = 1 unless counter
     Rails.logger.info "MACHINE_STATUS_JOB counter: #{counter}"
     machine = Machine.find machine_id
     if machine
@@ -50,7 +51,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
         end
 
       elsif information[:status] == CloudToolkit::STATUS_ONPROCESS
-        Delayed::Job.enqueue(MachineStatusJob.new(machine_id, counter+1), 1, 10.seconds.from_now)
+        Delayed::Job.enqueue(MachineStatusJob.new(machine_id, tem_counter+1), 1, 10.seconds.from_now)
 
       elsif information[:status] == CloudToolkit::STATUS_ERROR
         machine.status = CloudToolkit::STATUS_ERROR

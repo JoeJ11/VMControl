@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151103153644) do
+ActiveRecord::Schema.define(version: 20151105141302) do
 
   create_table "cluster_configurations", force: :cascade do |t|
     t.string   "specifier",    limit: 255
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20151103153644) do
     t.string   "git_token",    limit: 255
     t.string   "mail_address", limit: 255
     t.integer  "git_id"
-    t.string   "public_key",   limit: 255
+    t.text     "public_key"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
@@ -87,7 +87,6 @@ ActiveRecord::Schema.define(version: 20151103153644) do
 
   create_table "machines", force: :cascade do |t|
     t.string  "ip_address",               limit: 255
-    t.string  "setting",                  limit: 255
     t.integer "status"
     t.integer "student_id"
     t.string  "group",                    limit: 255
@@ -97,6 +96,7 @@ ActiveRecord::Schema.define(version: 20151103153644) do
     t.integer "progress"
     t.string  "url",                      limit: 255
     t.string  "slaves"
+    t.text    "setting"
   end
 
   add_index "machines", ["cluster_configuration_id"], name: "index_machines_on_cluster_configuration_id"
@@ -104,11 +104,11 @@ ActiveRecord::Schema.define(version: 20151103153644) do
 
   create_table "students", force: :cascade do |t|
     t.string  "mail_address", limit: 255
-    t.string  "public_key",   limit: 255
-    t.string  "private_key",  limit: 255
     t.string  "git_token",    limit: 255
     t.integer "git_id"
     t.string  "anonym_id"
+    t.text    "public_key"
+    t.text    "private_key"
   end
 
 end
