@@ -168,10 +168,12 @@ class DispatchesController < ApplicationController
   end
 
   def file
-    apply_params = params.permit(:exp_id, :account_name, :file_path, :ref)
-    if apply_params[:account_name].length < 4
-      apply_params[:account_name] = apply_params[:account_name] + '____'
+    apply_params = params.permit(:exp_id, :anonym_id, :file_path, :ref)
+    student = Student.find_by_anonym_id apply_params[:anonym_id]
+    unless student
+      render json: {:found => 'False', :message => 'User not found'}
     end
+    git_user = student.get_user
 
     if apply_params.has_key? :ref
       ref = apply_params[:ref]
@@ -180,13 +182,13 @@ class DispatchesController < ApplicationController
     end
 
     experiment = Experiment.find params[:exp_id]
-    repo_name = "#{apply_params[:account_name]}%2F#{experiment.name.downcase}_code"
+    repo_name = "#{git_user['user_name']}%2F#{experiment.name.downcase}_code"
     response = Student.get_file repo_name, apply_params[:file_path], ref
 
     if response.code == 200
       render json: { :found => 'True', :content => response['content']}
     else
-      render json: { :found => 'False'}
+      render json: { :found => 'False', :message => 'Git server response error.'}
     end
   end
 
