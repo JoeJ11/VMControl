@@ -4,6 +4,7 @@
 
 var timer = null
 var editor_url = ''
+var notebook_url = ''
 
 function get_progress(id) {
     $.ajax({
@@ -33,8 +34,10 @@ function get_progress(id) {
                 document.getElementById('success_info').style.display = "block"
                 document.getElementById('myButton').style.display = "block"
                 document.getElementById('BtnEditor').style.display = "block"
+                document.getElementById('BtnNotebook').style.display = "block"
                 document.getElementById('iframe').src = data['url']
                 editor_url = data['editor_url']
+                notebook_url = data['notebook_url']
                 clearInterval(timer);
             }
             else {
@@ -50,4 +53,8 @@ function get_progress(id) {
 
 function btn_open_editor() {
   window.open(editor_url)
+};
+
+function btn_open_notebook() {
+  window.open(notebook_url)
 };
