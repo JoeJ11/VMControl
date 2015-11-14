@@ -182,7 +182,7 @@ class DispatchesController < ApplicationController
     end
 
     experiment = Experiment.find params[:exp_id]
-    repo_name = "#{git_user['user_name']}%2F#{experiment.name.downcase}_code"
+    repo_name = "#{git_user['username']}%2F#{experiment.name.downcase}_code"
     response = Student.get_file repo_name, apply_params[:file_path], ref
 
     if response.code == 200

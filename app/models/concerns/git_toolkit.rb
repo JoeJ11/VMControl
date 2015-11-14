@@ -47,6 +47,7 @@ module GitToolkit
 
     # Get a file
     def get_file(repo_id, file_path, ref)
+      Rails.logger.info GIT_BASE_URL + 'projects/' + repo_id.to_s + "/repository/files?file_path=#{file_path}&ref=#{ref}"
       response = HTTParty.get(
         GIT_BASE_URL + 'projects/' + repo_id.to_s + "/repository/files?file_path=#{file_path}&ref=#{ref}",
         :headers => {
