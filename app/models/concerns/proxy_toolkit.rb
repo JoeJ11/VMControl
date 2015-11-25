@@ -26,11 +26,12 @@ module ProxyToolkit
     return Return_URL + response['proxy'] + '/'
   end
 
-  def stop_proxy
+  def stop_proxy(ip_addr)
+    Rails.logger.info "Stop a proxy to URL: #{ip_addr}"
     response = HTTParty.post(
         PROXY_URL + 'thu-manage/delete',
         :body => {
-            'target' => self.ip_address
+            'target' => ip_addr
         }
     )
     Rails.logger.info "Proxy service response (stop proxy): #{response}"

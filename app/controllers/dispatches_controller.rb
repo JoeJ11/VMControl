@@ -112,8 +112,15 @@ class DispatchesController < ApplicationController
     info[:exp] = exp
 
     # Check if there is a machine yet not released
-    tem_m = Machine.find_by_user_name info[:user_name]
-    if tem_m and tem_m.status != CloudToolkit::STATUS_ERROR
+    tem_m = nil
+    exp.cluster_configuration.machines.each do |m|
+      if m.user_name == info[:user_name]
+        tem_m = m
+      end
+    end
+    # tem_m = Machine.where("user_name = ? AND exp_id = ?", info[:user_name], info[:exp_id])
+    # tem_m = Machine.find_all_by_user_name info[:user_name]
+    if tem_m and tem_m.status != CloudToolkit::STATUS_ERROR and tem_m.status != CloudToolkit::STATUS_DELETED
       @machine = tem_m.id
       render :service and return
     end
