@@ -120,7 +120,7 @@ class DispatchesController < ApplicationController
     end
     # tem_m = Machine.where("user_name = ? AND exp_id = ?", info[:user_name], info[:exp_id])
     # tem_m = Machine.find_all_by_user_name info[:user_name]
-    if tem_m and tem_m.status != CloudToolkit::STATUS_ERROR and tem_m.status != CloudToolkit::STATUS_DELETED
+    if tem_m and tem_m.status != OsCloudToolkit::STATUS_ERROR and tem_m.status != OsCloudToolkit::STATUS_DELETED
       @machine = tem_m.id
       render :service and return
     end
@@ -128,13 +128,13 @@ class DispatchesController < ApplicationController
     # Assign Machine
     machine = nil
     exp.cluster_configuration.machines.each do |m|
-      if m.status == CloudToolkit::STATUS_AVAILABLE
+      if m.status == OsCloudToolkit::STATUS_AVAILABLE
         machine = m
       end
     end
     if machine
       machine.user_name = info[:user_name]
-      machine.status = CloudToolkit::STATUS_ONPROCESS
+      machine.status = OsCloudToolkit::STATUS_ONPROCESS
       machine.progress = 0
       machine.save
 
