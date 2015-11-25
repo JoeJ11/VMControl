@@ -1,5 +1,5 @@
 - name: Update Online Editor
-  git: repo=https://github.com/xichuanglian/OnlineEditor dest=~/OnlineEditor force=yes
+  git: repo=http://10.2.1.88/root/OnlineEditor.git dest=~/OnlineEditor force=yes
 - name: Save slave information
   shell: echo "{{slaves}}" >> ~/.slaves.json
 - name: Save master information

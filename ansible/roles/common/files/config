@@ -1,6 +1,6 @@
 Host *
   StrictHostKeyChecking no
-Host 218.247.230.202
-  HostName 218.247.230.202
+Host 10.2.1.88
+  HostName 10.2.1.88
   IdentityFile ~/.ssh/git_id
   User git

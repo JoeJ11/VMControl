@@ -11,11 +11,11 @@ module OsCloudToolkit
 
   X_AUTH_USER = 'anju'
   X_AUTH_KEY = 'rDqxLz6hJ7-i'
-  BASE_URL = 'http://218.247.230.193:5000/'
+  BASE_URL = 'http://10.1.1.250:5000/'
   TENANT_ID = 'caf6d92f5f794da393e00dee6ce781fc'
-  SERVER_URL = 'http://218.247.230.193:8774/'
-  NETWORK_URL = 'http://218.247.230.193:9696/'
-  IMAGE_URL = 'http://218.247.230.193:9292/'
+  SERVER_URL = 'http://10.1.1.250:8774/'
+  NETWORK_URL = 'http://10.1.1.250:9696/'
+  IMAGE_URL = 'http://10.1.1.250:9292/'
 
   def self.included(base)
     base.extend(ClassMethods)

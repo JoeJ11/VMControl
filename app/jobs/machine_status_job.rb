@@ -11,7 +11,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
         params = {
             :cluster_configuration_id => machine.cluster_configuration_id
         }
-        Delayed::Job.enqueue(MachineCreateJob.new(params))
+        Delayed::Job.enqueue(MachineCreateJob.new(params), 20, Random.rand(600).seconds.from_now)
         Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
         return
       end
@@ -24,7 +24,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
 
         Thread.new do
           # ActiveRecord::Base.establish_connection Rails.env
-          sleep(60.seconds)
+          sleep(120.seconds)
           begin
             if machine.setup_after_creation == 0
               Rails.logger.info 'Machine Creation Success.'
@@ -37,7 +37,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
               params = {
                   :cluster_configuration_id => machine.cluster_configuration_id
               }
-              Delayed::Job.enqueue(MachineCreateJob.new(params))
+              Delayed::Job.enqueue(MachineCreateJob.new(params), 20, Random.rand(600).seconds.from_now)
               Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
               machine.save
             end
@@ -60,7 +60,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
         params = {
             :cluster_configuration_id => machine.cluster_configuration_id
         }
-        Delayed::Job.enqueue(MachineCreateJob.new(params))
+        Delayed::Job.enqueue(MachineCreateJob.new(params), 20, Random.rand(600).seconds.from_now)
         Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
       end
     end

@@ -33,7 +33,7 @@ class Machine < ActiveRecord::Base
     params = {
         :cluster_configuration_id => self.cluster_configuration.id
     }
-    Delayed::Job.enqueue(MachineCreateJob.new(params))
+    Delayed::Job.enqueue(MachineCreateJob.new(params), 20)
 
     # This set up remote VM
     # Return value 0 means no error
@@ -57,7 +57,7 @@ class Machine < ActiveRecord::Base
     self.status = STATUS_OCCUPIED
     self.save
 
-    Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 10, 120.minute.from_now)
+    Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 100, 120.minute.from_now)
   end
 
   # handle_asynchronously :assign, :priority => 100

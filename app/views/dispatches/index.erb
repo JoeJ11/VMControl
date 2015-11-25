@@ -10,7 +10,6 @@
     <th>User Name</th>
     <th>Specifier</th>
     <th>Progress</th>
-    <th>url</th>
     <th>Start</th>
     <th>Stop</th>
     <th>Destroy</th>
@@ -21,21 +20,24 @@
       <td><%=machine.id%></td>
       <td><%=machine.ip_address%></td>
       <td><%=machine.setting%></td>
-      <% if machine.status == CloudToolkit::STATUS_AVAILABLE %>
+      <% if machine.status == OsCloudToolkit::STATUS_AVAILABLE %>
           <td>Available</td>
-      <% elsif machine.status == CloudToolkit::STATUS_OCCUPIED %>
+      <% elsif machine.status == OsCloudToolkit::STATUS_OCCUPIED %>
           <td>Occupied</td>
-      <% elsif machine.status == CloudToolkit::STATUS_ONPROCESS %>
+      <% elsif machine.status == OsCloudToolkit::STATUS_ONPROCESS %>
           <td>On Progress</td>
-      <% elsif machine.status == CloudToolkit::STATUS_ERROR %>
+      <% elsif machine.status == OsCloudToolkit::STATUS_ERROR %>
           <td>Error!</td>
+      <% elsif machine.status == OsCloudToolkit::STATUS_PREPARE %>
+          <td>Preparing</td>
+      <% elsif machine.status == OsCloudToolkit::STATUS_DELETED %>
+          <td>Deleted</td>
       <% else %>
           <td>Undefined</td>
       <% end %>
       <td><%=machine.user_name%></td>
       <td><%=machine.specifier%></td>
       <td><%=machine.progress%></td>
-      <td><%=machine.url%></td>
       <th><%=link_to 'Start', start_dispatch_path(machine.id) %></th>
       <th><%=link_to 'Stop', stop_dispatch_path(machine.id) %></th>
       <th><%=link_to 'Destroy', dispatch_path(machine.id), method: :delete, data: { confirm: 'Are you sure?'} %></th>
