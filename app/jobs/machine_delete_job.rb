@@ -11,7 +11,9 @@ class MachineDeleteJob < Struct.new(:machine_id)
       Thread.new do
         # ActiveRecord::Base.establish_connection Rails.env
         if machine.ip_address
-          machine.stop_proxy
+          machine.stop_proxy(self.ip_address)
+          machine.stop_proxy("#{self.ip_address}:5000")
+          machine.stop_proxy("#{self.ip_address}:8080")
           machine.cleanup_after_stop
         end
 
