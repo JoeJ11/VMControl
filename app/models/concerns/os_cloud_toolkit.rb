@@ -285,8 +285,8 @@ module OsCloudToolkit
           'name' => rand_string,
           'imageRef' => setting['image_id'],
           # 'flavorRef' => setting['flavor_id'],
-          # Fixed flavor: 1 core, 1G RAM, 40G Hard disk
-          'flavorRef' => '9',
+          # Fixed flavor: 2 core, 2G RAM, 40G Hard disk
+          'flavorRef' => '30',
           'networks' => [{
             # 'uuid' => setting['network_id']
             # Fixed network
