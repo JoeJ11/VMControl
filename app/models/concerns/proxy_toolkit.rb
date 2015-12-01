@@ -1,6 +1,6 @@
 module ProxyToolkit
 
-  Return_URL = 'http://218.247.230.203:3000/'
+  # Return_URL = 'http://218.247.230.203:3000/'
   PROXY_URL = 'http://10.2.1.89:3000/'
   PROXY_GENERAL_MODE = 0
   PROXY_SHELL_MODE = 1
@@ -23,7 +23,8 @@ module ProxyToolkit
         }
     )
     Rails.logger.info "Proxy service response (start proxy): #{response}"
-    return Return_URL + response['proxy'] + '/'
+    # return Return_URL + response['proxy'] + '/'
+    return "http://#{response['proxy']}.spoc.courses:3000/"
   end
 
   def stop_proxy(ip_addr)
