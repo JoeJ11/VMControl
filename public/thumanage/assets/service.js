@@ -37,7 +37,7 @@ function get_progress(id) {
                 document.getElementById("stage_3").style.display = "none"
                 document.getElementById('myButton').style.display = "block"
                 document.getElementById('BtnEditor').style.display = "block"
-                // document.getElementById('BtnNotebook').style.display = "block"
+                document.getElementById('BtnNotebook').style.display = "block"
                 document.getElementById('iframe').src = data['url']
                 editor_url = data['editor_url']
                 notebook_url = data['notebook_url']

@@ -13,7 +13,7 @@ class MachineDeleteJob < Struct.new(:machine_id)
         if machine.ip_address
           machine.stop_proxy(machine.ip_address)
           machine.stop_proxy("#{machine.ip_address}:5000")
-          machine.stop_proxy("#{machine.ip_address}:8080")
+          machine.stop_proxy("#{machine.ip_address}:4040")
           machine.cleanup_after_stop
         end
 
