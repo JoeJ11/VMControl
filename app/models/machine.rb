@@ -77,6 +77,7 @@ class Machine < ActiveRecord::Base
     repo_id = student.setup_repo info[:exp].code_repo_id
     user_info = student.get_user
     code_repo = "git@#{GitToolkit::GIT_SERVER_ADDRESS}:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
+    rtn_status = -1
     Dir.mktmpdir do |dir|
       set_up_keys keys_info, dir
       rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase, dir
