@@ -1,7 +1,7 @@
 - name: Copy public key
-  copy: src=../files/pub_key dest=~/.ssh/git_id.pub owner=ubuntu group=ubuntu mode=0600
+  copy: src={{tmp_dir}}/pub_key dest=~/.ssh/git_id.pub owner=ubuntu group=ubuntu mode=0600
 - name: Copy private key
-  copy: src=../files/pri_key dest=~/.ssh/git_id owner=ubuntu group=ubuntu mode=0600
+  copy: src={{tmp_dir}}/pri_key dest=~/.ssh/git_id owner=ubuntu group=ubuntu mode=0600
 - name: Update SSH config
   copy: src=../files/config dest=~/.ssh/config owner=ubuntu group=ubuntu mode=0600
 - name: Set git account

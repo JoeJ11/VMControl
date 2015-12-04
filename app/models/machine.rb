@@ -73,14 +73,15 @@ class Machine < ActiveRecord::Base
         :pri_key => info[:pri_key],
         :pub_key => info[:pub_key]
     }
-    set_uo_keys keys_info
-
-    # load_config_repo info[:exp]
     student = Student.find_by_mail_address info[:user_name]
     repo_id = student.setup_repo info[:exp].code_repo_id
     user_info = student.get_user
     code_repo = "git@#{GitToolkit::GIT_SERVER_ADDRESS}:#{user_info['username']}/#{info[:exp].name.downcase}_code.git"
-    rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase
+    Dir.mktmpdir do |dir|
+      set_up_keys keys_info, dir
+      rtn_status = execute_playbook code_repo, user_info['username'], user_info['email'], info[:exp].name.downcase, dir
+    end
+    # load_config_repo info[:exp]
     if repo_id != -1
       student.edit_repo(repo_id)
       # student.publicize_repo(repo_id)
@@ -88,16 +89,16 @@ class Machine < ActiveRecord::Base
     return rtn_status
   end
 
-  def set_uo_keys(info)
-    public_key = open(Rails.root.join('ansible', 'roles' , 'common', 'files','pub_key'), 'w')
+  def set_up_keys(info)
+    public_key = open(Rails.root.join(dir,'pub_key'), 'w')
     public_key.write(info[:pub_key])
     public_key.close
-    private_key = open(Rails.root.join('ansible', 'roles', 'common', 'files','pri_key'), 'w')
+    private_key = open(Rails.root.join(dir,'pri_key'), 'w')
     private_key.write(info[:pri_key])
     private_key.close
   end
 
-  def execute_playbook(code_repo, user_name, user_mail, exp)
+  def execute_playbook(code_repo, user_name, user_mail, exp, dir_name)
     base_address = Rails.root.join('ansible').to_s
     cmd = 'ansible-playbook '
     cmd += '-i ' + base_address + '/hosts '
@@ -106,6 +107,7 @@ class Machine < ActiveRecord::Base
     cmd += " git_repo=#{code_repo}"
     cmd += " git_name=#{user_name}"
     cmd += " git_mail=#{user_mail}"
+    cmd += " tmp_dir=#{dir_name}"
     cmd += " exp=#{exp}\""
     Rails.logger.info "Ansible command: #{cmd}"
     Open4::popen4('sh') do |pid, stdin, stdout, stderr|
