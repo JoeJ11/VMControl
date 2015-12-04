@@ -89,7 +89,7 @@ class Machine < ActiveRecord::Base
     return rtn_status
   end
 
-  def set_up_keys(info)
+  def set_up_keys(info, dir)
     public_key = open(Rails.root.join(dir,'pub_key'), 'w')
     public_key.write(info[:pub_key])
     public_key.close
