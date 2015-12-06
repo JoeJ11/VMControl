@@ -23,32 +23,34 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
         machine.save
 
         Thread.new do
-          # ActiveRecord::Base.establish_connection Rails.env
-          sleep(120.seconds)
           begin
-            if machine.setup_after_creation == 0
-              Rails.logger.info 'Machine Creation Success.'
-              machine.status = CloudToolkit::STATUS_AVAILABLE
-              machine.save
-            else
-              Rails.logger.error 'Machine Creation Fail.'
+            # ActiveRecord::Base.establish_connection Rails.env
+            sleep(120.seconds)
+            begin
+              if machine.setup_after_creation == 0
+                Rails.logger.info 'Machine Creation Success.'
+                machine.status = CloudToolkit::STATUS_AVAILABLE
+                machine.save
+              else
+                Rails.logger.error 'Machine Creation Fail.'
+                machine.status = CloudToolkit::STATUS_ERROR
+                machine.delete_machine
+                params = {
+                    :cluster_configuration_id => machine.cluster_configuration_id
+                }
+                Delayed::Job.enqueue(MachineCreateJob.new(params), 20, Random.rand(600).seconds.from_now)
+                Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
+                machine.save
+              end
+            rescue => exception
+              Rails.logger.error exception.inspect
               machine.status = CloudToolkit::STATUS_ERROR
-              machine.delete_machine
-              params = {
-                  :cluster_configuration_id => machine.cluster_configuration_id
-              }
-              Delayed::Job.enqueue(MachineCreateJob.new(params), 20, Random.rand(600).seconds.from_now)
-              Delayed::Job.enqueue(MachineDeleteJob.new(machine.id))
               machine.save
             end
-          rescue => exception
-            Rails.logger.error exception.inspect
-            machine.status = CloudToolkit::STATUS_ERROR
-            machine.save
+            # sleep(10.seconds)
+          ensure
+            ActiveRecord::Base.connection.close
           end
-          # sleep(10.seconds)
-        ensure
-          ActiveRecord::Base.connection.close
         end
 
       elsif information[:status] == CloudToolkit::STATUS_ONPROCESS

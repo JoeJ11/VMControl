@@ -141,10 +141,12 @@ class DispatchesController < ApplicationController
       machine.save
 
       Thread.new do
-        Rails.logger.info 'Machine Assign Starts'
-        machine.assign(info)
-      ensure
-        ActiveRecord::Base.connection.close
+        begin
+          Rails.logger.info 'Machine Assign Starts'
+          machine.assign(info)
+        ensure
+          ActiveRecord::Base.connection.close
+        end
       end
       @machine = machine.id
       render :service
