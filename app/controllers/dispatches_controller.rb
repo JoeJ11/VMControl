@@ -143,6 +143,7 @@ class DispatchesController < ApplicationController
       Thread.new do
         Rails.logger.info 'Machine Assign Starts'
         machine.assign(info)
+      ensure
         ActiveRecord::Base.connection.close
       end
       @machine = machine.id

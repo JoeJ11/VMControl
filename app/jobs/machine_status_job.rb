@@ -47,6 +47,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
             machine.save
           end
           # sleep(10.seconds)
+        ensure
           ActiveRecord::Base.connection.close
         end
 

@@ -27,4 +27,4 @@ production:
   adapter: postgresql
   encoding: utf8
   database: vmcontrol_production
-  pool: 5
+  pool: 30

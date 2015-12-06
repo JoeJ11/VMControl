@@ -20,6 +20,7 @@ class MachineDeleteJob < Struct.new(:machine_id)
         machine.stop
 
         Delayed::Job.enqueue(MachineDeleteJob.new(machine_id), 10, 30.seconds.from_now)
+      ensure
         ActiveRecord::Base.connection.close
       end
     elsif status == CloudToolkit::STATUS_ONPROCESS
