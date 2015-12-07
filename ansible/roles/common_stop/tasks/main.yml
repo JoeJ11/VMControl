@@ -3,6 +3,5 @@
 - name: Copy bash log to local
   fetch: src=~/.shellhistory.log dest="../shelllog/{{logname}}"
 - name: Save repo
-  shell: cd ~/project
-  shell: git commit -am "Auto commit"
-  shell: git push origin master
+  shell: cd ~/project/ & git commit -am "Auto commit"
+  shell: cd ~/project/ & git push origin master
