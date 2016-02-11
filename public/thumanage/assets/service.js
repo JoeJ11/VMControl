@@ -10,7 +10,14 @@ function set_progress(val, msg) {
   progress_bar.setAttribute("aria-valuenow", val)
   progress_bar.setAttribute("style", "min-width: 2em; width: " + val + "%;")
   progress_bar.innerHTML = msg
-}
+};
+
+function add_iframe(val, url) {
+  nav_tab = document.getElementById('nav_tab')
+  nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation"><a href="#pane_'+val+'" aria-controls="pane_'+val+'" role="tab" data-toggle="tab">'+val'</a></li>'
+  pane = document.getElementById('panes')
+  pane.innerHTML = pane.innerHTML + '<div role="tabpanel" class="tab-pane active" id="pane_'+val+'"><div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="'+url+'"></iframe></div></div>'
+};
 
 function get_progress(id) {
     $.ajax({
@@ -33,17 +40,17 @@ function get_progress(id) {
             else if (data['progress'] == 3) {
               set_progress('100', 'Success')
               document.getElementById('progress_bar').className = "progress-bar progress-bar-success"
-              nav_tab = document.getElementById('nav_tab')
-              nav_tab.innerHTML = '<li role="presentation" class="active"><a href="#" oclick="return mode_select(' + data['url'] + ');">Shell</a></li>'
-              nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" ><a href="#" oclick="return mode_select(' + data['editor'] + ');">Editor</a></li>'
+
+              document.getElementById('frame_shell').src = data['url']
+              document.getElementById('frame_editor').src = data['editor_url']
               for (var key in data['url_list']) {
                 if (key != 'shell' && key != 'editor') {
-                  nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" ><a href="#" oclick="return mode_select(' + data['url_list'][key] + ');">'+key+'</a></li>'
+                  add_iframe(key, data['url_list'][key])
                 }
               }
 
-              document.getElementById('iframe').src = data['url']
-              editor_url = data['editor_url']
+              //document.getElementById('iframe').src = data['url']
+              //editor_url = data['editor_url']
               clearInterval(timer);
             }
             else {
