@@ -1,5 +1,38 @@
 <h1>New experiment</h1>
+<div class='col-md-2'></div>
+<div class='col-md-8'>
+  <%= form_for(@experiment) do |f| %>
+    <% if @experiment.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>
+        <ul>
+        <% @experiment.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-<%= render 'form' %>
-
+    <div class="field form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, html:{class:'form-control'} %>
+    </div>
+    <div class="field form-group">
+      <%= f.label :cluster_configuration %>
+      <%= f.select :cluster_configuration, @cluster_configurations.map {|c| [c.cluster_templates[0].name, c.id]} %>
+    </div>
+    <div class="field form-group">
+      <%= f.label :courses %>
+      <%= f.select :course, @courses.map {|c| [c.name, c.id]} %>
+    </div>
+    <div class="filed form-group">
+      <%= f.label :port %>
+      <%= f.text_field :port, class:'form-control' %>
+    </div>
+    <div class="actions form-group">
+      <%= f.submit class:'btn btn-primary' %>
+    </div>
+  <% end %>
+</div>
+<div class='col-md-2'></div>
 <%= link_to 'Back', experiments_path %>

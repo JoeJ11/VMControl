@@ -2,7 +2,6 @@
   <% if @experiment.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@experiment.errors.count, "error") %> prohibited this experiment from being saved:</h2>
-
       <ul>
       <% @experiment.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
@@ -11,19 +10,23 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
+  <div class="field form-group">
+    <%= f.label :name %>
+    <%= f.text_field :name, class:'form-control' %>
   </div>
-  <div class="field">
-    <%= f.label :cluster_configuration %><br>
-    <%= f.text_field :cluster_configuration %>
+  <div class="field form-group">
+    <%= f.label :cluster_configuration %>
+    <%= f.text_field :cluster_configuration, class:'form-control' %>
   </div>
-  <div class="field">
-    <%= f.label :course %><br>
-    <%= f.text_field :course %>
+  <div class="field form-group">
+    <%= f.label :course %>
+    <%= f.text_field :course, class:'form-control' %>
   </div>
-  <div class="actions">
-    <%= f.submit %>
+  <div class="filed form-group">
+    <%= f.label :ports %>
+    <%= f.text_field :ports, class:'form-control' %>
+  </div>
+  <div class="actions form-group">
+    <%= f.submit class:'btn btn-primary' %>
   </div>
 <% end %>

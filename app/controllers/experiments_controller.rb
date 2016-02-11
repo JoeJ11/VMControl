@@ -10,10 +10,13 @@ class ExperimentsController < ApplicationController
   # GET /experiments/1
   # GET /experiments/1.json
   def show
+    @port_list = JSON.load(@experiment.port)
   end
 
   # GET /experiments/new
   def new
+    @cluster_configurations = ClusterConfiguration.all
+    @courses = Course.all
     @experiment = Experiment.new
   end
 
@@ -25,9 +28,9 @@ class ExperimentsController < ApplicationController
   # POST /experiments.json
   def create
     @experiment = Experiment.new(experiment_params)
-    repo = @experiment.course.setup_repo(@experiment.name)
-    @experiment.code_repo_id = repo[:code]
-    @experiment.config_repo_id = repo[:config]
+    # repo = @experiment.course.setup_repo(@experiment.name)
+    # @experiment.code_repo_id = repo[:code]
+    # @experiment.config_repo_id = repo[:config]
 
     respond_to do |format|
       if @experiment.save
@@ -101,7 +104,13 @@ class ExperimentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def experiment_params
-      tem = params.require(:experiment).permit(:name, :cluster_configuration, :course)
+      tem = params.require(:experiment).permit(:name, :cluster_configuration, :course, :port)
+      port_map = {}
+      tem[:port].split(';').each do |line|
+        tem_line = line.split(':')
+        port_map[tem_line[0]] = tem_line[1]
+      end
+      tem[:port] = JSON.generate(port_map)
       tem[:cluster_configuration] = ClusterConfiguration.find tem[:cluster_configuration].to_i
       tem[:course] = Course.find tem[:course]
       tem

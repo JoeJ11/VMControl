@@ -7,13 +7,22 @@
 
 <p>
   <strong>Cluster configuration:</strong>
-  <%= @experiment.cluster_configuration %>
+  <%= @experiment.cluster_configuration.cluster_templates[0].name %>
 </p>
 
 <p>
   <strong>Course:</strong>
-  <%= @experiment.course %>
+  <%= @experiment.course.name %>
 </p>
+
+<p>
+  <strong>Port:</strong>
+</p>
+  <% @port_list.each do |key| %>
+    <p>
+      <%= key[0] %>:<%= key[1] %>
+    </p>
+  <% end %>
 
 <%= link_to 'Edit', edit_experiment_path(@experiment) %> |
 <%= link_to 'Back', experiments_path %>
