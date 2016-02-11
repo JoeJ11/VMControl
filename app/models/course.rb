@@ -43,7 +43,7 @@ class Course < ActiveRecord::Base
       stdin.puts 'git init'
       stdin.puts 'git add .'
       stdin.puts 'git commit -am "first commit."'
-      stdin.puts "git remote add origin git@#{ProxyToolkit::GIT_SERVER_ADDRESS}:Teacher_" + teacher + '/' + repo_name.downcase + '_config.git'
+      stdin.puts "git remote add origin git@#{GitToolkit::GIT_SERVER_ADDRESS}:Teacher_" + teacher + '/' + repo_name.downcase + '_config.git'
       stdin.puts 'git push -u origin master'
       stdin.close
 
