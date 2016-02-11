@@ -138,10 +138,11 @@ class DispatchesController < ApplicationController
 
   def progress
     if @machine.progress == 3
+      url_map = JSON.dump(@machine.url)
       render json: { :progress => 3,
-                     :url => @machine.url.split(',')[0],
-                     :editor_url => @machine.url.split(',')[1],
-                     :notebook_url => @machine.url.split(',')[2] }
+                     :url => url_map['shell'],
+                     :editor_url => url_map['editor'],
+                     :url_list => url_map}
     elsif @machine.progress == -1
       Delayed::Job.enqueue(MachineDeleteJob.new(@machine.id))
 

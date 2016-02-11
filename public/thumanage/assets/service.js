@@ -4,7 +4,13 @@
 
 var timer = null
 var editor_url = ''
-var notebook_url = ''
+
+function set_progress(val, msg) {
+  progress_bar = document.getElementById('progress_bar')
+  progress_bar.prop("aria-valuenow") = val
+  progress_bar.prop("style") = "min-width: 2em; width: " + val + "%;"
+  progress_bar.text(msg)
+}
 
 function get_progress(id) {
     $.ajax({
@@ -12,36 +18,25 @@ function get_progress(id) {
         type: 'get',
         success: function(data) {
             if (data['progress'] == -1) {
-                document.getElementById('stage_1').className = 'bg-danger'
-                document.getElementById('stage_2').className = 'bg-danger'
-                document.getElementById('stage_3').className = 'bg-danger'
-                document.getElementById('failure_info').style.display = "block"
-                clearInterval(timer)
+              set_progress('100', 'Failure')
+              document.getElementById('progress_bar').className = "progress-bar progress-bar-danger"
+              clearInterval(timer)
             }
             else if (data['progress'] == 0) {
             }
             else if (data['progress'] == 1) {
-                document.getElementById('stage_1').className = 'bg-success'
+              set_progress('30', 'Preparing Environment')
             }
             else if (data['progress'] == 2) {
-                document.getElementById('stage_1').className = 'bg-success'
-                document.getElementById('stage_2').className = 'bg-success'
+              set_progress('60', 'Preparing Proxies')
             }
             else if (data['progress'] == 3) {
-                // document.getElementById('stage_1').className = 'bg-success'
-                // document.getElementById('stage_2').className = 'bg-success'
-                // document.getElementById('stage_3').className = 'bg-success'
-                document.getElementById('success_info').style.display = "block"
-                document.getElementById("stage_1").style.display = "none"
-                document.getElementById("stage_2").style.display = "none"
-                document.getElementById("stage_3").style.display = "none"
-                document.getElementById('myButton').style.display = "block"
-                document.getElementById('BtnEditor').style.display = "block"
-                document.getElementById('BtnNotebook').style.display = "block"
-                document.getElementById('iframe').src = data['url']
-                editor_url = data['editor_url']
-                notebook_url = data['notebook_url']
-                clearInterval(timer);
+              set_progress('100', 'Success')
+              document.getElementById('progress_bar').className = "progress-bar progress-bar-success"
+
+              document.getElementById('iframe').src = data['url']
+              editor_url = data['editor_url']
+              clearInterval(timer);
             }
             else {
                 document.getElementById('stage_1').className = 'bg-warning'

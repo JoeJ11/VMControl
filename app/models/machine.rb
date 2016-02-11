@@ -48,11 +48,18 @@ class Machine < ActiveRecord::Base
     self.save
 
     # This starts the proxy
-    self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, self.ip_address)
-    self.url += ','
-    self.url += start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:5000")
-    self.url += ','
-    self.url += start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:4040")
+    url_map = {}
+    url_map['shell'] = start_proxy('mooc', ProxyToolKit::PROXY_SHELL_MODE, self.ip_address)
+    url_map['editor'] = start_proxy('mooc', ProxyToolKit::PROXY_SHELL_MODE, "#{self.ip_address}:5000")
+    JSON.load(info[:exp].port).each do |port|
+      url_map[port[0]] = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:#{port[1]}")
+    end
+    self.url = JSON.generate(url_map)
+    # self.url = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, self.ip_address)
+    # self.url += ','
+    # self.url += start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:5000")
+    # self.url += ','
+    # self.url += start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:4040")
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save
