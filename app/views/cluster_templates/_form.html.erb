@@ -16,8 +16,8 @@
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :image_id %><br>
-    <%= f.text_field :image_id %>
+    <%= f.label :image_id %>
+    <%= f.select :image_id, @images.map {|c| [c['name'], c['id']]} %>
   </div>
   <div class="field">
     <%= f.label :flavor_id %><br>

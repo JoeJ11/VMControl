@@ -19,6 +19,7 @@ class ClusterTemplatesController < ApplicationController
 
   # GET /cluster_templates/1/edit
   def edit
+    @images = Machine.list_images
   end
 
   # POST /cluster_templates

@@ -74,6 +74,19 @@ module OsCloudToolkit
       true
     end
 
+    # Show image information
+    def list_images
+      require_token
+      response = HTTParty.get(
+        IMAGE_URL + 'v2/images',
+        :headers => {
+          'X-Auth-Token' => @@API_KEY
+        }
+      )
+      Rails.logger.info "Cloud service response (list images): #{response.code}"
+      response['images']
+    end
+
   end
 
   # Set tenant_name.
@@ -245,18 +258,6 @@ module OsCloudToolkit
     )
   end
 
-  # Show image information
-  def show_image(specifier)
-    self.class.require_token
-    response = HTTParty.get(
-                CloudToolkit::BASE_URL + 'images/' + specifier,
-                :headers => {
-                    'X-Auth-User' => CloudToolkit::X_AUTH_USER,
-                    'X-Auth-Key' => CloudToolkit::X_AUTH_KEY,
-                }
-    )
-    puts response
-  end
 
   # Update an image
   def update_image
