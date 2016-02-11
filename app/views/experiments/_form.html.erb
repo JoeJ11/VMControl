@@ -12,19 +12,19 @@
 
   <div class="field form-group">
     <%= f.label :name %>
-    <%= f.text_field :name, class:'form-control' %>
+    <%= f.text_field :name, html:{class:'form-control'} %>
   </div>
   <div class="field form-group">
     <%= f.label :cluster_configuration %>
-    <%= f.text_field :cluster_configuration, class:'form-control' %>
+    <%= f.select :cluster_configuration, @cluster_configurations.map {|c| [c.cluster_templates[0].name, c.id]} %>
   </div>
   <div class="field form-group">
-    <%= f.label :course %>
-    <%= f.text_field :course, class:'form-control' %>
+    <%= f.label :courses %>
+    <%= f.select :course, @courses.map {|c| [c.name, c.id]} %>
   </div>
   <div class="filed form-group">
-    <%= f.label :ports %>
-    <%= f.text_field :ports, class:'form-control' %>
+    <%= f.label :port %>
+    <%= f.text_field :port, class:'form-control' %>
   </div>
   <div class="actions form-group">
     <%= f.submit class:'btn btn-primary' %>
