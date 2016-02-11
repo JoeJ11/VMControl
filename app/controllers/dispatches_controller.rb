@@ -138,7 +138,7 @@ class DispatchesController < ApplicationController
 
   def progress
     if @machine.progress == 3
-      url_map = JSON.dump(@machine.url)
+      url_map = JSON.load(@machine.url)
       render json: { :progress => 3,
                      :url => url_map['shell'],
                      :editor_url => url_map['editor'],
