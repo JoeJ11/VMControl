@@ -34,10 +34,12 @@ function get_progress(id) {
               set_progress('100', 'Success')
               document.getElementById('progress_bar').className = "progress-bar progress-bar-success"
               nav_tab = document.getElementById('nav_tab')
-              nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" class="active"><a href="#" oclick="mode_select(' + data['url'] + ')">Shell</a></li>'
-              nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" ><a href="#" oclick="mode_select(' + data['editor'] + ')">Editor</a></li>'
+              nav_tab.innerHTML = '<li role="presentation" class="active"><a href="#" oclick="return mode_select(' + data['url'] + ');">Shell</a></li>'
+              nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" ><a href="#" oclick="return mode_select(' + data['editor'] + ');">Editor</a></li>'
               for (var key in data['url_list']) {
-                nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" ><a href="#" oclick="mode_select(' + data['url_list'][key] + ')">'+key+'</a></li>'
+                if (key != 'shell' && key != 'editor') {
+                  nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation" ><a href="#" oclick="return mode_select(' + data['url_list'][key] + ');">'+key+'</a></li>'
+                }
               }
 
               document.getElementById('iframe').src = data['url']

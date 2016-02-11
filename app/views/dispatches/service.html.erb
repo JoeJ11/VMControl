@@ -4,6 +4,7 @@
         window.open(document.getElementById('iframe').src)
     };
     function mode_select(url) {
+      console.alert('function call')
       document.getElementById('iframe').src = url
     };
     $('#bd').click(function(e) {
@@ -20,7 +21,6 @@
                 get_progress(<%= @machine %>)
             }, 5000)">
     <ul class="nav nav-tabs" id='nav_tab'>
-      <li role="presentation" class="active"><a href="#" oclick="mode_select()">Shell</a></li>
     </ul>
 
     <div class="row">
