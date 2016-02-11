@@ -3,6 +3,9 @@
     function btn_click() {
         window.open(document.getElementById('iframe').src)
     };
+    function mode_select(url) {
+      document.getElementById('iframe').src = url
+    };
     $('#bd').click(function(e) {
         e.preventDefault();
     });
@@ -16,10 +19,8 @@
     <body onload="timer = setInterval(function () {
                 get_progress(<%= @machine %>)
             }, 5000)">
-    <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="#" oclick="">Home</a></li>
-      <li role="presentation"><a href="#" onclick="">Profile</a></li>
-      <li role="presentation"><a href="#" onclick="">Messages</a></li>
+    <ul class="nav nav-tabs" id='nav_tab'>
+      <li role="presentation" class="active"><a href="#" oclick="mode_select()">Shell</a></li>
     </ul>
 
     <div class="row">
