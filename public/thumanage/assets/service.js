@@ -9,7 +9,7 @@ function set_progress(val, msg) {
   progress_bar = document.getElementById('progress_bar')
   progress_bar.setAttribute("aria-valuenow", val)
   progress_bar.setAttribute("style", "min-width: 2em; width: " + val + "%;")
-  progress_bar.text(msg)
+  progress_bar.innerHTML = msg
 }
 
 function get_progress(id) {
