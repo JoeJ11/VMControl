@@ -22,6 +22,8 @@ class ExperimentsController < ApplicationController
 
   # GET /experiments/1/edit
   def edit
+    @courses = Course.all
+    @cluster_configurations = ClusterConfiguration.all
   end
 
   # POST /experiments

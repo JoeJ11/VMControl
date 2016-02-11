@@ -15,6 +15,7 @@ class ClusterTemplatesController < ApplicationController
   # GET /cluster_templates/new
   def new
     @cluster_template = ClusterTemplate.new
+    @images = Machine.list_images
   end
 
   # GET /cluster_templates/1/edit
