@@ -14,9 +14,9 @@ function set_progress(val, msg) {
 
 function add_iframe(val, url) {
   nav_tab = document.getElementById('nav_tab')
-  nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation"><a href="#pane_'+val+'" aria-controls="pane_'+val+'" role="tab" data-toggle="tab">'+val+'</a></li>'
+  nav_tab.innerHTML = nav_tab.innerHTML + '<li role="presentation"><a href="#pane_'+val+'" onclick="record(frame_'+val+')" aria-controls="pane_'+val+'" role="tab" data-toggle="tab">'+val+'</a></li>'
   pane = document.getElementById('panes')
-  pane.innerHTML = pane.innerHTML + '<div role="tabpanel" class="tab-pane active" id="pane_'+val+'"><div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" src="'+url+'"></iframe></div></div>'
+  pane.innerHTML = pane.innerHTML + '<div role="tabpanel" class="tab-pane active" id="pane_'+val+'"><div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item" id="frame_'+val+'" src="'+url+'"></iframe></div></div>'
 };
 
 function get_progress(id) {

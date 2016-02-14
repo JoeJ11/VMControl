@@ -1,12 +1,18 @@
 <script type="text/javascript" src="/thumanage/assets/service.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <script>
+    var tmp_active_frame = 'frame_shell';
     function btn_click() {
         window.open(document.getElementById('iframe').src)
     };
     function mode_select(url) {
-      console.alert('function call')
       document.getElementById('iframe').src = url
+    };
+    function record(frame_id) {
+      tmp_active_frame = document.getElementById(frame_id).src
+    };
+    function full_screen() {
+      window.open(tmp_active_frame)
     };
     $('#bd').click(function(e) {
         e.preventDefault();
@@ -32,8 +38,14 @@
     <div>
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist" id="nav_tab">
-        <li role="presentation" class="active"><a href="#pane_shell" aria-controls="pane_shell" role="tab" data-toggle="tab">Shell</a></li>
-        <li role="presentation"><a href="#pane_editor" aria-controls="pane_shell" role="tab" data-toggle="tab">Editor</a></li>
+        <li role="presentation" class="active"><a href="#pane_shell" onclick="record(\"frame_shell\")" aria-controls="pane_shell" role="tab" data-toggle="tab">Shell</a></li>
+        <li role="presentation"><a href="#pane_editor" onclick="record(\"frame_editor\")" aria-controls="pane_shell" role="tab" data-toggle="tab">Editor</a></li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a href="" onclick="full_screen()">Full Screen</a>
+        </li>
       </ul>
 
       <!-- Tab panes -->
