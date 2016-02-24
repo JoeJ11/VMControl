@@ -141,7 +141,8 @@ class DispatchesController < ApplicationController
       url_map = JSON.load(@machine.url)
       if url_map.has_key?('GUI')
 	base_url = url_map['GUI']
-        url_map['GUI'] = base_url+'vnc.html?host='+base_url[7..base_url.length]+'&port=6080&password=Mooc_2015'
+        # url_map['GUI'] = base_url+'vnc.html?host='+base_url[7..base_url.length]+'&port=6080&password=Mooc_2015'
+	url_map['GUI'] = base_url + 'guacamole'
       end
       render json: { :progress => 3,
                      :url => url_map['shell'],
