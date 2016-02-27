@@ -106,7 +106,7 @@ class ExperimentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def experiment_params
-      tem = params.require(:experiment).permit(:name, :cluster_configuration, :course, :port)
+      tem = params.require(:experiment).permit(:name, :cluster_configuration, :course, :port, :teamwork)
       port_map = {}
       tem[:port].split(';').each do |line|
         tem_line = line.split(':')

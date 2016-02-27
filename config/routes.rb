@@ -1,4 +1,13 @@
 VMControl::Application.routes.draw do
+  resources :user_groups do
+    collection do
+      get 'select'
+    end
+    member do
+      get 'join'
+    end
+  end
+
   resources :experiments do
     member do
       get 'start'

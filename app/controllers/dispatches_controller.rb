@@ -24,6 +24,12 @@ class DispatchesController < ApplicationController
       @machine.stop_proxy @machine.ip_address
       @machine.stop_proxy @machine.ip_address + ':5000'
       @machine.stop_proxy @machine.ip_address + ':8080'
+      # @machine.stop_proxy @machine.ip_address)
+      # @machine.stop_proxy "#{@machine.ip_address}:5000"
+      # JSON.load(info[:exp].port).each do |port|
+      #   url_map[port[0]] = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:#{port[1]}")
+      # end
+
       @machine.cleanup_after_stop
     end
     @machine.stop
@@ -87,10 +93,20 @@ class DispatchesController < ApplicationController
       @message = 'Accounts are created. Please refresh the page!'
       render :service and return
     end
+    student = Student.find_by_mail_address info[:user_name]
 
     # Get experiment Information
     exp = Experiment.find apply_params[:exp_id].to_i
     info[:exp] = exp
+
+    if exp.teamwork
+      info = exp.teamwork_check student
+      unless info
+        session[:exp_id] = apply_params[:exp_id]
+        session[:user_id] = student.id
+        redirect_to select_user_groups_path and return
+      end
+    end
 
     # Check if there is a machine yet not released
     tem_m = nil
@@ -140,9 +156,9 @@ class DispatchesController < ApplicationController
     if @machine.progress == 3
       url_map = JSON.load(@machine.url)
       if url_map.has_key?('GUI')
-	base_url = url_map['GUI']
+        base_url = url_map['GUI']
         # url_map['GUI'] = base_url+'vnc.html?host='+base_url[7..base_url.length]+'&port=6080&password=Mooc_2015'
-	url_map['GUI'] = base_url + 'guacamole'
+        url_map['GUI'] = base_url + 'guacamole'
       end
       render json: { :progress => 3,
                      :url => url_map['shell'],

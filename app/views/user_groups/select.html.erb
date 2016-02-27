@@ -1,0 +1,4 @@
+<p>您的用户尚未分组，请加入现有分组或创建新分组</p>
+<% @user_groups.each do |group| %>
+  <%= link_to group.name, join_user_group_url(group.id)  %>
+<% end %>

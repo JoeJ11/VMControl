@@ -3,6 +3,7 @@ class Experiment < ActiveRecord::Base
 
   belongs_to :cluster_configuration
   belongs_to :course
+  has_many :user_groups
 
   STATUS_ONLINE = 1
   STATUS_OFFLINE = 0
@@ -52,6 +53,20 @@ class Experiment < ActiveRecord::Base
       puts 'STDERR:'
       puts stderr.read.strip
     end
+  end
+
+  def teamwork_check(student)
+    self.user_groups.each do |ug|
+      if ug.students.include? student
+        fake_user = Student.find ug.fake_user
+        return {
+          :user_name => fake_user.mail_address,
+          :pub_key => fake_user.public_key,
+          :pri_key => fake_user.private_key
+        }
+      end
+    end
+    return false
   end
 
 end

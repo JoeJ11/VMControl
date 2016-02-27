@@ -23,8 +23,12 @@
     <%= f.select :course, @courses.map {|c| [c.name, c.id]} %>
   </div>
   <div class="filed form-group">
-    <%= f.label :port %>
+    <%= f.label :port %></br>
     <%= f.text_field :port, class:'form-control' %>
+  </div>
+  <div class="field form-group">
+    <%= f.label :teamwork %>
+    <%= f.check_box :teamwork %>
   </div>
   <div class="actions form-group">
     <%= f.submit class:'btn btn-primary' %>

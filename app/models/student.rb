@@ -2,6 +2,7 @@ class Student < ActiveRecord::Base
   include GitToolkit
 
   has_one :machine
+  has_and_belongs_to_many :user_groups
 
   # handle_asynchronously :setup_new_user, :priority => 100
 
