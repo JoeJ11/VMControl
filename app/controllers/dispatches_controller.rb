@@ -97,7 +97,6 @@ class DispatchesController < ApplicationController
 
     # Get experiment Information
     exp = Experiment.find apply_params[:exp_id].to_i
-    info[:exp] = exp
 
     if exp.teamwork
       info = exp.teamwork_check student
@@ -107,6 +106,8 @@ class DispatchesController < ApplicationController
         redirect_to select_user_groups_path and return
       end
     end
+
+    info[:exp] = exp
 
     # Check if there is a machine yet not released
     tem_m = nil
