@@ -74,7 +74,6 @@ class UserGroupsController < ApplicationController
     end
     # @experiment = Experiment.find(flash[:exp_id])
     @user_groups = @experiment.user_groups
-    flash = flash
   end
 
   # GET /user_groups/1/join

@@ -101,9 +101,11 @@ class DispatchesController < ApplicationController
     if exp.teamwork
       info = exp.teamwork_check student
       unless info
+        @experiment = Experiment.find apply_params[:exp_id]
+        @user_groups = @experiment.user_groups
         session[:exp_id] = apply_params[:exp_id]
         session[:user_id] = student.id
-        redirect_to select_user_groups_path and return
+        render :select and return
       end
     end
 
