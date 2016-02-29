@@ -1,4 +1,4 @@
-<p>您的用户尚未分组，请加入现有分组</p>
+<p>您的用户尚未分组，请点击组名以加入现有分组，之后请刷新网页。</p>
 <% @user_groups.each do |group| %>
   <%= link_to group.name, join_user_group_url(group.id)  %>
   <p> 现有组员： </p>
