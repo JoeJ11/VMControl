@@ -50,7 +50,7 @@ class Machine < ActiveRecord::Base
     # This starts the proxy
     url_map = {}
     url_map['shell'] = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, self.ip_address)
-    url_map['editor'] = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:5000")
+    url_map['editor'] = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:8181")
     JSON.load(info[:exp].port).each do |port|
       url_map[port[0]] = start_proxy('mooc', ProxyToolkit::PROXY_SHELL_MODE, "#{self.ip_address}:#{port[1]}")
     end

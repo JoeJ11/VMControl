@@ -13,8 +13,14 @@ class MachineDeleteJob < Struct.new(:machine_id)
           # ActiveRecord::Base.establish_connection Rails.env
           if machine.ip_address
             machine.stop_proxy(machine.ip_address)
-            machine.stop_proxy("#{machine.ip_address}:5000")
-            machine.stop_proxy("#{machine.ip_address}:4040")
+            machine.stop_proxy("#{machine.ip_address}:8181")
+            JSON.load(Experiment.find_by_cluster_configuration_id(machine.cluster_configuration_id).port).each do |port|
+              stop_proxy("#{machine.ip_address}:#{port[1]}")
+            end
+
+            # machine.stop_proxy(machine.ip_address)
+            # machine.stop_proxy("#{machine.ip_address}:5000")
+            # machine.stop_proxy("#{machine.ip_address}:4040")
             machine.cleanup_after_stop
           end
 
