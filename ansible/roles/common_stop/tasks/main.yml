@@ -2,6 +2,3 @@
   shell: echo "Bye, world"
 - name: Copy bash log to local
   fetch: src=~/.shellhistory.log dest="../shelllog/{{logname}}"
-- name: Save repo
-  shell: git -C ~/project commit -am "Auto commit"
-  shell: git -C ~/project push origin master

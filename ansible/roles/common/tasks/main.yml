@@ -8,8 +8,6 @@
   shell: git config --global user.name "{{git_name}}"
 - name: Set git mail address
   shell: git config --global user.email "{{git_mail}}"
-- name: Clone a remote git repo
-  git: repo="{{git_repo}}" dest=~/project accept_hostkey=yes key_file=~/.ssh/git_id
 - name: Start ssh-agent
   shell: eval "$(ssh-agent -s)"
 - name: Start apache
