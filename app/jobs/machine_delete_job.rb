@@ -11,6 +11,9 @@ class MachineDeleteJob < Struct.new(:machine_id)
       Thread.new do
         begin
           # ActiveRecord::Base.establish_connection Rails.env
+          machine.status = Machine::STATUS_DELETED
+          machine.save
+
           if machine.ip_address
             machine.stop_proxy(machine.ip_address)
             machine.stop_proxy("#{machine.ip_address}:8181")
@@ -24,10 +27,9 @@ class MachineDeleteJob < Struct.new(:machine_id)
             machine.cleanup_after_stop
           end
 
-          machine.stop
-
           Delayed::Job.enqueue(MachineDeleteJob.new(machine_id), 10, 30.seconds.from_now)
         ensure
+          machine.stop
           ActiveRecord::Base.connection.close
         end
       end
