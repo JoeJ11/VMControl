@@ -64,7 +64,7 @@ class Machine < ActiveRecord::Base
     self.status = STATUS_OCCUPIED
     self.save
 
-    Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 100, 120.minute.from_now)
+    # Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 100, 120.minute.from_now)
   end
 
   # handle_asynchronously :assign, :priority => 100
