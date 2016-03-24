@@ -192,6 +192,12 @@ class DispatchesController < ApplicationController
     unless student
       render json: {:found => 'False', :message => 'User not found'}
     end
+    experiment = Experiment.find params[:exp_id]
+    if experiment.teamwork
+      info = experiment.teamwork_check student
+      student = Student.find_by_mail_address info[:user_name]
+    end
+
     git_user = student.get_user
 
     if apply_params.has_key? :ref
@@ -200,7 +206,6 @@ class DispatchesController < ApplicationController
       ref = 'master'
     end
 
-    experiment = Experiment.find params[:exp_id]
     repo_name = "#{git_user['username']}%2F#{experiment.name.downcase}_code"
     response = Student.get_file repo_name, apply_params[:file_path], ref
 
