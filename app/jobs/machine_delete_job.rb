@@ -27,9 +27,9 @@ class MachineDeleteJob < Struct.new(:machine_id)
             machine.cleanup_after_stop
           end
 
-          Delayed::Job.enqueue(MachineDeleteJob.new(machine_id), 10, 30.seconds.from_now)
         ensure
           machine.stop
+          Delayed::Job.enqueue(MachineDeleteJob.new(machine_id), 10, 30.seconds.from_now)
           ActiveRecord::Base.connection.close
         end
       end
