@@ -114,7 +114,7 @@ class DispatchesController < ApplicationController
     # Check if there is a machine yet not released
     tem_m = nil
     exp.cluster_configuration.machines.each do |m|
-      if m.user_name == info[:user_name]
+      if m.user_name == apply_params[:user_name]
         tem_m = m
       end
     end
@@ -147,6 +147,10 @@ class DispatchesController < ApplicationController
         end
       end
       @machine = machine.id
+      if exp.teamwork
+        @machine.user_name = apply_params[:user_name]
+        @machine.save
+      end
       render :service
     else
       @machine = -1
