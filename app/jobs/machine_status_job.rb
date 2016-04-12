@@ -6,7 +6,7 @@ class MachineStatusJob < Struct.new(:machine_id, :counter)
     Rails.logger.info "MACHINE_STATUS_JOB counter: #{counter}"
     machine = Machine.find machine_id
     if machine
-      if counter == 60
+      if counter == 60*6
         machine.delete_machine
         params = {
             :cluster_configuration_id => machine.cluster_configuration_id
