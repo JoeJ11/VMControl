@@ -148,8 +148,8 @@ class DispatchesController < ApplicationController
       end
       @machine = machine.id
       if exp.teamwork
-        @machine.user_name = apply_params[:user_name]
-        @machine.save
+        machine.user_name = apply_params[:user_name]
+        machine.save
       end
       render :service
     else
