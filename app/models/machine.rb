@@ -26,7 +26,7 @@ class Machine < ActiveRecord::Base
   end
 
   # Assign a machine to a student
-  def assign (info)
+  def assign (info, delete=true)
     self.progress = 1
     self.save
 
@@ -63,8 +63,9 @@ class Machine < ActiveRecord::Base
     self.progress = 3
     self.status = STATUS_OCCUPIED
     self.save
-
-    # Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 100, 120.minute.from_now)
+    if delete
+      Delayed::Job.enqueue(MachineDeleteJob.new(self.id), 100, 120.minute.from_now)
+    end
   end
 
   # handle_asynchronously :assign, :priority => 100

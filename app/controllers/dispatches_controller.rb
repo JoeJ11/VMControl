@@ -141,7 +141,7 @@ class DispatchesController < ApplicationController
       Thread.new do
         begin
           Rails.logger.info 'Machine Assign Starts'
-          machine.assign(info)
+          machine.assign(info, exp.delete_machine)
         ensure
           ActiveRecord::Base.connection.close
         end
