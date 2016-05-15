@@ -150,6 +150,7 @@ module OsCloudToolkit
     existing_counter = 0
     all_active = true
     response = _show_single_machine specifiers['master'], key
+    error = false
     if response.code == 404
       all_active = false
     else
@@ -160,8 +161,13 @@ module OsCloudToolkit
       elsif status == 'ACTIVE'
         address = response['server']['addresses']
         main_ip = address[address.keys[0]][0]['addr']
+      elsif status == 'ERROR'
+        all_active = false
+        error = true
+        Rails.logger.info "Machine creation error!"
       else
         all_active = false
+        error = true
         Rails.logger.error "Unexpected status: #{status}"
       end
     end
@@ -178,6 +184,10 @@ module OsCloudToolkit
         elsif status == 'ACTIVE'
           address = response['server']['addresses']
           slave_ip_list.push address[address.keys[0]][0]['addr']
+        elsif status == 'ERROR'
+          all_active = false
+          error = true
+          Rails.logger.info "Machine creation error!"
         else
           all_active = false
           Rails.logger.error "Unexpected status: #{status}"
@@ -189,6 +199,8 @@ module OsCloudToolkit
       return { :status => STATUS_AVAILABLE, :ip_address => main_ip, :slaves => slave_ip_list }
     elsif existing_counter == 0
       return { :status => STATUS_DELETED }
+    elsif error
+      return { :status => STATUS_ERROR }
     else
       return { :status => STATUS_ONPROCESS }
     end
