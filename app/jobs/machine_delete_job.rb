@@ -7,7 +7,7 @@ class MachineDeleteJob < Struct.new(:machine_id)
     else
       return
     end
-    if status == CloudToolkit::STATUS_OCCUPIED or status == CloudToolkit::STATUS_AVAILABLE
+    if status == Machine::STATUS_OCCUPIED or status == Machine::STATUS_AVAILABLE
       Thread.new do
         begin
           # ActiveRecord::Base.establish_connection Rails.env
@@ -33,13 +33,15 @@ class MachineDeleteJob < Struct.new(:machine_id)
           ActiveRecord::Base.connection.close
         end
       end
-    elsif status == CloudToolkit::STATUS_ONPROCESS
+    elsif status == Machine::STATUS_ONPROCESS
       machine.stop
       Delayed::Job.enqueue(MachineDeleteJob.new(machine_id), 10, 30.seconds.from_now)
 
-    elsif status == CloudToolkit::STATUS_ERROR
+    elsif status == Machine::STATUS_ERROR
       machine.stop
       fail
+    elsif status == Machine::STATUS_DELETED
+      machine.destroy
     else
       machine.destroy
     end
