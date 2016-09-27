@@ -12,7 +12,8 @@ module OsCloudToolkit
   X_AUTH_USER = 'anju'
   X_AUTH_KEY = 'rDqxLz6hJ7-i'
   BASE_URL = 'http://10.1.1.250:5000/'
-  TENANT_ID = 'caf6d92f5f794da393e00dee6ce781fc'
+  TENANT_ID = '9ec6d64baa7345f7b567577054244cbc'
+  PROJECT_NAME = 'proj_anju'
   SERVER_URL = 'http://10.1.1.250:8774/'
   NETWORK_URL = 'http://10.1.1.250:9696/'
   IMAGE_URL = 'http://10.1.1.250:9292/'
@@ -27,23 +28,43 @@ module OsCloudToolkit
     # Require token if no valid token
     # Token is useless temporarily
     def require_token
+
+      body = {
+          "auth" => {
+              "identity" => {
+                  "methods" =>  [
+                      "password"
+                  ],
+                  "password" => {
+                      "user" => {
+                          "domain" => {
+                              "id" => "10006"
+                          },
+                          "name" => X_AUTH_USER,
+                          "password" => X_AUTH_KEY
+                      }
+                  }
+              },
+              "scope" =>  {
+                  "project" => {
+                      "domain" => {
+                          "id": "10006"
+                      },
+                      "name" => PROJECT_NAME
+                  }
+              }
+          }
+      }
       response = HTTParty.post(
-        BASE_URL + 'v2.0/tokens',
+        BASE_URL + 'v3/auth/tokens',
         :headers => {
           'Content-Type' => 'application/json'
         },
-        :body => {
-          "auth" => {
-            "tenantId" => TENANT_ID,
-            "passwordCredentials" => {
-              "username" => X_AUTH_USER,
-              "password" => X_AUTH_KEY
-            }
-          }
-        }.to_json
+        :body => body.to_json
       )
       Rails.logger.info "Cloud service response (require token): #{response.code}"
-      @@API_KEY = response['access']['token']['id']
+      header_hash = response.headers.to_hash
+      @@API_KEY = header_hash["x-subject-token"]
       return @@API_KEY
     end
 
