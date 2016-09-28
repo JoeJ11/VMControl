@@ -63,8 +63,7 @@ module OsCloudToolkit
         :body => body.to_json
       )
       Rails.logger.info "Cloud service response (require token): #{response.code}"
-      header_hash = response.headers.to_hash
-      @@API_KEY = header_hash["x-subject-token"]
+      @@API_KEY = response.headers['x-subject-token']
       return @@API_KEY
     end
 
@@ -324,7 +323,7 @@ module OsCloudToolkit
           'networks' => [{
             # 'uuid' => setting['network_id']
             # Fixed network
-            'uuid' => 'd4a5460d-8743-4628-b27a-8fbde8dc708a'
+            'uuid' => 'fc07ce28-94fc-4c4a-b746-2a956d73a4c2'
           }]
         }
       }.to_json,
